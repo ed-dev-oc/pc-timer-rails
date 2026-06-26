@@ -22,6 +22,13 @@ class CoinTransaction < ApplicationRecord
       partial: "winform/coin_transactions/total_amount_badge",
       locals: { pc: pc }
     )
+
+    broadcast_replace_to(
+      "coin_slot_session_button",
+      target: dom_id(pc, :insert_coin_card),
+      partial: "winform/pcs/button",
+      locals: { pc: pc }
+    )
   end
 
   private
