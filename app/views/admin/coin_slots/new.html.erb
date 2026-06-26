@@ -1,0 +1,11 @@
+<% content_for :title, "New coin slot" %>
+
+<h1>New coin slot</h1>
+
+<%= render "form", coin_slot: @coin_slot %>
+
+<br>
+
+<div>
+  <%= link_to "Back to coin slots", admin_coin_slots_path %>
+</div>

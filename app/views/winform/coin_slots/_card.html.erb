@@ -1,0 +1,59 @@
+<div class="card mt-2">
+  <div class="card-header">
+    <div class="d-flex align-items-center">
+      <div class="flex-fill">
+        <h5 class="m-0">
+          <i class="bi bi-cash-coin text-warning"></i>
+          <%= coin_slot.name %>
+        </h5>
+      </div>
+      <div>
+        <%= coin_slot_status_badge(coin_slot) %>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <% if coin_slot.active_coin_slot_session.present? %>
+      <div data-controller="session-timer" 
+            data-session-timer-ended-at-value="<%= coin_slot.active_coin_slot_session.ended_at.iso8601 %>"
+            data-session-timer-total-milliseconds-expiration-value="<%= CoinSlotSession::EXPIRATION_MINUTE * 60 * 1000 %>">
+
+        <div class="border-bottom mb-3 py-2">
+          <i class="bi bi-pc-display text-primary"></i>
+          <span class="fw-bold">Used By: </span>
+          <span><%= coin_slot.active_coin_slot_session.pc.name %></span>
+        </div>
+
+        <div class="mt-3">
+          <i class="bi bi-hourglass-split"></i>
+          <span class="fw-bold">Insert Time:</span>
+          <span data-session-timer-target="remaining" class="fs-5 text-success"></span>
+        </div>
+
+        <div class="progress" style="height: 25px;">
+          <div data-session-timer-target="bar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%;">
+            0%
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <div>
+        <div class="border-bottom mb-3 py-2">
+          <i class="bi bi-pc-display text-primary"></i>
+          <span class="fw-bold">Used By: </span>
+          <span>N/A</span>
+        </div>
+
+        <div class="mt-3">
+          <i class="bi bi-hourglass-split"></i>
+          <span>Insert Time: </span>
+          <span class="fs-5 text-success">00:00:00</span>
+        </div>
+
+        <div class="progress" style="height: 25px;">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%;">0%</div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

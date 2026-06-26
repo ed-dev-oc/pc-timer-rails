@@ -22,3 +22,6 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+## TODO
+- Add code for sending command to ESP enable and disable coin insert.

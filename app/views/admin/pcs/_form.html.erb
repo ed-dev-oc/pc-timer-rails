@@ -1,0 +1,32 @@
+<%= form_with(model: [:admin, pc]) do |form| %>
+  <% if pc.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(pc.errors.count, "error") %> prohibited this pc from being saved:</h2>
+
+      <ul>
+        <% pc.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-2">
+    <div class="form-floating mb-3">
+      <%= form.text_field :name, class: "form-control", placeholder: "PC Name" %>
+      <%= form.label :name %>
+    </div>
+    <div class="form-floating mb-3">
+      <%= form.text_field :ip_address, class: "form-control", placeholder: "IP Address" %>
+      <%= form.label :ip_address %>
+    </div>
+    <div class="form-floating mb-3">
+      <%= form.text_field :mac_address, class: "form-control", placeholder: "Mac Address" %>
+      <%= form.label :mac_address %>
+    </div>
+  </div>
+
+  <div>
+    <%= form.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

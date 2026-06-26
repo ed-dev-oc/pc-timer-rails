@@ -1,0 +1,8 @@
+<%= render @pc %>
+
+<div>
+  <%= link_to "Edit this pc", edit_admin_pc_path(@pc) %> |
+  <%= link_to "Back to pcs", admin_pcs_path %>
+
+  <%= button_to "Destroy this pc", [:admin, @pc], method: :delete %>
+</div>

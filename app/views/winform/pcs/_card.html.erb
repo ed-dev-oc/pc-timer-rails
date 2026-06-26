@@ -1,0 +1,46 @@
+<%= turbo_frame_tag dom_id(pc) do %>
+  <div class="card my-2">
+    <div class="card-header">
+      <div class="d-flex">
+        <div class="flex-fill">
+          <h5 class="m-0">
+            <i class="bi bi-pc-display text-primary"></i>
+            <%= pc.name %>
+          </h5>
+        </div>
+        <div>
+          <%= render partial: "winform/pcs/badge_status", locals: { pc: pc } %>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mb-3 py-2 border-bottom">
+        <div>
+          <i class="bi bi-clock-history"></i>
+          <span class="fw-bold">Last seen at: </span>
+          <span><%= pc.last_seen_at&.strftime("%B %d, %Y %I:%M:%S %p") %></span>
+        </div>
+        <div>
+          <i class="bi bi-globe"></i>
+          <span class="fw-bold">IP Address: </span>
+          <span><%= pc.ip_address %></span>
+        </div>
+        <div>
+          <i class="bi bi-hdd-network"></i>
+          <span class="fw-bold">Mac Address: </span>
+          <span><%= pc.mac_address %></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <h5>
+            <i class="bi bi-hourglass-split"></i>
+            Time Session
+          </h5>
+          <%= render partial: "winform/pc_sessions/pc_session", locals: { pc: pc, pc_session: pc_session } %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

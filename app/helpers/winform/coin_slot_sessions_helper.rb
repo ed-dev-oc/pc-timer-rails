@@ -1,0 +1,2 @@
+module Winform::CoinSlotSessionsHelper
+end

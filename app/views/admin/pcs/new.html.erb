@@ -1,0 +1,11 @@
+<% content_for :title, "New pc" %>
+
+<h1>New pc</h1>
+
+<%= render "form", pc: @pc %>
+
+<br>
+
+<div>
+  <%= link_to "Back to pcs", admin_pcs_path %>
+</div>

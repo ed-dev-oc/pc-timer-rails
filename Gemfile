@@ -66,3 +66,11 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "devise", "~> 5.0"
+
+gem "mission_control-jobs", "~> 1.1"
+
+gem "faraday", "~> 2.14"
+
+gem "public_uid", "~> 2.2"

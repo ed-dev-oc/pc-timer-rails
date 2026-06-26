@@ -1,0 +1,2 @@
+module Api::SystemHelper
+end

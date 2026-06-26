@@ -1,0 +1,11 @@
+<div id="<%= dom_id pc %>" class="card">
+  <div class="card-body">
+    <h1><%= pc.name %></h1>
+    <p><%= pc.ip_address %></p>
+    <p><%= pc.mac_address %></p>
+    <p><%= pc.status.humanize %></p>
+    <p><%= pc.last_seen_at&.strftime("%B %d, %Y %I:%M:%S %p") %></p>
+    <p><%= pc.created_at&.strftime("%B %d, %Y %I:%M:%S %p") %></p>
+    <p><%= pc.updated_at&.strftime("%B %d, %Y %I:%M:%S %p") %></p>
+  </div>
+</div>

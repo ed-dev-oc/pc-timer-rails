@@ -1,0 +1,9 @@
+<div id="<%= dom_id coin_slot %>" class="card">
+  <div class="card-body">
+    <h1><%= coin_slot.name %></h1>
+    <p><%= coin_slot.mac_address %></p>
+    <p><%= coin_slot.status.humanize %></p>
+    <p><%= coin_slot.created_at&.strftime("%B %d, %Y %I:%M:%S %p") %></p>
+    <p><%= coin_slot.updated_at&.strftime("%B %d, %Y %I:%M:%S %p") %></p>
+  </div>
+</div>

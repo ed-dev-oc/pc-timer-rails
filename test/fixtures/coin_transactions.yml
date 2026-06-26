@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  transaction_uid: MyString
+  coin_slot: one
+  pc: one
+  peso_amount: 1
+  minutes_granted: 1
+
+two:
+  transaction_uid: MyString
+  coin_slot: two
+  pc: two
+  peso_amount: 1
+  minutes_granted: 1

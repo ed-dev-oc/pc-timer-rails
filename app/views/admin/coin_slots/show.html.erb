@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @coin_slot %>
+
+<div>
+  <%= link_to "Edit this coin slot", edit_admin_coin_slot_path(@coin_slot) %> |
+  <%= link_to "Back to coin slots", admin_coin_slots_path %>
+
+  <%= button_to "Destroy this coin slot", [:admin, @coin_slot], method: :delete %>
+</div>

@@ -1,0 +1,11 @@
+<%= turbo_stream.update :flash_messages do %>
+  <%= render partial: "shared/flash" %>
+<% end %>
+
+<%= turbo_stream.update dom_id(@pc) do %>
+  <%= render partial: "winform/pcs/card", locals: { pc: @pc, pc_session: @pc.active_pc_session } %>
+<% end %>
+
+<%= turbo_stream.update dom_id(@pc, :insert_coin_card) do %>
+  <%= render partial: "winform/pcs/button", locals: { pc: @pc } %>
+<% end %>

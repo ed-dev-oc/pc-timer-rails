@@ -1,0 +1,9 @@
+<% flash.each do |key, message| %>
+  <div class="alert alert-<%= key %> alert-dismissible fade show" role="alert" data-turbo-temporary>
+    <%= flash_bootstrap_icon(key) %>
+    <span>
+      <%= message %>
+    </span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% end %>

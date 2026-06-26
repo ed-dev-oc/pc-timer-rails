@@ -1,0 +1,4 @@
+<%= turbo_stream_from "pc_card" %>
+<div class="row align-items-center justify-content-center vh-100">
+  <%= render partial: "winform/pc_sessions/pc_session", locals: { pc: @pc, pc_session: @pc_session } %>
+</div>

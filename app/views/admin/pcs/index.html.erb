@@ -1,0 +1,14 @@
+<% content_for :title, "Pcs" %>
+
+<h1>Pcs</h1>
+
+<div id="pcs">
+  <% @pcs.each do |pc| %>
+    <%= render pc %>
+    <p>
+      <%= link_to "Show this pc", [:admin, pc] %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New pc", new_admin_pc_path %>
