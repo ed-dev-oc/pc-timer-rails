@@ -2,7 +2,7 @@ class Pc < ApplicationRecord
   include ActionView::RecordIdentifier
 
   encrypts :secret
-  enum :status, [ :offline, :online, :active_session, :locked ]
+  enum :status, [ :offline, :online, :active_session, :disabled ]
   AUTHORIZED_STATUSES = [ :offline, :online, :active_session ]
 
   has_many :coin_slot_sessions
@@ -10,6 +10,7 @@ class Pc < ApplicationRecord
           -> { where(status: :active) },
           class_name: "CoinSlotSession"
   has_many :coin_transactions
+  has_many :pc_sessions
   has_one :active_pc_session,
           -> { where(status: :active) },
           class_name: "PcSession"
@@ -33,12 +34,23 @@ class Pc < ApplicationRecord
     coin_transactions.unused.present?
   end
 
-  def mark_active_session_and_unlock_pc
+  def mark_active_session_and_unlock_pc!
     transaction do
       active_session!
 
       pc_command_logs.create!(
         command: :unlock,
+        status: :pending
+      )
+    end
+  end
+
+  def mark_online_and_lock_pc!
+    transaction do
+      online! if active_session?
+
+      pc_command_logs.create!(
+        command: :lock,
         status: :pending
       )
     end
@@ -62,7 +74,7 @@ class Pc < ApplicationRecord
       broadcast_replace_to(
         "pc_card",
         target: dom_id(self, :badge_status),
-        partial: "winform/pcs/badge_status",
+        partial: "winform/pcs/shared/badge_status",
         locals: { pc: self }
       )
     end

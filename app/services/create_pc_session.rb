@@ -50,7 +50,7 @@ class CreatePcSession
     end
 
     def active_pc_session!
-      @pc.mark_active_session_and_unlock_pc
+      @pc.mark_active_session_and_unlock_pc!
     end
 
     def mark_transactions_used!

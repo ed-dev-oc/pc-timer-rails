@@ -55,7 +55,13 @@ Rails.application.routes.draw do
     root "dashboard#index"
 
     resources :coin_slots
-    resources :pcs
+    resources :pcs do
+      resources :pc_sessions, only: [ :create ] do
+        member do
+          post :stop_session
+        end
+      end
+    end
   end
 
   devise_for :users

@@ -1,0 +1,23 @@
+<div class="modal" tabindex="-1" id="<%= dom_id(pc, "unlock_pc_modal") %>">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Unlock PC</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <%= form_with(model: PcSession.new, url: admin_pc_pc_sessions_path(pc, format: :html)) do |form| %>
+        <div class="modal-body">
+          <div class="form-floating mb-3">
+            <%= form.text_field :total_minutes_purchased, class: "form-control" %>
+            <%= form.label :total_minutes_purchased, "Minutes" %>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <%= form.submit "Submit", class: "btn btn-primary", data: { turbo_submits_with: "Submitting...", turbo_confirm: "Are you sure?" } %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
