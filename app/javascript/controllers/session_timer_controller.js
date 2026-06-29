@@ -15,9 +15,11 @@ export default class extends Controller {
     this.update();
     setInterval(() => this.update(), 1000);
 
-    this.totalTimeTarget.innerText = this.formated_timer(
-      this.totalMillisecondsExpirationValue,
-    );
+    if (this.hasTotalTimeTarget) {
+      this.totalTimeTarget.innerText = this.formated_timer(
+        this.totalMillisecondsExpirationValue,
+      );
+    }
   }
 
   update() {
@@ -31,13 +33,17 @@ export default class extends Controller {
     if (progress < 0) progress = 0;
 
     // UI updates
-    this.barTarget.style.width = progress + "%";
-    this.barTarget.innerText = Math.floor(progress) + "%";
+    if (this.hasBarTarget) {
+      this.barTarget.style.width = progress + "%";
+      this.barTarget.innerText = Math.floor(progress) + "%";
+    }
 
-    if (remaining <= 0) {
-      this.remainingTarget.innerText = "00:00:00";
-    } else {
-      this.remainingTarget.innerText = this.formated_timer(remaining);
+    if (this.hasRemainingTarget) {
+      if (remaining <= 0) {
+        this.remainingTarget.innerText = "00:00:00";
+      } else {
+        this.remainingTarget.innerText = this.formated_timer(remaining);
+      }
     }
   }
 

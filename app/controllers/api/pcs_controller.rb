@@ -9,7 +9,8 @@ class Api::PcsController < Api::BaseController
     @pc.assign_attributes(
       name: pc_params[:name],
       ip_address: pc_params[:ip_address],
-      mac_address: pc_params[:mac_address]
+      mac_address: pc_params[:mac_address],
+      status: :online
     )
 
     is_new = @pc.new_record?
@@ -28,9 +29,13 @@ class Api::PcsController < Api::BaseController
 
   def signin
     pc_session = @pc.active_pc_session
-    pc_status = pc_session.present? ? :active_session : :online
+    pc_status = @pc.status
 
-    if @pc.update(status: pc_status, last_seen_at: Time.current)
+    unless @pc.disabled_kiosk?
+      pc_status = pc_session.present? ? :active_session : :online
+    end
+
+    if @pc.update(status: pc_status)
       render json: {
         status: "success",
         message: "Online status set"
@@ -85,6 +90,7 @@ class Api::PcsController < Api::BaseController
     } : nil
 
     render json: {
+      pc_status: @pc.status,
       session: session_json,
       last_server_time: Time.current.utc
     }, status: :ok
@@ -103,8 +109,12 @@ class Api::PcsController < Api::BaseController
     end
 
     def pc_update_params
-      status = @pc.active_pc_session.present? ? :active_session : :online
+      status = @pc.status
 
-      params.expect(pc: [ :mac_address, :ip_address ]).merge(status: status, last_seen_at: Time.current)
+      unless @pc.disabled_kiosk?
+        status = @pc.active_pc_session.present? ? :active_session : :online
+      end
+
+      params.expect(pc: [ :mac_address, :ip_address ]).merge(status: status)
     end
 end

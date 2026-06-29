@@ -2,19 +2,20 @@ class Pc < ApplicationRecord
   include ActionView::RecordIdentifier
 
   encrypts :secret
-  enum :status, [ :offline, :online, :active_session, :disabled ]
-  AUTHORIZED_STATUSES = [ :offline, :online, :active_session ]
+  enum :status, [ :offline, :online, :active_session, :disabled_kiosk, :uninstalled ]
+  AUTHORIZED_STATUSES = [ :offline, :online, :active_session, :disabled_kiosk ]
 
-  has_many :coin_slot_sessions
+  has_many :coin_slot_sessions, dependent: :destroy
+  has_many :coin_transactions, dependent: :destroy
+  has_many :pc_sessions, dependent: :destroy
+  has_many :pc_command_logs, class_name: "PcCommandLog", dependent: :destroy
+
   has_one :active_coin_slot_session,
           -> { where(status: :active) },
           class_name: "CoinSlotSession"
-  has_many :coin_transactions
-  has_many :pc_sessions
   has_one :active_pc_session,
           -> { where(status: :active) },
           class_name: "PcSession"
-  has_many :pc_command_logs, class_name: "PcCommandLog"
 
   validates :name, :device_id, presence: true, uniqueness: true
   validates :ip_address, :mac_address, presence: true

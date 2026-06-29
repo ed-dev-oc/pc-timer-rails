@@ -1,0 +1,20 @@
+<%= turbo_frame_tag dom_id(pc, :pc_session) do %>
+  <% if pc_session.present? %>
+    <p class="mb-1"
+        data-controller="session-timer" 
+        data-session-timer-ended-at-value="<%= pc_session.expires_at.iso8601 %>"
+        data-session-timer-total-milliseconds-expiration-value="<%= pc_session.total_minutes_purchased * 60 * 1000 %>">
+
+      <i class="bi bi-hourglass-split"></i>
+      <span>Time Remaining: </span>
+      <span data-session-timer-target="remaining">
+      </span>
+    </p>
+  <% else %>
+    <p class="mb-1">
+      <i class="bi bi-hourglass-bottom"></i>
+      <span>Time Remaining: </span>
+      <span>00:00:00</span>
+    </p>
+  <% end %>
+<% end %>

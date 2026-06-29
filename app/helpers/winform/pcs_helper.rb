@@ -3,14 +3,16 @@ module Winform::PcsHelper
     offline: "text-bg-secondary",
     online: "text-bg-primary",
     active_session: "text-bg-warning",
-    locked: "text-bg-danger"
+    disabled_kiosk: "text-bg-danger",
+    uninstalled: "text-bg-dark"
   }.freeze
 
   ICON_CLASSES = {
     offline: "bi bi-wifi-off",
     online: "bi bi-wifi",
     active_session: "bi bi-person-check",
-    locked: "bi bi-lock"
+    disabled_kiosk: "bi bi-lock",
+    uninstalled: "bi bi-trash3"
   }
 
   def pc_status_badge(pc)

@@ -60,7 +60,7 @@ class Admin::CoinSlotsController < Admin::BaseController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_coin_slot
-      @coin_slot = CoinSlot.find(params.expect(:id))
+      @coin_slot = CoinSlot.find_by(device_id: params.expect(:id))
     end
 
     # Only allow a list of trusted parameters through.

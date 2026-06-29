@@ -1,8 +1,333 @@
-<%= render @pc %>
+<div class="container-fluid py-4">
 
-<div>
-  <%= link_to "Edit this pc", edit_admin_pc_path(@pc) %> |
-  <%= link_to "Back to pcs", admin_pcs_path %>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-0">
+        <i class="bi bi-pc-display"></i>
+        <%= @pc.name %>
+      </h2>
 
-  <%= button_to "Destroy this pc", [:admin, @pc], method: :delete %>
+      <small class="text-muted">
+        Device ID:
+        <%= @pc.device_id %>
+      </small>
+    </div>
+
+    <div class="d-flex flex-column align-items-end">
+      <%= render partial: "winform/pcs/shared/badge_status", locals: { pc: @pc } %>
+
+      <div class="btn-toolbar mt-2">
+        <div class="btn-group gap-2 me-2">
+          <% if @pc.active_pc_session.present? %>
+            <%= link_to stop_session_admin_pc_pc_session_path(@pc, @pc.active_pc_session, format: :html), class: "btn btn-warning", data: { turbo_method: :POST, turbo_submits_with: "Sending...", turbo_confirm: "Are you sure?" } do %>
+              <i class="bi bi-lock"></i>
+              Lock
+            <% end %>
+          <% else %>
+            <%= link_to "#", class: "btn btn-success", data: { bs_toggle: "modal", bs_target: "##{dom_id(@pc, "unlock_pc_modal")}" } do %>
+              <i class="bi bi-unlock"></i>
+              Unlock
+            <% end %>
+
+            <%= render partial: "admin/pc_sessions/unlock_modal", locals: { pc: @pc } %>
+          <% end %>
+
+          <%= link_to restart_admin_pc_path(@pc), class: "btn btn-warning", data: { turbo_method: :POST, turbo_confirm: "Are you sure to restart the PC?", turbo_submits_with: "Sending..." } do %>
+            <i class="bi bi-arrow-clockwise"></i>
+            Restart
+          <% end %>
+
+          <%= link_to shutdown_admin_pc_path(@pc), class: "btn btn-danger", data: { turbo_method: :POST, turbo_confirm: "Are you sure to shutdown the PC?", turbo_submits_with: "Sending..." } do %>
+            <i class="bi bi-power"></i>
+            Shutdown
+          <% end %>
+        </div>
+
+        <div class="dropdown">
+          <button
+            class="btn btn-outline-secondary dropdown-toggle"
+            data-bs-toggle="dropdown">
+            <i class="bi bi-three-dots"></i>
+          </button>
+
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <%= link_to "#", class: "dropdown-item", data: { bs_toggle: "modal", bs_target: "##{ dom_id(@pc, "edit_modal") }" } do %>
+                <i class="bi bi-pencil"></i>
+                Edit
+              <% end %>
+            </li>
+            <li>
+              <% if @pc.disabled_kiosk? %>
+                <%= link_to enable_or_disabled_kiosk_admin_pc_path(@pc), class: "dropdown-item", data: { turbo_method: :POST, turbo_confirm: "Are you sure to enable the kiosk?", turbo_submits_with: "Submitting..."} do %>
+                  <i class="bi bi-lock"></i>
+                  Enable Kiosk
+                <% end %>
+              <% else %>
+                <%= link_to enable_or_disabled_kiosk_admin_pc_path(@pc), class: "dropdown-item", data: { turbo_method: :POST, turbo_confirm: "Are you sure to disable the kiosk?", turbo_submits_with: "Submitting..."} do %>
+                  <i class="bi bi-unlock"></i>
+                  Disable Kiosk
+                <% end %>
+              <% end %>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <% unless @pc.uninstalled? %>
+              <li>
+                <%= link_to kiosk_uninstalled_admin_pc_path(@pc), class: "dropdown-item text-danger", data: { turbo_method: :POST, turbo_confirm: "Are you sure? It means the kiosk already uninstalled.", turbo_submits_with: "Submitting..."} do %>
+                  <i class="bi bi-trash"></i>
+                  Kiosk Uninstalled
+                <% end %>
+              </li>
+            <% end %>
+            <li>
+              <%= button_to [:admin, @pc],
+                method: :delete,
+                form: {
+                  data: {
+                    turbo_confirm: "Delete this PC?",
+                    turbo_submits_with: "Deleting..."
+                  }
+                },
+                class: "dropdown-item text-danger" do %>
+
+                <i class="bi bi-trash"></i>
+                Delete
+
+              <% end %>
+            </li>
+          </ul>
+        </div>
+
+        <%= render partial: "admin/pcs/edit_modal", locals: { pc: @pc } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="text-muted">
+            Total Income
+          </div>
+
+          <h3 class="mt-2">
+            ₱<%= number_with_delimiter(@stats[:total_income]) %>
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="text-muted">
+            Today's Income
+          </div>
+
+          <h3 class="mt-2">
+            ₱<%= number_with_delimiter(@stats[:today_income]) %>
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="text-muted">
+            Minutes Purchased
+          </div>
+
+          <h3 class="mt-2">
+            <%= @stats[:total_minutes] %>
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="text-muted">
+            Sessions
+          </div>
+
+          <h3 class="mt-2">
+            <%= @stats[:total_sessions] %>
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <i class="bi bi-info-circle"></i>
+          PC Information
+        </div>
+
+        <div class="card-body">
+          <table class="table table-sm">
+            <tr>
+              <th>Name</th>
+              <td><%= @pc.name %></td>
+            </tr>
+
+            <tr>
+              <th>IP Address</th>
+              <td><%= @pc.ip_address %></td>
+            </tr>
+
+            <tr>
+              <th>MAC Address</th>
+              <td><%= @pc.mac_address %></td>
+            </tr>
+
+            <tr>
+              <th>Last Seen</th>
+              <td><%= time_ago_in_words(@pc.last_seen_at) %> ago</td>
+            </tr>
+
+            <tr>
+              <th>Status</th>
+              <td><%= @pc.status.humanize %></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card shadow-sm mt-4">
+        <div class="card-header">
+          <i class="bi bi-controller"></i>
+          Current Session
+        </div>
+
+        <div class="card-body">
+          <% if @active_session %>
+            <%= render partial: "winform/pc_sessions/pc_session", locals: { pc: @pc, pc_session: @active_session } %>
+          <% else %>
+            <div class="text-center py-4">
+              <i class="bi bi-moon fs-1 text-muted"></i>
+
+              <p class="text-muted mt-3">
+                No Active Session
+              </p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">
+          <i class="bi bi-coin"></i>
+          Recent Coin Transactions
+        </div>
+
+        <div class="table-responsive overflow-auto" style="max-height: 40vh;">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Minutes</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% @coin_transactions.each do |transaction| %>
+                <tr>
+                  <td><%= l transaction.created_at %></td>
+
+                  <td>₱<%= transaction.peso_amount %></td>
+
+                  <td><%= transaction.minutes_granted %></td>
+
+                  <td>
+                    <span class="badge bg-success">
+                      <%= transaction.status.humanize %>
+                    </span>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">
+          <i class="bi bi-terminal"></i>
+          Recent Commands
+        </div>
+
+        <ul class="list-group list-group-flush overflow-auto" style="max-height: 40vh;">
+          <% @command_logs.each do |log| %>
+            <li class="list-group-item">
+              <div class="d-flex justify-content-between">
+                <strong>
+                  <%= log.command.humanize %>
+                </strong>
+                <small class="text-muted">
+                  <%= time_ago_in_words(log.created_at) %> ago
+                </small>
+              </div>
+
+              <div>
+                Status
+                <span class="badge bg-secondary">
+                  <%= log.status.humanize %>
+                </span>
+              </div>
+
+              <% if log.error_message.present? %>
+                <div class="alert alert-danger mt-2 mb-0">
+                  <%= log.error_message %>
+                </div>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <i class="bi bi-clock-history"></i>
+          Session History
+        </div>
+
+        <div class="table-responsive overflow-auto" style="max-height: 40vh;">
+          <table class="table table-striped mb-0">
+            <thead>
+              <tr>
+                <th>Started</th>
+                <th>Ended</th>
+                <th>Minutes</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @sessions.each do |session| %>
+                <tr>
+                  <td><%= l session.started_at %></td>
+                  <td><%= l session.expires_at %></td>
+                  <td><%= session.total_minutes_used %></td>
+                  <td>
+                    <%= session.status.humanize %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

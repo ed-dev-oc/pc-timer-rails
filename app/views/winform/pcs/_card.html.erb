@@ -1,5 +1,5 @@
 <%= turbo_frame_tag dom_id(pc) do %>
-  <div class="card my-2">
+  <div class="card">
     <div class="card-header">
       <div class="d-flex">
         <div class="flex-fill">
@@ -9,7 +9,7 @@
           </h5>
         </div>
         <div>
-          <%= render partial: "winform/pcs/badge_status", locals: { pc: pc } %>
+          <%= render partial: "winform/pcs/shared/badge_status", locals: { pc: pc } %>
         </div>
       </div>
     </div>

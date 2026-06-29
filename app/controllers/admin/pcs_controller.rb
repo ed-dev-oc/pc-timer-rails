@@ -1,48 +1,56 @@
 class Admin::PcsController < Admin::BaseController
-  before_action :set_pc, only: %i[ show edit update destroy ]
+  before_action :set_pc, only: %i[ show update destroy restart shutdown enable_or_disabled_kiosk kiosk_uninstalled ]
 
   # GET /admin/pcs or /admin/pcs.json
   def index
-    @pcs = Pc.all
+    @pcs = Pc.includes(:active_pc_session).all
   end
 
   # GET /admin/pcs/1 or /admin/pcs/1.json
   def show
-  end
+    @active_session = @pc.pc_sessions
+      .where(status: :active)
+      .order(started_at: :desc)
+      .first
 
-  # GET /admin/pcs/new
-  def new
-    @pc = Pc.new
-  end
+    @today_transactions = @pc.coin_transactions
+      .where(created_at: Time.zone.today.all_day)
 
-  # GET /admin/pcs/1/edit
-  def edit
-  end
+    @stats = {
+      total_sessions: @pc.pc_sessions.count,
+      active_sessions: @pc.pc_sessions.active.count,
+      total_minutes: @pc.coin_transactions.sum(:minutes_granted),
+      total_income: @pc.coin_transactions.sum(:peso_amount),
+      today_income: @today_transactions.sum(:peso_amount),
+      total_commands: @pc.pc_command_logs.count
+    }
 
-  # POST /admin/pcs or /admin/pcs.json
-  def create
-    @pc = Pc.new(pc_params)
+    @coin_transactions = @pc.coin_transactions
+      .order(created_at: :desc)
+      .limit(20)
 
-    respond_to do |format|
-      if @pc.save
-        format.html { redirect_to [ :admin, @pc ], notice: "Pc was successfully created." }
-        format.json { render :show, status: :created, location: @pc }
-      else
-        format.html { render :new, status: :unprocessable_content }
-        format.json { render json: @pc.errors, status: :unprocessable_content }
-      end
-    end
+    @command_logs = @pc.pc_command_logs
+      .order(created_at: :desc)
+      .limit(20)
+
+    @sessions = @pc.pc_sessions
+      .order(created_at: :desc)
+      .limit(10)
   end
 
   # PATCH/PUT /admin/pcs/1 or /admin/pcs/1.json
   def update
     respond_to do |format|
       if @pc.update(pc_params)
+        flash.now[:notice]= "Pc was successfully updated."
+
+        format.turbo_stream
         format.html { redirect_to [ :admin, @pc ], notice: "Pc was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @pc }
       else
+        flash.now["alert"] = @pc.errors.full_messages.join(", ")
+
+        format.turbo_stream
         format.html { render :edit, status: :unprocessable_content }
-        format.json { render json: @pc.errors, status: :unprocessable_content }
       end
     end
   end
@@ -57,14 +65,74 @@ class Admin::PcsController < Admin::BaseController
     end
   end
 
+  def enable_or_disabled_kiosk
+    status = @pc.disabled_kiosk? ? :online : :disabled_kiosk
+
+    if @pc.update(status: status)
+      flash[:notice] = "Status set to #{ @pc.status.titleize }."
+
+      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
+    else
+      flash[:alert] = pc_command_log.errors.full_messages.join(", ")
+
+      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
+    end
+  end
+
+  def restart
+    pc_command_log = PcCommandLog.new(pc: @pc, command: :restart, status: :pending)
+
+    if pc_command_log.save
+      flash[:notice] = "Restart PC processing."
+
+      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
+    else
+      flash[:alert] = pc_command_log.errors.full_messages.join(", ")
+
+      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
+    end
+  end
+
+  def shutdown
+    pc_command_log = PcCommandLog.new(pc: @pc, command: :shutdown, status: :pending)
+
+    if pc_command_log.save
+      flash[:notice] = "Shutdown PC processing."
+
+      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
+    else
+      flash[:alert] = pc_command_log.errors.full_messages.join(", ")
+
+      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
+    end
+  end
+
+  def kiosk_uninstalled
+    if @pc.update(status: :uninstalled)
+      flash[:notice] = "Status set to #{ @pc.status.titleize }."
+
+      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
+    else
+      flash[:alert] = pc_command_log.errors.full_messages.join(", ")
+
+      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_pc
-      @pc = Pc.find(params.expect(:id))
+      @pc = Pc.includes(
+        :pc_sessions,
+        :coin_transactions,
+        :pc_command_logs
+      ).find_by(device_id: params.expect(:id))
+
+      redirect_back fallback_location: admin_pcs_path, alert: "PC not found!", status: :see_other if @pc.nil?
     end
 
     # Only allow a list of trusted parameters through.
     def pc_params
-      params.expect(pc: [ :name, :ip_address, :mac_address ])
+      params.expect(pc: [ :name ])
     end
 end

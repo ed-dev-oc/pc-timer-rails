@@ -18,6 +18,10 @@ module ApiErrorRenderable
     response[:errors] = errors if errors
 
     render json: response, status: status
+
+    puts("ED GWAPO")
+    puts(response)
+    puts("------------------------------------------------")
   end
 
   def render_validation_failed(record, custom_message = nil)

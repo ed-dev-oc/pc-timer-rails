@@ -55,7 +55,14 @@ Rails.application.routes.draw do
     root "dashboard#index"
 
     resources :coin_slots
-    resources :pcs do
+    resources :pcs, except: [ :new, :create, :edit ] do
+      member do
+        post :restart
+        post :shutdown
+        post :enable_or_disabled_kiosk
+        post :kiosk_uninstalled
+      end
+
       resources :pc_sessions, only: [ :create ] do
         member do
           post :stop_session

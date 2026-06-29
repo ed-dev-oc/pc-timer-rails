@@ -1,0 +1,28 @@
+<nav class="navbar navbar-expand-md position-sticky top-0 bg-body-tertiary py-3 z-3">
+  <div class="container-fluid">
+    <div class="d-flex align-items-center w-100">
+      <div class="d-flex align-items-center flex-grow-1">
+      </div>
+      <div class="">
+
+        <div class="dropdown">
+          <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+            <strong><%= current_user.email %></strong>
+          </a>
+          <ul class="dropdown-menu text-small shadow">
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+
+            <li><hr class="dropdown-divider"></li>
+
+            <li>
+              <%= link_to "#", class: "dropdown-item" do %>
+                Sign Out
+              <% end %>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

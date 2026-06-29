@@ -6,9 +6,11 @@ class PcSessionExpirationJob < ApplicationJob
     pc = pc_session.pc
 
     if Time.current >= pc_session.expires_at && pc_session.present? && pc_session.active?
+      total_minutes_used = (Time.current - pc_session.started_at).ceil / 60
+
       pc_session.update(
         status: :ended,
-        total_minutes_used: pc_session.total_minutes_purchased
+        total_minutes_used: total_minutes_used
       )
 
       pc.mark_online_and_lock_pc!

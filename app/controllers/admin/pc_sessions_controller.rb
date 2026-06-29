@@ -24,7 +24,7 @@ class Admin::PcSessionsController < Admin::BaseController
     if result.success?
       flash[:notice] = "Session stop to #{@pc.name}!"
 
-      redirect_back fallback_location: admin_pc_path(@pc.device_id), notice: "Session stop to #{@pc.name}!", status: :moved_permanently
+      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
     else
       flash[:alert] = result.error
 
@@ -37,13 +37,13 @@ class Admin::PcSessionsController < Admin::BaseController
     def set_pc!
       @pc = Pc.find_by(device_id: params[:pc_id])
 
-      redirect_back fallback_location: admin_pcs_path, alert: "PC not found!", status: :not_found if @pc.nil?
+      redirect_back fallback_location: admin_pcs_path, alert: "PC not found!", status: :see_other if @pc.nil?
     end
 
     def set_pc_session!
       @pc_session = PcSession.find_by(public_uid: params[:id])
 
-      redirect_back fallback_location: admin_pc_path(@pc), alert: "PC session not found!", status: :not_found if @pc_session.nil?
+      redirect_back fallback_location: admin_pc_path(@pc), alert: "PC session not found!", status: :see_other if @pc_session.nil?
     end
 
     def pc_session_params

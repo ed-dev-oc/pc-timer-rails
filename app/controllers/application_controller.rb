@@ -25,6 +25,7 @@ class ApplicationController < ActionController::Base
 
     device = Pc.find_by(device_id: device_id) || CoinSlot.find_by(device_id: device_id)
 
+    return render_unauthorized("Missing device") if device.nil?
     return render_unauthorized("Invalid device") unless device&.authorized_status?
 
     # optional: replay protection (5 min window)

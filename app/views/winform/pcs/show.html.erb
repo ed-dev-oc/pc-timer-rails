@@ -1,14 +1,14 @@
-<div class="row my-3">
+<div class="row gy-2 my-3">
   <div class="col-12 col-md-6">
     <div>
       <%= turbo_stream_from "pc_card" %>
       <%= render partial: "winform/pcs/card", locals: { pc: @pc, pc_session: @pc_session } %>
     </div>
   </div>
-  <div class="col-12 col-md-6">
+  <div class="col-12 col-md-6 d-flex flex-column gap-2">
     <div>
       <%= turbo_stream_from "coin_slot_cards" %>
-      <div class="my-1" id="coin_slots">
+      <div class="" id="coin_slots">
         <% @coin_slots.each do |coin_slot| %>
           <%= render partial: "winform/coin_slots/coin_slot", locals: { coin_slot: coin_slot } %>
         <% end %>
