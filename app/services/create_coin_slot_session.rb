@@ -39,7 +39,8 @@ class CreateCoinSlotSession
     def queue_esp_enable_command!
       @coin_slot.esp_command_logs.create!(
         command: :enable,
-        status: :pending
+        status: :pending,
+        sent_at: Time.current
       )
     end
 end

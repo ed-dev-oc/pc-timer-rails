@@ -31,7 +31,8 @@ class CoinSlotSession < ApplicationRecord
       inactive!
       coin_slot.esp_command_logs.create!(
         command: :disable,
-        status: :pending
+        status: :pending,
+        sent_at: Time.current
       )
     end
   end

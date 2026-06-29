@@ -41,7 +41,8 @@ class Pc < ApplicationRecord
 
       pc_command_logs.create!(
         command: :unlock,
-        status: :pending
+        status: :pending,
+        sent_at: Time.current
       )
     end
   end
@@ -52,7 +53,8 @@ class Pc < ApplicationRecord
 
       pc_command_logs.create!(
         command: :lock,
-        status: :pending
+        status: :pending,
+        sent_at: Time.current
       )
     end
   end

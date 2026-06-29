@@ -56,7 +56,8 @@ class UpdatePcSession
     def queue_send_pc_command!
       @pc.pc_command_logs.create!(
         command: :unlock,
-        status: :pending
+        status: :pending,
+        sent_at: Time.current
       )
     end
 end
