@@ -1,107 +1,281 @@
-<!-- Statistics -->
+<!-- Statistics Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-muted mb-1">Online PCs</h6>
+            <h2 class="mb-0"><%= @stats[:online_pcs] %></h2>
+            <small class="text-success"><i class="bi bi-arrow-up"></i> <%= @pc_status_counts[:active_session] %> in use</small>
+          </div>
+          <i class="bi bi-pc-display-horizontal fs-1 text-success opacity-50"></i>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <div class="col-md-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-muted mb-1">Active Sessions</h6>
+            <h2 class="mb-0"><%= @stats[:active_sessions] %></h2>
+            <small class="text-primary">Running now</small>
+          </div>
+          <i class="bi bi-play-circle fs-1 text-primary opacity-50"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-muted mb-1">Offline PCs</h6>
+            <h2 class="mb-0"><%= @stats[:offline_pcs] %></h2>
+            <small class="text-danger"><i class="bi bi-exclamation-triangle"></i> Need attention</small>
+          </div>
+          <i class="bi bi-wifi-off fs-1 text-danger opacity-50"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-muted mb-1">Revenue Today</h6>
+            <h2 class="mb-0">₱<%= number_with_delimiter(@stats[:revenue_today]) %></h2>
+            <small class="text-warning">Total: ₱<%= number_with_delimiter(@stats[:total_revenue]) %></small>
+          </div>
+          <i class="bi bi-cash-stack fs-1 text-warning opacity-50"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Secondary Stats -->
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-muted mb-1">Total PCs</h6>
+            <h3 class="mb-0"><%= @stats[:total_pcs] %></h3>
+          </div>
+          <i class="bi bi-collection fs-1 text-info opacity-50"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-muted mb-1">Total Sessions</h6>
+            <h3 class="mb-0"><%= @stats[:total_sessions] %></h3>
+          </div>
+          <i class="bi bi-clock-history fs-1 text-secondary opacity-50"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-muted mb-1">Coin Slots</h6>
+            <h3 class="mb-0"><%= @stats[:total_coin_slots] %></h3>
+          </div>
+          <i class="bi bi-usb-symbol fs-1 text-dark opacity-50"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="text-muted mb-1">Avg Daily Revenue</h6>
+            <h3 class="mb-0">₱<%= number_with_delimiter(@stats[:total_revenue] / [1, (Date.today - Date.today.at_beginning_of_year).to_i].max) %></h3>
+          </div>
+          <i class="bi bi-graph-up-arrow fs-1 text-success opacity-50"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts Section -->
+<div data-controller="chart">
+  <!-- Charts Row 1 -->
+  <div class="row g-3 mb-4">
+    <!-- Revenue Chart -->
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h5 class="mb-0"><i class="bi bi-currency-peso"></i> Revenue (Last 7 Days)</h5>
+        </div>
+        <div class="card-body" style="height: 300px;">
+          <canvas
+          data-chart-target="revenue"
+          data-labels="<%= @revenue_last_7_days[:labels].to_json %>"
+          data-data="<%= @revenue_last_7_days[:data].to_json %>"
+        ></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- PC Status Chart -->
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h5 class="mb-0"><i class="bi bi-pie-chart"></i> PC Status</h5>
+        </div>
+        <div class="card-body" style="height: 300px;">
+          <canvas
+          data-chart-target="pcStatus"
+          data-labels='["Online", "In Use", "Offline", "Disabled", "Uninstalled"]'
+          data-data="[<%= @pc_status_counts[:online] %>, <%= @pc_status_counts[:active_session] %>, <%= @pc_status_counts[:offline] %>, <%= @pc_status_counts[:disabled] %>, <%= @pc_status_counts[:uninstalled] %>]"
+        ></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row 2 -->
+  <div class="row g-3 mb-4">
+    <!-- Sessions Chart -->
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Sessions (Last 7 Days)</h5>
+        </div>
+        <div class="card-body" style="height: 300px;">
+          <canvas
+          data-chart-target="sessions"
+          data-labels="<%= @sessions_last_7_days[:labels].to_json %>"
+          data-data="<%= @sessions_last_7_days[:data].to_json %>"
+        ></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hourly Sessions Chart -->
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h5 class="mb-0"><i class="bi bi-clock"></i> Sessions by Hour (Today)</h5>
+        </div>
+        <div class="card-body" style="height: 300px;">
+          <canvas
+          data-chart-target="hourly"
+          data-labels="<%= @hourly_sessions[:labels].to_json %>"
+          data-data="<%= @hourly_sessions[:data].to_json %>"
+        ></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tables Row -->
 <div class="row g-3">
-  <div class="col-md-3">
-
+  <!-- Recent Transactions -->
+  <div class="col-md-6">
     <div class="card shadow-sm">
-
-      <div class="card-body">
-
-        <div class="d-flex justify-content-between">
-
-          <div>
-
-            <h6 class="text-muted">Online PCs</h6>
-
-            <h2>28</h2>
-
-          </div>
-
-          <i class="bi bi-pc-display fs-1 text-success"></i>
-
-        </div>
-
+      <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-receipt"></i> Recent Transactions</h5>
+        <%= link_to "View All", "#", class: "btn btn-sm btn-outline-primary" %>
       </div>
-
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Time</th>
+                <th>PC</th>
+                <th>Amount</th>
+                <th>Minutes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @recent_transactions.each do |transaction| %>
+                <tr>
+                  <td><%= transaction.created_at.strftime("%H:%M") %></td>
+                  <td><%= transaction.pc.name %></td>
+                  <td class="text-success fw-bold">₱<%= transaction.peso_amount %></td>
+                  <td><%= transaction.minutes_granted %> min</td>
+                </tr>
+              <% end %>
+              <% if @recent_transactions.empty? %>
+                <tr>
+                  <td colspan="4" class="text-center text-muted py-4">No transactions yet</td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-
   </div>
 
-  <div class="col-md-3">
-
+  <!-- Active Sessions -->
+  <div class="col-md-6">
     <div class="card shadow-sm">
-
-      <div class="card-body">
-
-        <div class="d-flex justify-content-between">
-
-          <div>
-
-            <h6 class="text-muted">Active Sessions</h6>
-
-            <h2>19</h2>
-
-          </div>
-
-          <i class="bi bi-person-workspace fs-1 text-primary"></i>
-
-        </div>
-
+      <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-play-circle"></i> Active Sessions</h5>
+        <span class="badge bg-primary"><%= @active_sessions.count %> active</span>
       </div>
-
-    </div>
-
-  </div>
-
-  <div class="col-md-3">
-
-    <div class="card shadow-sm">
-
-      <div class="card-body">
-
-        <div class="d-flex justify-content-between">
-
-          <div>
-
-            <h6 class="text-muted">Offline PCs</h6>
-
-            <h2>3</h2>
-
-          </div>
-
-          <i class="bi bi-wifi-off fs-1 text-danger"></i>
-
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>PC</th>
+                <th>Started</th>
+                <th>Expires</th>
+                <th>Time Left</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @active_sessions.each do |session| %>
+                <tr>
+                  <td><%= session.pc.name %></td>
+                  <td><%= session.started_at.strftime("%H:%M") %></td>
+                  <td><%= session.expires_at.strftime("%H:%M") %></td>
+                  <td
+                    data-controller="session-timer"
+                    data-session-timer-ended-at-value="<%= session.expires_at.iso8601 %>"
+                    data-session-timer-total-milliseconds-expiration-value="<%= session.total_remaining_seconds * 1000 %>"
+                  >
+                    <span class="badge bg-success" data-session-timer-target="remaining"></span>
+                  </td>
+                </tr>
+              <% end %>
+              <% if @active_sessions.empty? %>
+                <tr>
+                  <td colspan="4" class="text-center text-muted py-4">No active sessions</td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
         </div>
-
       </div>
-
     </div>
-
-  </div>
-
-  <div class="col-md-3">
-
-    <div class="card shadow-sm">
-
-      <div class="card-body">
-
-        <div class="d-flex justify-content-between">
-
-          <div>
-
-            <h6 class="text-muted">Revenue Today</h6>
-
-            <h2>₱8,430</h2>
-
-          </div>
-
-          <i class="bi bi-cash-stack fs-1 text-warning"></i>
-
-        </div>
-
-      </div>
-
-    </div>
-
   </div>
 </div>

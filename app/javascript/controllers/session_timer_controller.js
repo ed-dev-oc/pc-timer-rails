@@ -40,7 +40,7 @@ export default class extends Controller {
 
     if (this.hasRemainingTarget) {
       if (remaining <= 0) {
-        this.remainingTarget.innerText = "00:00:00";
+        this.remainingTarget.innerText = "Expired";
       } else {
         this.remainingTarget.innerText = this.formated_timer(remaining);
       }

@@ -1,4 +1,11 @@
-// Import and register all your controllers from the importmap via controllers/**/*_controller
-import { application } from "controllers/application"
-import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading"
-eagerLoadControllersFrom("controllers", application)
+import { application } from "./application";
+
+import HelloController from "./hello_controller";
+import ChartController from "./chart_controller";
+import CoinSlotSessionTimerController from "./coin_slot_session_timer_controller";
+import SessionTimerController from "./session_timer_controller";
+
+application.register("hello", HelloController);
+application.register("chart", ChartController);
+application.register("coin-slot-session-timer", CoinSlotSessionTimerController);
+application.register("session-timer", SessionTimerController);
