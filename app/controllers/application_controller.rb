@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
 
   # Changes to the importmap will invalidate the etag for HTML responses
-  stale_when_importmap_changes
+  # stale_when_importmap_changes
 
   def current_device
     @current_device
@@ -42,4 +42,18 @@ class ApplicationController < ActionController::Base
     @current_device = device
     device.update(last_seen_at: Time.current)
   end
+
+  protected
+
+    def after_sign_in_path_for(resource)
+      if current_user.admin?
+        admin_root_path
+      else
+        root_path
+      end
+    end
+
+    def after_sign_out_path_for(resource_or_scope)
+      new_user_session_path
+    end
 end
