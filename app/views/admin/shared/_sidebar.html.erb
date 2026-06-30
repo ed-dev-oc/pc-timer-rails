@@ -6,21 +6,21 @@
   <hr>
   <ul class="nav nav-pills flex-column mb-auto">
     <li class="nav-item">
-      <%= link_to admin_root_path, class: "nav-link active" do %>
+      <%= link_to admin_root_path, class: sidebar_link_class(admin_root_path, exact: true) do %>
         <i class="bi bi-house"></i>
         Dashboard
       <% end %>
     </li>
 
     <li>
-      <%= link_to admin_pcs_path, class: "nav-link text-white" do %>
+      <%= link_to admin_pcs_path, class: sidebar_link_class(admin_pcs_path) do %>
         <i class="bi bi-pc-display"></i>
-        PCS
+        PCs
       <% end %>
     </li>
 
     <li>
-      <%= link_to admin_coin_slots_path, class: "nav-link text-white" do %>
+      <%= link_to admin_coin_slots_path, class: sidebar_link_class(admin_coin_slots_path) do %>
         <i class="bi bi-cash-coin"></i>
         Coin Slots
       <% end %>
