@@ -23,7 +23,7 @@ class EspClient
   end
 
   def restart
-    post("/coin/restart")
+    post("/reboot")
   end
 
   private

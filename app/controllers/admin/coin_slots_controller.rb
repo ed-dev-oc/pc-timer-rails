@@ -69,6 +69,8 @@ class Admin::CoinSlotsController < Admin::BaseController
     )
 
     if esp_command_log.save
+      @coin_slot.offline!
+
       flash[:notice] = "Restarting coin slot!"
 
       redirect_back fallback_location: admin_coin_slot_path(@coin_slot.device_id), status: :moved_permanently
