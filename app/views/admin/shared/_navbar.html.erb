@@ -11,7 +11,7 @@
             <strong><%= current_user.email %></strong>
           </a>
           <ul class="dropdown-menu text-small shadow">
-            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><%= link_to "Settings", settings_path, class: "dropdown-item" %></li>
 
             <li><hr class="dropdown-divider"></li>
 
