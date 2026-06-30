@@ -56,35 +56,35 @@
             <div class="row g-3">
               <div class="col-12 col-md-6">
                 <div class="input-group" data-controller="password-visibility">
-                  <div class="form-floating flex-grow-1">
+                  <div class="form-floating flex-grow-1 <%= "is-invalid" if @user.errors[:password].any? %>">
                     <%= form.password_field :password, autocomplete: "new-password", class: "form-control #{"is-invalid" if @user.errors[:password].any?}", id: "floatingPassword", placeholder: "New Password", data: { "password-visibility-target": "input" } %>
                     <%= form.label :password, "New Password", for: "floatingPassword" %>
-                    <% if @user.errors[:password].any? %>
-                      <div class="invalid-feedback">
-                        <%= @user.errors[:password].join(", ") %>
-                      </div>
-                    <% end %>
                   </div>
                   <button type="button" class="btn btn-outline-secondary d-flex align-items-center" data-action="password-visibility#toggle" tabindex="-1">
                     <i class="bi bi-eye" data-password-visibility-target="toggleIcon"></i>
                   </button>
+                  <% if @user.errors[:password].any? %>
+                    <div class="invalid-feedback">
+                      <%= @user.errors[:password].join(", ") %>
+                    </div>
+                  <% end %>
                 </div>
               </div>
 
               <div class="col-12 col-md-6">
                 <div class="input-group" data-controller="password-visibility">
-                  <div class="form-floating flex-grow-1">
+                  <div class="form-floating flex-grow-1 <%= "is-invalid" if @user.errors[:password_confirmation].any? %>">
                     <%= form.password_field :password_confirmation, autocomplete: "new-password", class: "form-control #{"is-invalid" if @user.errors[:password_confirmation].any?}", id: "floatingPasswordConfirmation", placeholder: "Confirm Password", data: { "password-visibility-target": "input" } %>
                     <%= form.label :password_confirmation, "Confirm New Password", for: "floatingPasswordConfirmation" %>
-                    <% if @user.errors[:password_confirmation].any? %>
-                      <div class="invalid-feedback">
-                        <%= @user.errors[:password_confirmation].join(", ") %>
-                      </div>
-                    <% end %>
                   </div>
                   <button type="button" class="btn btn-outline-secondary d-flex align-items-center" data-action="password-visibility#toggle" tabindex="-1">
                     <i class="bi bi-eye" data-password-visibility-target="toggleIcon"></i>
                   </button>
+                  <% if @user.errors[:password_confirmation].any? %>
+                    <div class="invalid-feedback">
+                      <%= @user.errors[:password_confirmation].join(", ") %>
+                    </div>
+                  <% end %>
                 </div>
               </div>
             </div>
