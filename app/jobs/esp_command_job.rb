@@ -28,6 +28,7 @@ class EspCommandJob < ApplicationJob
     case log.command
     when "enable"  then client.enable(coin_slot.active_coin_slot_session)
     when "disable" then client.disable
+    when "restart" then client.restart
     end
 
     log.update!(

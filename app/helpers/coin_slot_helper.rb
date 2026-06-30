@@ -3,13 +3,15 @@ module CoinSlotHelper
   BADGE_CLASSES = {
     active: "text-bg-success",
     active_session: "text-bg-primary",
-    offline: "text-bg-danger"
+    offline: "text-bg-danger",
+    locked: "text-bg-dark"
   }.freeze
 
   ICON_CLASSES = {
     active: "bi bi-wifi",
     active_session: "bi bi-person-check",
-    offline: "bi bi-wifi-off"
+    offline: "bi bi-wifi-off",
+    locked: "bi bi-lock"
   }
 
   def coin_slot_status_badge(coin_slot)

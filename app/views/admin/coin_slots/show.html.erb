@@ -1,10 +1,330 @@
-<p style="color: green"><%= notice %></p>
+<div class="container-fluid py-4">
 
-<%= render @coin_slot %>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-0">
+        <i class="bi bi-usb-symbol"></i>
+        <%= @coin_slot.name %>
+      </h2>
 
-<div>
-  <%= link_to "Edit this coin slot", edit_admin_coin_slot_path(@coin_slot) %> |
-  <%= link_to "Back to coin slots", admin_coin_slots_path %>
+      <small class="text-muted">
+        Device ID:
+        <%= @coin_slot.device_id %>
+      </small>
+    </div>
 
-  <%= button_to "Destroy this coin slot", [:admin, @coin_slot], method: :delete %>
+    <div class="d-flex flex-column align-items-end">
+      <%= coin_slot_status_badge(@coin_slot) %>
+
+      <div class="btn-toolbar mt-2">
+        <div class="btn-group gap-2 me-2">
+          <%= link_to toggle_lock_admin_coin_slot_path(@coin_slot), 
+            class: "btn #{ @coin_slot.locked? ? "btn-primary" : "btn-danger" }", 
+            data: { turbo_method: :PATCH, turbo_confirm: "Are you sure?", turbo_submits_with: "Submitting..." } do %>
+
+            <% if @coin_slot.locked? %>
+              <i class="bi bi-unlock"></i>
+              Unlock
+            <% else %>
+              <i class="bi bi-lock"></i>
+              Lock
+            <% end %>
+          <% end %>
+
+          <%= link_to restart_admin_coin_slot_path(@coin_slot), class: "btn btn-warning", data: { turbo_method: :POST, turbo_confirm: "Are you sure to restart the coin slot?", turbo_submits_with: "Sending..." } do %>
+            <i class="bi bi-arrow-clockwise"></i>
+            Restart
+          <% end %>
+        </div>
+
+        <div class="dropdown">
+          <button
+            class="btn btn-outline-secondary dropdown-toggle"
+            data-bs-toggle="dropdown">
+            <i class="bi bi-three-dots"></i>
+          </button>
+
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <%= link_to "#", class: "dropdown-item", data: { bs_toggle: "modal", bs_target: "#editCoinSlotModal" } do %>
+                <i class="bi bi-pencil"></i>
+                Edit
+              <% end %>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <%= button_to [:admin, @coin_slot],
+                method: :delete,
+                form: {
+                  data: {
+                    turbo_confirm: "Delete this Coin Slot?",
+                    turbo_submits_with: "Deleting..."
+                  }
+                },
+                class: "dropdown-item text-danger" do %>
+
+                <i class="bi bi-trash"></i>
+                Delete
+
+              <% end %>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="text-muted">
+            Total Income
+          </div>
+
+          <h3 class="mt-2">
+            ₱<%= number_with_delimiter(@stats[:total_income]) %>
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="text-muted">
+            Today's Income
+          </div>
+
+          <h3 class="mt-2">
+            ₱<%= number_with_delimiter(@stats[:today_income]) %>
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="text-muted">
+            Minutes Granted
+          </div>
+
+          <h3 class="mt-2">
+            <%= @stats[:total_minutes] %>
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="text-muted">
+            Sessions
+          </div>
+
+          <h3 class="mt-2">
+            <%= @stats[:total_sessions] %>
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <i class="bi bi-info-circle"></i>
+          Coin Slot Information
+        </div>
+
+        <div class="card-body">
+          <table class="table table-sm">
+            <tr>
+              <th>Name</th>
+              <td><%= @coin_slot.name %></td>
+            </tr>
+
+            <tr>
+              <th>IP Address</th>
+              <td><%= @coin_slot.ip_address %></td>
+            </tr>
+
+            <tr>
+              <th>MAC Address</th>
+              <td><%= @coin_slot.mac_address %></td>
+            </tr>
+
+            <tr>
+              <th>Last Seen</th>
+              <td><%= @coin_slot.last_seen_at ? time_ago_in_words(@coin_slot.last_seen_at) + " ago" : "Never" %></td>
+            </tr>
+
+            <tr>
+              <th>Status</th>
+              <td><%= @coin_slot.status.humanize %></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card shadow-sm mt-4">
+        <div class="card-header">
+          <i class="bi bi-hourglass-split"></i>
+          Current Session
+        </div>
+
+        <div class="card-body">
+          <% if @active_session %>
+            <table class="table table-sm mb-0">
+              <tr>
+                <th>Session ID</th>
+                <td><code><%= @active_session.public_uid %></code></td>
+              </tr>
+              <tr>
+                <th>PC</th>
+                <td><%= @active_session.pc.name %></td>
+              </tr>
+              <tr>
+                <th>Started At</th>
+                <td><%= l @active_session.started_at %></td>
+              </tr>
+              <tr>
+                <th>Ends At</th>
+                <td><%= l @active_session.ended_at %></td>
+              </tr>
+              <tr>
+                <th>Duration</th>
+                <td><%= CoinSlotSession::EXPIRATION_MINUTE %> minutes</td>
+              </tr>
+            </table>
+          <% else %>
+            <div class="text-center py-4">
+              <i class="bi bi-moon fs-1 text-muted"></i>
+
+              <p class="text-muted mt-3">
+                No Active Session
+              </p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">
+          <i class="bi bi-cash-coin"></i>
+          Recent Coin Transactions
+        </div>
+
+        <div class="table-responsive overflow-auto" style="max-height: 40vh;">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Minutes</th>
+                <th>PC</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% @coin_transactions.each do |transaction| %>
+                <tr>
+                  <td><%= l transaction.created_at %></td>
+
+                  <td>₱<%= transaction.peso_amount %></td>
+
+                  <td><%= transaction.minutes_granted %></td>
+
+                  <td><%= transaction.pc.name %></td>
+
+                  <td>
+                    <span class="badge bg-success">
+                      <%= transaction.status.humanize %>
+                    </span>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">
+          <i class="bi bi-terminal"></i>
+          Recent Commands
+        </div>
+
+        <ul class="list-group list-group-flush overflow-auto" style="max-height: 40vh;">
+          <% @command_logs.each do |log| %>
+            <li class="list-group-item">
+              <div class="d-flex justify-content-between">
+                <strong>
+                  <%= log.command.humanize %>
+                </strong>
+                <small class="text-muted">
+                  <%= time_ago_in_words(log.created_at) %> ago
+                </small>
+              </div>
+
+              <div>
+                Status
+                <span class="badge bg-secondary">
+                  <%= log.status.humanize %>
+                </span>
+              </div>
+
+              <% if log.error_message.present? %>
+                <div class="alert alert-danger mt-2 mb-0">
+                  <%= log.error_message %>
+                </div>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <i class="bi bi-clock-history"></i>
+          Session History
+        </div>
+
+        <div class="table-responsive overflow-auto" style="max-height: 40vh;">
+          <table class="table table-striped mb-0">
+            <thead>
+              <tr>
+                <th>Started</th>
+                <th>Ended</th>
+                <th>PC</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @sessions.each do |session| %>
+                <tr>
+                  <td><%= l session.started_at %></td>
+                  <td><%= l session.ended_at %></td>
+                  <td><%= session.pc.name %></td>
+                  <td>
+                    <%= session.status.humanize %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<%= render partial: "admin/coin_slots/edit_modal", locals: { coin_slot: @coin_slot } %>

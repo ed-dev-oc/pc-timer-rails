@@ -16,26 +16,6 @@
       <%= form.text_field :name, class: "form-control", placeholder: "PC Name" %>
       <%= form.label :name %>
     </div>
-    <div class="form-floating mb-3">
-      <%= form.text_field :ip_address, class: "form-control", placeholder: "IP Address" %>
-      <%= form.label :ip_address %>
-    </div>
-    <div class="form-floating mb-3">
-      <%= form.text_field :mac_address, class: "form-control", placeholder: "Mac Address" %>
-      <%= form.label :mac_address %>
-    </div>
-    <div class="form-floating mb-3">
-      <%= form.text_field :device_id, class: "form-control", placeholder: "Device ID" %>
-      <%= form.label :device_id %>
-    </div>
-    <div class="form-floating mb-3">
-      <%= form.select :status, CoinSlot.statuses.keys.map { |s| [s.titleize, s] },
-              { selected: coin_slot.status || 'active' },
-              { class: 'form-select' } %>
-      <%= form.label :status, class: 'form-label' do %>
-        Status <span class="text-danger">*</span>
-      <% end %>
-    </div>
   </div>
 
   <div>

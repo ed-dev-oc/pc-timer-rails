@@ -22,6 +22,10 @@ class EspClient
     post("/coin/disable")
   end
 
+  def restart
+    post("/coin/restart")
+  end
+
   private
 
   def post(path, params = {})

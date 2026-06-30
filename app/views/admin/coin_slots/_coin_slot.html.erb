@@ -1,9 +1,77 @@
-<div id="<%= dom_id coin_slot %>" class="card">
-  <div class="card-body">
-    <h1><%= coin_slot.name %></h1>
-    <p><%= coin_slot.mac_address %></p>
-    <p><%= coin_slot.status.humanize %></p>
-    <p><%= coin_slot.created_at&.strftime("%B %d, %Y %I:%M:%S %p") %></p>
-    <p><%= coin_slot.updated_at&.strftime("%B %d, %Y %I:%M:%S %p") %></p>
+<div class="col-xl-3 col-lg-4 col-md-6">
+  <div id="<%= dom_id coin_slot %>" class="card h-100 border-0 shadow-sm">
+    <div class="card-header bg-white py-3">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+          <div class="bg-primary bg-opacity-10 rounded-circle p-2 text-center" style="min-height: 40px; min-width: 40px;">
+            <i class="bi bi-gear-wide-connected text-primary"></i>
+          </div>
+          <div>
+            <h6 class="mb-0"><%= coin_slot.name %></h6>
+            <small class="text-muted"><%= coin_slot.ip_address %></small>
+          </div>
+        </div>
+        <%= coin_slot_status_badge(coin_slot) %>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="d-flex flex-column justify-content-between h-100">
+        <%= turbo_frame_tag dom_id(coin_slot, :coin_slot_session), class: "h-100" do %>
+          <% if coin_slot.active_coin_slot_session.present? %>
+            <div class="h-100">
+              <div class="d-flex flex-column justify-content-center gap-2 mb-2 h-100"
+                data-controller="session-timer"
+                data-session-timer-ended-at-value="<%= coin_slot.active_coin_slot_session.ended_at.iso8601 %>"
+                data-session-timer-total-milliseconds-expiration-value="<%= CoinSlotSession::EXPIRATION_MINUTE * 60 * 1000 %>">
+
+                <div class="d-flex gap-2 justify-content-between align-items-center">
+                  <span class="small fw-semibold">
+                    <i class="bi bi-hourglass-split me-1"></i>Time Remaining
+                  </span>
+                  <span class="badge bg-primary" data-session-timer-target="remaining">
+                  </span>
+                </div>
+
+                <div class="progress" style="height: 25px;">
+                  <div data-session-timer-target="bar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%;">
+                    0%
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% else %>
+            <div class="text-center py-3 bg-light rounded-3 mb-3">
+              <i class="bi bi-hourglass-bottom text-muted"></i>
+              <p class="mb-0 small text-muted">No active session</p>
+            </div>
+          <% end %>
+        <% end %>
+
+        <div class="d-flex flex-nowrap gap-2 small text-muted">
+          <div class="">
+            <i class="bi bi-clock me-1"></i>
+            <span>Last seen</span>
+          </div>
+          <div class="flex-grow-1 text-end">
+            <%= time_ago_in_words(coin_slot.last_seen_at) %> ago
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer bg-white border-top">
+      <div class="btn-group w-100">
+        <%= link_to [:admin, coin_slot], class: "btn btn-outline-primary btn-sm" do %>
+          <i class="bi bi-eye"></i>
+          <span class="d-none d-sm-inline ms-1">View</span>
+        <% end %>
+
+        <%= link_to restart_admin_coin_slot_path(coin_slot), class: "btn btn-outline-warning btn-sm", data: { turbo_method: :POST, turbo_confirm: "Are you sure to restart the coin slot?", turbo_submits_with: "Sending..." } do %>
+          <i class="bi bi-arrow-clockwise"></i>
+          Restart
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>

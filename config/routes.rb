@@ -54,7 +54,13 @@ Rails.application.routes.draw do
   namespace :admin do
     root "dashboard#index"
 
-    resources :coin_slots
+    resources :coin_slots, except: [ :new, :create, :edit ] do
+      member do
+        post :restart
+        patch :toggle_lock
+      end
+    end
+
     resources :pcs, except: [ :new, :create, :edit ] do
       member do
         post :restart

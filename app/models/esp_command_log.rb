@@ -1,5 +1,5 @@
 class EspCommandLog < CommandLog
-  enum :command, [ :enable, :disable ], prefix: :command
+  enum :command, [ :enable, :disable, :restart ], prefix: :command
 
   belongs_to :coin_slot
 
