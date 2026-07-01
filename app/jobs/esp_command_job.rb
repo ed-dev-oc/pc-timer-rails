@@ -18,17 +18,22 @@ class EspCommandJob < ApplicationJob
     )
   end
 
-  def perform(command_log_id)
+  def perform(command_log_id, coin_slot_session_id = nil)
     Rails.logger.info "🔥 Attempt ##{executions}"
 
     log = EspCommandLog.find(command_log_id)
     coin_slot = log.coin_slot
-    client = EspClient.new(log.coin_slot)
+    coin_slot_session = coin_slot_session_id.present? ? CoinSlotSession.find_by(id: coin_slot_session_id) : nil
+    client = EspClient.new(coin_slot)
 
     case log.command
-    when "enable"  then client.enable(coin_slot.active_coin_slot_session)
-    when "disable" then client.disable
-    when "restart" then client.restart
+    when "enable"
+      client.enable(coin_slot.active_coin_slot_session)
+    when "disable"
+      coin_slot_session = CoinSlotSession.find(coin_slot_session_id)
+      client.disable(coin_slot_session)
+    when "restart"
+      client.restart
     end
 
     log.update!(

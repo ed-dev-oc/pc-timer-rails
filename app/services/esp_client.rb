@@ -14,12 +14,23 @@ class EspClient
   end
 
   def enable(coin_slot_session)
-    params = { session_uid: coin_slot_session.public_uid }.compact
+    pc = coin_slot_session.pc
+
+    params = {
+      ended_at: coin_slot_session.ended_at.to_i,
+      pc_name: pc.name,
+      session_uid: coin_slot_session.public_uid
+    }.compact
+
     post("/coin/enable", params)
   end
 
-  def disable
-    post("/coin/disable")
+  def disable(coin_slot_session)
+    params = {
+      session_uid: coin_slot_session.public_uid
+    }.compact
+
+    post("/coin/disable", params)
   end
 
   def restart
