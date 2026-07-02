@@ -11,6 +11,8 @@ class CreatePcSession
   end
 
   def call
+    return Result.failure("No inserted coin found!") if @coin_transactions.blank?
+
     ActiveRecord::Base.transaction do
       create_pc_session!
       deactivate_coin_slot_session!
