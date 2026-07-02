@@ -27,17 +27,15 @@
 
   <body>
     <main id="main" class="container flex-fill">
-      <div class="z-3 position-relative">
-        <div class="position-absolute top-0 start-50 translate-middle-x w-100">
-          <%= turbo_frame_tag :flash_messages do %>
-            <%= render partial: "shared/flash" %>
-          <% end %>
-        </div>
-      </div>
-
       <div class="my-3">
         <%= yield %>
       </div>
     </main>
+
+    <div class="toast-container p-3 position-absolute bottom-0 end-0">
+      <%= turbo_frame_tag :flash_messages do %>
+        <%= render partial: "shared/flash" %>
+      <% end %>
+    </div>
   </body>
 </html>
