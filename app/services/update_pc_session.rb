@@ -30,12 +30,15 @@ class UpdatePcSession
 
     def update_pc_session!
       total_minutes = @coin_transactions.sum(:minutes_granted)
+      total_amount = @coin_transactions.sum(:peso_amount)
       expiration_datetime = @pc_session.expires_at + total_minutes.minutes
       total_minutes_purchased = @pc_session.total_minutes_purchased + total_minutes
+      accumulated_total_amount = @pc_session.total_amount + total_amount
 
       @pc_session.update!(
         expires_at: expiration_datetime,
-        total_minutes_purchased: total_minutes_purchased
+        total_minutes_purchased: total_minutes_purchased,
+        total_amount: accumulated_total_amount
       )
     end
 

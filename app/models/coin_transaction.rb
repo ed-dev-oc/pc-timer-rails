@@ -11,7 +11,6 @@ class CoinTransaction < ApplicationRecord
   validates :transaction_uid, uniqueness: true
   validates :peso_amount, numericality: { only_integer: true }
   validates :minutes_granted, numericality: { only_integer: true, greater_than: 0 }
-  validate :peso_amount_meets_minimum_credit
 
   before_validation :set_minutes_granted
 
@@ -39,12 +38,5 @@ class CoinTransaction < ApplicationRecord
       return if peso_amount.blank? || peso_amount.zero?
 
       self.minutes_granted = Setting.integer('minutes_per_credit') * peso_amount
-    end
-
-    def peso_amount_meets_minimum_credit
-      return if peso_amount.blank?
-
-      minimum_credit = Setting.integer('minimum_credit')
-      errors.add(:peso_amount, "must be greater than or equal to #{minimum_credit}") if peso_amount < minimum_credit
     end
 end

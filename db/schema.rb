@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_01_160658) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_02_000000) do
   create_table "coin_slot_sessions", force: :cascade do |t|
     t.integer "coin_slot_id", null: false
     t.datetime "created_at", null: false
@@ -72,6 +72,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_160658) do
     t.string "public_uid"
     t.datetime "started_at"
     t.integer "status", default: 0
+    t.integer "total_amount", default: 0, null: false
     t.integer "total_minutes_purchased"
     t.integer "total_minutes_used"
     t.datetime "updated_at", null: false

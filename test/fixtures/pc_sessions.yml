@@ -2,16 +2,20 @@
 
 one:
   pc: one
+  public_uid: pc-session-one
   status: 1
   total_minutes_purchased: 1
   total_minutes_used: 1
+  total_amount: 0
   started_at: 2026-05-20 23:46:57
   expires_at: 2026-05-20 23:46:57
 
 two:
   pc: two
+  public_uid: pc-session-two
   status: 1
   total_minutes_purchased: 1
   total_minutes_used: 1
+  total_amount: 0
   started_at: 2026-05-20 23:46:57
   expires_at: 2026-05-20 23:46:57

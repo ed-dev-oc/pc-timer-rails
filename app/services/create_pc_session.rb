@@ -30,10 +30,12 @@ class CreatePcSession
 
     def create_pc_session!
       total_minutes = @coin_transactions.sum(:minutes_granted)
+      total_amount = @coin_transactions.sum(:peso_amount)
 
       @pc_session = PcSession.create!(
         pc: @pc,
         total_minutes_purchased: total_minutes,
+        total_amount: total_amount,
         started_at: Time.current,
         expires_at: Time.current + total_minutes.minutes
       )
