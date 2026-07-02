@@ -25,11 +25,9 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body>
-    <main id="main" class="container flex-fill">
-      <div class="my-3">
-        <%= yield %>
-      </div>
+  <body class="vh-100">
+    <main id="main" class="container flex-fill py-3 h-100">
+      <%= yield %>
     </main>
 
     <div class="toast-container p-3 position-absolute bottom-0 end-0">
