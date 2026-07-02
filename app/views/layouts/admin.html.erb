@@ -32,20 +32,16 @@
       <main class="container p-0 vh-100 position-relative overflow-auto">
         <%= render partial: "admin/shared/navbar" %>
 
-        <div class="container">
-          <div class="z-3 position-relative">
-            <div class="position-absolute top-0 start-50 translate-middle-x w-100 py-3">
-              <%= turbo_frame_tag :flash_messages do %>
-                <%= render partial: "shared/flash" %>
-              <% end %>
-            </div>
-          </div>
-        </div>
-
         <div class="container py-3">
           <%= yield %>
         </div>
       </main>
+    </div>
+
+    <div class="toast-container p-3 position-absolute bottom-0 end-0">
+      <%= turbo_frame_tag :flash_messages do %>
+        <%= render partial: "shared/flash" %>
+      <% end %>
     </div>
   </body>
 </html>

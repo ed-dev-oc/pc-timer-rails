@@ -16,7 +16,7 @@ class Admin::SettingsController < Admin::BaseController
     redirect_to admin_settings_path, notice: "Settings were successfully updated.", status: :see_other
   rescue ActiveRecord::RecordInvalid => error
     load_settings
-    flash.now[:alert] = error.record.errors.full_messages.join(", ")
+    flash.now[:alert] = error.record.errors.full_messages
     render :show, status: :unprocessable_content
   end
 

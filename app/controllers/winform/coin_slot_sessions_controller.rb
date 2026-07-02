@@ -34,11 +34,11 @@ class Winform::CoinSlotSessionsController < ApplicationController
         format.html { redirect_back fallback_location: winform_pc_path(@pc.device_id), notice: "Insert coin now!" }
       end
     else
-      flash.now[:alert] = @coin_slot_session.errors.full_messages.join(", ")
+      flash.now[:alert] = @coin_slot_session.errors.full_messages
 
       respond_to do |format|
         format.turbo_stream
-        format.html { redirect_back fallback_location: winform_pc_path(@pc.device_id), alert: @coin_slot_session.errors.full_messages.join(", ") }
+        format.html { redirect_back fallback_location: winform_pc_path(@pc.device_id), alert: @coin_slot_session.errors.full_messages }
       end
     end
   end

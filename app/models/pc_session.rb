@@ -43,11 +43,12 @@ class PcSession < ApplicationRecord
     end
 
     def peso_amount_meets_minimum_credit
-      minimum_credit = Setting.integer('minimum_credit')
+      minimum_credit = Setting.integer("minimum_credit")
       inserted_amount = pc.coin_transactions.unused.sum(:peso_amount)
 
       if inserted_amount < minimum_credit
-        errors.add(:total_amount, "must be greater than or equal to #{minimum_credit}")
+        # errors.add(:total_amount, "must be greater than or equal to #{minimum_credit}")
+        errors.add(:base, "Please insert ₱#{minimum_credit} or more to play!")
       end
     end
 

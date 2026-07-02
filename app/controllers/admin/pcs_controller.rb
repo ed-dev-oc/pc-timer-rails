@@ -47,7 +47,7 @@ class Admin::PcsController < Admin::BaseController
         format.turbo_stream
         format.html { redirect_to [ :admin, @pc ], notice: "Pc was successfully updated.", status: :see_other }
       else
-        flash.now["alert"] = @pc.errors.full_messages.join(", ")
+        flash.now["alert"] = @pc.errors.full_messages
 
         format.turbo_stream
         format.html { render :edit, status: :unprocessable_content }
@@ -73,7 +73,7 @@ class Admin::PcsController < Admin::BaseController
 
       redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
     else
-      flash[:alert] = pc_command_log.errors.full_messages.join(", ")
+      flash[:alert] = pc_command_log.errors.full_messages
 
       redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
     end
@@ -87,7 +87,7 @@ class Admin::PcsController < Admin::BaseController
 
       redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
     else
-      flash[:alert] = pc_command_log.errors.full_messages.join(", ")
+      flash[:alert] = pc_command_log.errors.full_messages
 
       redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
     end
@@ -101,7 +101,7 @@ class Admin::PcsController < Admin::BaseController
 
       redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
     else
-      flash[:alert] = pc_command_log.errors.full_messages.join(", ")
+      flash[:alert] = pc_command_log.errors.full_messages
 
       redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
     end
@@ -113,7 +113,7 @@ class Admin::PcsController < Admin::BaseController
 
       redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
     else
-      flash[:alert] = pc_command_log.errors.full_messages.join(", ")
+      flash[:alert] = pc_command_log.errors.full_messages
 
       redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
     end

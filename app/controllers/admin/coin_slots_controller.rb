@@ -75,7 +75,7 @@ class Admin::CoinSlotsController < Admin::BaseController
 
       redirect_back fallback_location: admin_coin_slot_path(@coin_slot.device_id), status: :moved_permanently
     else
-      flash[:alert] = esp_command_log.errors.full_messages.join(", ")
+      flash[:alert] = esp_command_log.errors.full_messages
 
       redirect_back fallback_location: admin_coin_slot_path(@coin_slot.device_id), status: :unprocessable_entity
     end
@@ -89,7 +89,7 @@ class Admin::CoinSlotsController < Admin::BaseController
 
       redirect_back fallback_location: admin_coin_slot_path(@coin_slot.device_id), status: :moved_permanently
     else
-      flash[:alert] = @coin_slot.errors.full_messages.join(", ")
+      flash[:alert] = @coin_slot.errors.full_messages
 
       redirect_back fallback_location: admin_coin_slot_path(@coin_slot.device_id), status: :unprocessable_entity
     end
