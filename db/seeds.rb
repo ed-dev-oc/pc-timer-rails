@@ -14,23 +14,4 @@ User.find_or_create_by(email: "admin@admin.com") do |user|
   user.role = :admin
 end
 
-Setting.set('business_name', 'Internet Cafe', 'string', description: 'Business display name')
-Setting.set('app_name', 'iCafe', 'string', description: 'Application name')
-Setting.set('coin_slot_session_duration', 60, 'duration', description: 'Coin slot session duration in seconds')
-Setting.set('coin_slot_offline_threshold', 2, 'integer', description: 'Coin slot offline threshold in minutes')
-Setting.set('minutes_per_credit', 6, 'integer', description: 'Minutes granted per credit')
-Setting.set('minimum_credit', 1, 'integer', description: 'Minimum credit amount per transaction')
-Setting.set('pc_offline_threshold', 2, 'integer', description: 'PC offline threshold in minutes')
-Setting.set('esp_connection_open_timeout', 2, 'integer', description: 'ESP connection open timeout in seconds')
-Setting.set('esp_connection_timeout', 5, 'integer', description: 'ESP request timeout in seconds')
-Setting.set('esp_command_timeout_retry_wait', 3, 'integer', description: 'ESP command timeout retry wait in seconds')
-Setting.set('esp_command_timeout_max_attempts', 3, 'integer', description: 'ESP command timeout max attempts')
-Setting.set('esp_connection_failed_retry_wait', 5, 'integer', description: 'ESP command connection failure retry wait in seconds')
-Setting.set('esp_command_max_attempts', 3, 'integer', description: 'ESP command connection failure max attempts')
-Setting.set('pc_connection_open_timeout', 2, 'integer', description: 'PC agent connection open timeout in seconds')
-Setting.set('pc_connection_timeout', 5, 'integer', description: 'PC agent request timeout in seconds')
-Setting.set('pc_command_timeout_retry_wait', 3, 'integer', description: 'PC command timeout retry wait in seconds')
-Setting.set('pc_command_timeout_max_attempts', 3, 'integer', description: 'PC command timeout max attempts')
-Setting.set('pc_connection_failed_retry_wait', 5, 'integer', description: 'PC command connection failure retry wait in seconds')
-Setting.set('pc_command_max_attempts', 3, 'integer', description: 'PC command connection failure max attempts')
-Setting.set('heartbeat_interval', 2, 'integer', description: 'Heartbeat interval in minutes')
+Setting.ensure_defaults!

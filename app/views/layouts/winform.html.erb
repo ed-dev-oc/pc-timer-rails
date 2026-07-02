@@ -32,9 +32,9 @@
           <div class="d-flex align-items-center flex-grow-1">
             <%= image_tag("logo.webp", height: "60", class: "navbar-brand") %>
             <span>
-              <span class="fw-bold fs-2">ABP</span>
+              <span class="fw-bold fs-2"><%= Setting.string('business_name') %></span>
               <span>-</span>
-              <small class="text-muted fs-6"><%= Setting.string('business_name') %></small>
+              <small class="text-muted fs-6"><%= Setting.string('app_name') %></small>
             </span>
           </div>
           <div class="">
