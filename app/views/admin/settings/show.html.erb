@@ -44,7 +44,7 @@
             <% @basic_settings.each do |setting| %>
               <tr>
                 <th scope="row">
-                  <code><%= setting.key %></code>
+                  <code><%= setting.key.titleize %></code>
                 </th>
                 <td>
                   <%= text_field_tag "settings[#{setting.id}][value]",
@@ -89,7 +89,7 @@
                 <% @advanced_settings.each do |setting| %>
                   <tr>
                     <th scope="row">
-                      <code><%= setting.key %></code>
+                      <code><%= setting.key.titleize %></code>
                     </th>
                     <td>
                       <%= text_field_tag "settings[#{setting.id}][value]",
