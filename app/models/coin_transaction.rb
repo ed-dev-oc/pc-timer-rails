@@ -1,7 +1,7 @@
 class CoinTransaction < ApplicationRecord
   include ActionView::RecordIdentifier
 
-  PISO_MINUTES_RATE = 6
+
   enum :status, [ :unused, :used ]
 
   belongs_to :coin_slot
@@ -9,7 +9,9 @@ class CoinTransaction < ApplicationRecord
 
   validates :transaction_uid, :peso_amount, :minutes_granted, presence: true
   validates :transaction_uid, uniqueness: true
-  validates :peso_amount, :minutes_granted, numericality: { only_integer: true, greater_than: 0 }
+  validates :peso_amount, numericality: { only_integer: true }
+  validates :minutes_granted, numericality: { only_integer: true, greater_than: 0 }
+  validate :peso_amount_meets_minimum_credit
 
   before_validation :set_minutes_granted
 
@@ -34,8 +36,15 @@ class CoinTransaction < ApplicationRecord
   private
 
     def set_minutes_granted
-      unless self.peso_amount.zero?
-        self.minutes_granted = PISO_MINUTES_RATE * peso_amount
-      end
+      return if peso_amount.blank? || peso_amount.zero?
+
+      self.minutes_granted = Setting.integer('minutes_per_credit') * peso_amount
+    end
+
+    def peso_amount_meets_minimum_credit
+      return if peso_amount.blank?
+
+      minimum_credit = Setting.integer('minimum_credit')
+      errors.add(:peso_amount, "must be greater than or equal to #{minimum_credit}") if peso_amount < minimum_credit
     end
 end

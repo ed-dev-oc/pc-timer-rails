@@ -5,8 +5,8 @@ class PcAgentClient
     @connection = Faraday.new(
       url: "http://#{pc.ip_address}:5000"
     ) do |f|
-      f.options.open_timeout = 2
-      f.options.timeout = 5
+      f.options.open_timeout = Setting.integer('pc_connection_open_timeout')
+      f.options.timeout = Setting.integer('pc_connection_timeout')
     end
   end
 

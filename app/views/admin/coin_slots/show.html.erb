@@ -199,7 +199,7 @@
               </tr>
               <tr>
                 <th>Duration</th>
-                <td><%= CoinSlotSession::EXPIRATION_MINUTE %> minutes</td>
+                <td><%= Setting.duration('coin_slot_session_duration') / 60 %> minutes</td>
               </tr>
             </table>
           <% else %>

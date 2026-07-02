@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  key: business_name
+  value: Internet Cafe
+  value_type: string
+  description: Business display name
+
+two:
+  key: minutes_per_credit
+  value: 6
+  value_type: integer
+  description: Minutes granted per credit

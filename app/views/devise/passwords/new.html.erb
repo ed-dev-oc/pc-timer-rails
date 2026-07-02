@@ -2,7 +2,7 @@
   <div class="col-12 col-md-6 col-lg-4">
     <div class="card shadow">
       <div class="card-body p-4">
-        <h2 class="card-title text-center mb-4">Internet Cafe</h2>
+        <h2 class="card-title text-center mb-4"><%= Setting.string('business_name') %></h2>
         <h3 class="h5 text-center mb-4">Forgot your password?</h3>
 
         <%= render "devise/shared/error_messages", resource: resource %>

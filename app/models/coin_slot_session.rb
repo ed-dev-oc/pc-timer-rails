@@ -3,7 +3,7 @@ class CoinSlotSession < ApplicationRecord
   include ActionView::RecordIdentifier
   include PublicUid::ModelConcern
 
-  EXPIRATION_MINUTE = 1
+
   enum :status, [ :active, :inactive ]
 
   belongs_to :coin_slot
@@ -42,7 +42,7 @@ class CoinSlotSession < ApplicationRecord
 
     def set_started_and_ended_at
       self.started_at = Time.current
-      self.ended_at = Time.current + EXPIRATION_MINUTE.minute
+      self.ended_at = Time.current + Setting.duration('coin_slot_session_duration').seconds
     end
 
     def coin_slot_has_only_one_session!
