@@ -246,9 +246,7 @@
                   <td><%= transaction.pc.name %></td>
 
                   <td>
-                    <span class="badge bg-success">
-                      <%= transaction.status.humanize %>
-                    </span>
+                    <%= coin_transaction_status_badge(transaction) %>
                   </td>
                 </tr>
               <% end %>
@@ -277,9 +275,7 @@
 
               <div>
                 Status
-                <span class="badge bg-secondary">
-                  <%= log.status.humanize %>
-                </span>
+                <%= command_log_status_badge(log) %>
               </div>
 
               <% if log.error_message.present? %>
@@ -315,7 +311,7 @@
                   <td><%= l session.ended_at %></td>
                   <td><%= session.pc.name %></td>
                   <td>
-                    <%= session.status.humanize %>
+                    <%= coin_slot_session_status_badge(session) %>
                   </td>
                 </tr>
               <% end %>

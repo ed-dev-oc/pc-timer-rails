@@ -251,9 +251,7 @@
                   <td><%= transaction.minutes_granted %></td>
 
                   <td>
-                    <span class="badge bg-success">
-                      <%= transaction.status.humanize %>
-                    </span>
+                    <%= coin_transaction_status_badge(transaction) %>
                   </td>
                 </tr>
               <% end %>
@@ -282,9 +280,7 @@
 
               <div>
                 Status
-                <span class="badge bg-secondary">
-                  <%= log.status.humanize %>
-                </span>
+                <%= command_log_status_badge(log) %>
               </div>
 
               <% if log.error_message.present? %>
@@ -309,6 +305,7 @@
               <tr>
                 <th>Started</th>
                 <th>Ended</th>
+                <th>Amount</th>
                 <th>Minutes</th>
                 <th>Status</th>
               </tr>
@@ -318,9 +315,10 @@
                 <tr>
                   <td><%= l session.started_at %></td>
                   <td><%= l session.expires_at %></td>
+                  <td>₱<%= session.total_amount %></td>
                   <td><%= session.total_minutes_used %></td>
                   <td>
-                    <%= session.status.humanize %>
+                    <%= pc_session_status_badge(session) %>
                   </td>
                 </tr>
               <% end %>
