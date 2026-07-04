@@ -14,7 +14,7 @@ class CoinTransaction < ApplicationRecord
 
   before_validation :set_minutes_granted
 
-  after_commit do
+  after_commit on: [ :create, :update ] do
     pc = self.pc.reload
 
     broadcast_replace_to(

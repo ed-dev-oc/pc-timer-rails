@@ -5,10 +5,10 @@ class CoinSlot < ApplicationRecord
   enum :status, [ :active, :active_session, :offline, :locked ]
   AUTHORIZED_STATUSES = [ :active, :active_session, :offline ]
 
-  has_many :coin_slot_sessions
+  has_many :coin_slot_sessions, dependent: :destroy
   has_one :active_coin_slot_session, -> { where(status: :active) }, class_name: "CoinSlotSession"
-  has_many :coin_transactions
-  has_many :esp_command_logs, class_name: "EspCommandLog"
+  has_many :coin_transactions, dependent: :destroy
+  has_many :esp_command_logs, class_name: "EspCommandLog", dependent: :destroy
 
   validates :name, :mac_address, :ip_address, presence: true
   validates :name, :mac_address, :ip_address, uniqueness: true

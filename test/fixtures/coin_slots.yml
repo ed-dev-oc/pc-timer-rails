@@ -1,11 +1,19 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  mac_address: MyString
-  name: MyString
-  status: 1
+  name: Coin Slot One
+  mac_address: "00:11:22:33:44:55"
+  ip_address: "192.168.1.100"
+  device_id: coin-slot-one
+  status: 0
+  secret: "sk_1234567890abcdef1234567890abcdef"
+  last_seen_at: 2026-05-19 01:43:32
 
 two:
-  mac_address: MyString
-  name: MyString
-  status: 1
+  name: Coin Slot Two
+  mac_address: "00:11:22:33:44:66"
+  ip_address: "192.168.1.101"
+  device_id: coin-slot-two
+  status: 0
+  secret: "sk_abcdef1234567890abcdef1234567890"
+  last_seen_at: 2026-05-19 01:43:32

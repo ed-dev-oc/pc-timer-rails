@@ -33,6 +33,6 @@ class PcSessionTest < ActiveSupport::TestCase
     )
 
     assert_not pc_session.valid?
-    assert_includes pc_session.errors[:total_amount], "must be greater than or equal to 5"
+    assert_includes pc_session.errors[:base], "Please insert ₱5 or more to play!"
   end
 end

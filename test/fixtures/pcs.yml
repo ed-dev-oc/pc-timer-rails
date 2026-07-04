@@ -3,15 +3,17 @@
 one:
   name: PC One
   device_id: pc-one
-  ip_address: MyString
-  mac_address: MyString
+  ip_address: "192.168.1.10"
+  mac_address: "11:22:33:44:55:66"
   status: 1
+  secret: "sk_pc11111112222222333333334444444455555555"
   last_seen_at: 2026-05-19 01:43:32
 
 two:
   name: PC Two
   device_id: pc-two
-  ip_address: MyString
-  mac_address: MyString
+  ip_address: "192.168.1.11"
+  mac_address: "22:33:44:55:66:77"
   status: 1
+  secret: "sk_pc22222223333333444444445555555566666666"
   last_seen_at: 2026-05-19 01:43:32

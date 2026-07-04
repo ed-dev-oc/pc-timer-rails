@@ -14,7 +14,7 @@ class PcSession < ApplicationRecord
   validate :has_one_pc_session_active!, on: :create
   validate :peso_amount_meets_minimum_credit, if: :coin_funded_session?
 
-  after_commit :broadcast_updated_pc_session, :boradcast_updated_pc_button
+  after_commit :broadcast_updated_pc_session, :boradcast_updated_pc_button, on: [ :create, :update ]
 
   def to_param
     public_uid

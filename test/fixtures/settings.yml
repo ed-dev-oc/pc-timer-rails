@@ -6,8 +6,4 @@ one:
   value_type: string
   description: Business display name
 
-two:
-  key: minutes_per_credit
-  value: 6
-  value_type: integer
-  description: Minutes granted per credit
+

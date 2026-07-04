@@ -111,7 +111,11 @@ class Setting < ApplicationRecord
   end
 
   # Helper getters
-  def self.string(key, default = nil)   get(key, default) end
+  def self.string(key, default = nil)
+  setting = find_by(key: key)
+  return default if setting.nil?
+  setting.value
+end
   def self.integer(key, default = nil)  cast(get(key, default), 'integer') end
   def self.float(key, default = nil)    cast(get(key, default), 'float') end
   def self.boolean(key, default = nil)  cast(get(key, default), 'boolean') end
