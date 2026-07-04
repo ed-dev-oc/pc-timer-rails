@@ -14,7 +14,7 @@ class PcSession < ApplicationRecord
   validate :has_one_pc_session_active!, on: :create
   validate :peso_amount_meets_minimum_credit, if: :coin_funded_session?
 
-  after_commit :broadcast_updated_pc_session, :boradcast_updated_pc_button, on: [ :create, :update ]
+  after_commit :broadcast_updated_pc_session, :boradcast_updated_pc_button, :mark_coin_transactions_used, on: [ :create, :update ]
 
   def to_param
     public_uid
@@ -71,5 +71,10 @@ class PcSession < ApplicationRecord
         partial: "winform/pcs/button",
         locals: { pc: pc }
       )
+    end
+
+    # Mark unused CoinTransaction records for this PC as used after session creation/update
+    def mark_coin_transactions_used
+      pc.coin_transactions.unused.update_all(status: :used)
     end
 end

@@ -1,8 +1,8 @@
 class PcCommandJob < ApplicationJob
   queue_as :default
 
-  retry_on Faraday::TimeoutError, wait: Setting.integer('pc_command_timeout_retry_wait').seconds, attempts: Setting.integer('pc_command_timeout_max_attempts')
-  retry_on Faraday::ConnectionFailed, wait: Setting.integer('pc_connection_failed_retry_wait').seconds, attempts: Setting.integer('pc_command_max_attempts')
+  retry_on Faraday::TimeoutError, wait: Setting.integer("pc_command_timeout_retry_wait").seconds, attempts: Setting.integer("pc_command_timeout_max_attempts")
+  retry_on Faraday::ConnectionFailed, wait: Setting.integer("pc_connection_failed_retry_wait").seconds, attempts: Setting.integer("pc_command_max_attempts")
 
   # ✅ FINAL FAILURE HOOK
   after_discard do |job, error|

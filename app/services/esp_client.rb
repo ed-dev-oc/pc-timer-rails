@@ -6,8 +6,8 @@ class EspClient
       url: "http://#{@coin_slot.ip_address}"
     ) do |f|
       f.request :url_encoded
-      f.options.open_timeout = Setting.integer('esp_connection_open_timeout')
-      f.options.timeout = Setting.integer('esp_connection_timeout')
+      f.options.open_timeout = Setting.integer("esp_connection_open_timeout")
+      f.options.timeout = Setting.integer("esp_connection_timeout")
       f.response :logger
       f.adapter Faraday.default_adapter
     end

@@ -35,9 +35,9 @@ class CoinSlot < ApplicationRecord
     self.coin_slot_sessions.active.present?
   end
 
-  def authenticated?(token)
-    Digest::SHA256.hexdigest(token) == device_token_digest
-  end
+
+
+
 
   def authorized_status?
     AUTHORIZED_STATUSES.include?(status.to_sym)

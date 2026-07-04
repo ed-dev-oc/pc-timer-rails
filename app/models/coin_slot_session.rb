@@ -42,7 +42,7 @@ class CoinSlotSession < ApplicationRecord
 
     def set_started_and_ended_at
       self.started_at = Time.current
-      self.ended_at = Time.current + Setting.duration('coin_slot_session_duration').seconds
+      self.ended_at = Time.current + Setting.duration("coin_slot_session_duration").seconds
     end
 
     def coin_slot_has_only_one_session!

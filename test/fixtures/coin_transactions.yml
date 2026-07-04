@@ -4,6 +4,7 @@ one:
   transaction_uid: MyString
   coin_slot: one
   pc: one
+  status: unused
   peso_amount: 1
   minutes_granted: 1
 
@@ -11,5 +12,6 @@ two:
   transaction_uid: MyString
   coin_slot: two
   pc: two
+  status: unused
   peso_amount: 1
   minutes_granted: 1
