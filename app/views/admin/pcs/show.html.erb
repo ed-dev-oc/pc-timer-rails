@@ -24,7 +24,7 @@
               Lock
             <% end %>
           <% else %>
-            <%= link_to "#", class: "btn btn-success", data: { bs_toggle: "modal", bs_target: "##{dom_id(@pc, "unlock_pc_modal")}" } do %>
+            <%= button_tag type: "button", class: "btn btn-success", data: { bs_toggle: "modal", bs_target: "##{dom_id(@pc, "unlock_pc_modal")}" } do %>
               <i class="bi bi-unlock"></i>
               Unlock
             <% end %>
@@ -52,7 +52,7 @@
 
           <ul class="dropdown-menu dropdown-menu-end">
             <li>
-              <%= link_to "#", class: "dropdown-item", data: { bs_toggle: "modal", bs_target: "##{ dom_id(@pc, "edit_modal") }" } do %>
+              <%= button_tag type: "button", class: "dropdown-item", data: { bs_toggle: "modal", bs_target: "##{ dom_id(@pc, "edit_modal") }" } do %>
                 <i class="bi bi-pencil"></i>
                 Edit
               <% end %>

@@ -14,7 +14,7 @@
   </div>
   <div class="card-body">
     <% if coin_slot.active_coin_slot_session.present? %>
-      <div data-controller="session-timer" 
+      <div data-controller="session-timer"
             data-session-timer-ended-at-value="<%= coin_slot.active_coin_slot_session.ended_at.iso8601 %>"
             data-session-timer-total-milliseconds-expiration-value="<%= Setting.duration('coin_slot_session_duration') * 1000 %>">
 

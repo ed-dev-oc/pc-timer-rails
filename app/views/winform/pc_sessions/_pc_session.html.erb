@@ -1,6 +1,6 @@
 <%= turbo_frame_tag dom_id(pc, :pc_session) do %>
   <% if pc_session.present? %>
-    <div data-controller="session-timer" 
+    <div data-controller="session-timer"
                 data-session-timer-ended-at-value="<%= pc_session.expires_at.iso8601 %>"
                 data-session-timer-total-milliseconds-expiration-value="<%= pc_session.total_minutes_purchased * 60 * 1000 %>">
 

@@ -8,7 +8,7 @@
   <div class="col-12 col-md-6 d-flex flex-column gap-2">
     <div>
       <%= turbo_stream_from "coin_slot_cards" %>
-      <div class="" id="coin_slots">
+      <div id="coin_slots">
         <% @coin_slots.each do |coin_slot| %>
           <%= render partial: "winform/coin_slots/coin_slot", locals: { coin_slot: coin_slot } %>
         <% end %>

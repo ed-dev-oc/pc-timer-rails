@@ -75,9 +75,8 @@
             <span class="d-none d-sm-inline ms-1">Lock</span>
           <% end %>
         <% else %>
-          <%= link_to "#",
-                      class: "btn btn-outline-success btn-sm",
-                      data: { bs_toggle: "modal", bs_target: "##{dom_id(pc, "unlock_pc_modal")}" } do %>
+          <%= button_tag type: "button", class: "btn btn-outline-success btn-sm", 
+            data: { bs_toggle: "modal", bs_target: "##{dom_id(pc, "unlock_pc_modal")}" } do %>
             <i class="bi bi-unlock"></i>
             <span class="d-none d-sm-inline ms-1">Unlock</span>
           <% end %>
