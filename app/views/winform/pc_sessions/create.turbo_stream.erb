@@ -1,5 +1,5 @@
-<%= turbo_stream.update :flash_messages do %>
-  <%= render partial: "shared/flash" %>
+<%= turbo_stream.replace :flash_messages do %>
+  <%= render Shared::Flash::ContainerComponent.new(flash: flash) %>
 <% end %>
 
 <%= turbo_stream.update dom_id(@pc) do %>

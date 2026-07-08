@@ -1,0 +1,25 @@
+<div
+  class="toast fade <%= css_class %> border-0 mb-3 shadow"
+  role="alert"
+  aria-live="assertive"
+  aria-atomic="true"
+  data-bs-autohide="true"
+  data-bs-delay="10000"
+  data-controller="toast-event"
+>
+  <div class="toast-header">
+    <span class="me-2"><%= icon %></span>
+    <strong class="me-auto"><%= @type.to_s.titleize %></strong>
+
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="toast"
+      aria-label="Close"
+    ></button>
+  </div>
+
+  <div class="toast-body">
+    <%= @message %>
+  </div>
+</div>

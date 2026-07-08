@@ -1,0 +1,9 @@
+<%= turbo_frame_tag :flash_messages, class: "toast-container p-3 position-absolute bottom-0 end-0" do %>
+  <% if @flash.present? %>
+    <% @flash.each do |key, messages| %>
+      <% Array(messages).each do |message| %>
+        <%= render Shared::Flash::MessageComponent.new(type: key, message: message) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

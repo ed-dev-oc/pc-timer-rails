@@ -74,3 +74,5 @@ gem "mission_control-jobs", "~> 1.1"
 gem "faraday", "~> 2.14"
 
 gem "public_uid", "~> 2.2"
+
+gem "view_component", "~> 4.12"
