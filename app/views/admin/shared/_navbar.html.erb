@@ -3,16 +3,16 @@
     <div class="d-flex align-items-center w-100">
       <div class="d-flex align-items-center flex-grow-1">
       </div>
-      <div class="">
+      <div>
 
         <div class="dropdown">
-          <a href="" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <%= button_tag type: "button", class: "d-flex align-items-center text-decoration-none dropdown-toggle", data: { bs_toggle: "dropdown" }, aria: { expanded: "false" } do %>
             <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white circle me-1"
                 style="height: 32px; width: 32px;">
               <i class="bi bi-person-fill fs-5"></i>
             </div>
             <strong><%= current_user.email %></strong>
-          </a>
+          <% end %>
           <ul class="dropdown-menu text-small shadow">
             <li><%= link_to "Settings", settings_path, class: "dropdown-item" %></li>
 

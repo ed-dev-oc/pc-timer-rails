@@ -30,14 +30,14 @@
       <div class="container border-2 border-bottom border-primary">
         <div class="d-flex align-items-center w-100">
           <div class="d-flex align-items-center flex-grow-1">
-            <%= image_tag("logo.webp", height: "60", class: "navbar-brand") %>
+            <%= image_tag("logo.webp", height: "60", class: "navbar-brand", alt: "Logo") %>
             <span>
               <span class="fw-bold fs-2"><%= Setting.string('business_name') %></span>
               <span>-</span>
               <small class="text-muted fs-6"><%= Setting.string('app_name') %></small>
             </span>
           </div>
-          <div class="">
+          <div>
             <%= link_to winform_pc_path(@pc), class: "btn btn-sm btn-primary" do %>
               <i class="bi bi-arrow-clockwise"></i>
               Reload
