@@ -14,6 +14,8 @@
     </div>
   </div>
 
+  <%= turbo_stream_from "badge_status" %>
+
   <% if @pcs.empty? %>
     <div class="card">
       <div class="card-body text-center py-5">

@@ -14,6 +14,8 @@
     </div>
 
     <div class="d-flex flex-column align-items-end">
+      <%= turbo_stream_from "badge_status" %>
+
       <%= render partial: "shared/status_badge", locals: { object: @pc } %>
 
       <div class="btn-toolbar mt-2">

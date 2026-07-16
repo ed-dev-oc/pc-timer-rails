@@ -62,6 +62,8 @@ class Api::PcsController < Api::BaseController
 
   def heartbeat
     if @pc.update(pc_update_params)
+      @pc.broadcast_badge_status
+
       pc_session = @pc.active_pc_session
 
       session_json = pc_session.present? ? {
