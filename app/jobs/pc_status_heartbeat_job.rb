@@ -2,7 +2,10 @@ class PcStatusHeartbeatJob < ApplicationJob
   queue_as :default
 
   def perform
-    Pc.where("last_seen_at < ?", Setting.integer("pc_offline_threshold").minutes.ago).where.not(status: [ :disabled_kiosk, :uninstalled ])
-      .update_all(status: "offline")
+    Pc.where("last_seen_at < ?", Setting.integer("pc_offline_threshold").minutes.ago).find_in_batches(batch_size: 100) do |batch|
+      batch.each do |pc|
+        pc.broadcast_badge_status
+      end
+    end
   end
 end

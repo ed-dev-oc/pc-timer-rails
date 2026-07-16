@@ -1,0 +1,6 @@
+<%= turbo_frame_tag dom_id(object, :badge_status) do %>
+  <span class="badge p-2 <%= variant %>">
+    <i class="bi <%= icon %> me-1"></i>
+    <%= status.titleize %>
+  </span>
+<% end %>

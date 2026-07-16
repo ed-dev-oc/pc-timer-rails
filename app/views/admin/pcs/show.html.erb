@@ -14,7 +14,7 @@
     </div>
 
     <div class="d-flex flex-column align-items-end">
-      <%= render partial: "winform/pcs/shared/badge_status", locals: { pc: @pc } %>
+      <%= render partial: "shared/status_badge", locals: { object: @pc } %>
 
       <div class="btn-toolbar mt-2">
         <div class="btn-group gap-2 me-2">
@@ -251,7 +251,7 @@
                   <td><%= transaction.minutes_granted %></td>
 
                   <td>
-                    <%= coin_transaction_status_badge(transaction) %>
+                    <%= render Ui::StatusBadgeComponent.new(object: transaction) %>
                   </td>
                 </tr>
               <% end %>
@@ -280,7 +280,7 @@
 
               <div>
                 Status
-                <%= command_log_status_badge(log) %>
+                <%= render Ui::StatusBadgeComponent.new(object: log) %>
               </div>
 
               <% if log.error_message.present? %>
@@ -318,7 +318,7 @@
                   <td>₱<%= session.total_amount %></td>
                   <td><%= session.total_minutes_used %></td>
                   <td>
-                    <%= pc_session_status_badge(session) %>
+                    <%= render Ui::StatusBadgeComponent.new(object: session) %>
                   </td>
                 </tr>
               <% end %>

@@ -16,6 +16,7 @@ class Session::CustomPcSession
     end
 
     @pc.reload
+    @pc.broadcast_badge_status
 
     Result.success(@pc_session)
   rescue ActiveRecord::RecordInvalid => e

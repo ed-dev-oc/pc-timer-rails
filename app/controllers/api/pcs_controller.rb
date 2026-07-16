@@ -36,6 +36,8 @@ class Api::PcsController < Api::BaseController
     end
 
     if @pc.update(status: pc_status)
+      @pc.broadcast_badge_status
+
       render json: {
         status: "success",
         message: "Online status set"
@@ -47,6 +49,8 @@ class Api::PcsController < Api::BaseController
 
   def signout
     if @pc.update(status: :offline, last_seen_at: Time.current)
+      @pc.broadcast_badge_status
+
       render json: {
         status: "success",
         message: "Offline status set"

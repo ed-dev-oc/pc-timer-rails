@@ -11,7 +11,7 @@
             <small class="text-muted"><%= pc.ip_address %></small>
           </div>
         </div>
-        <%= render partial: "winform/pcs/shared/badge_status", locals: { pc: pc } %>
+        <%= render partial: "shared/status_badge", locals: { object: pc } %>
       </div>
     </div>
 

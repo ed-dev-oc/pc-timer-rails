@@ -20,7 +20,6 @@ class Pc < ApplicationRecord
   validates :name, :device_id, presence: true, uniqueness: true
   validates :ip_address, :mac_address, presence: true
 
-  after_update_commit :broadcast_status_change, if: :saved_change_to_status?
   before_validation :issue_secret, on: :create
 
   def to_param
@@ -59,24 +58,22 @@ class Pc < ApplicationRecord
     end
   end
 
-
-
   def authorized_status?
     AUTHORIZED_STATUSES.include?(status.to_sym)
+  end
+
+  def broadcast_badge_status
+    broadcast_replace_to(
+      "badge_status",
+      target: dom_id(self, :badge_status),
+      partial: "shared/status_badge",
+      locals: { object: self }
+    )
   end
 
   private
 
     def issue_secret
       self.secret = "sk_#{SecureRandom.hex(32)}"
-    end
-
-    def broadcast_status_change
-      broadcast_replace_to(
-        "pc_card",
-        target: dom_id(self, :badge_status),
-        partial: "winform/pcs/shared/badge_status",
-        locals: { pc: self }
-      )
     end
 end

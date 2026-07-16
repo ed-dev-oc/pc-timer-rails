@@ -11,7 +11,7 @@
             <small class="text-muted"><%= coin_slot.ip_address %></small>
           </div>
         </div>
-        <%= coin_slot_status_badge(coin_slot) %>
+        <%= render Ui::StatusBadgeComponent.new(object: coin_slot) %>
       </div>
     </div>
 
