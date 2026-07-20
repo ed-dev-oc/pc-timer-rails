@@ -8,6 +8,7 @@ class UpdatePcSession
     @pc_session = pc_session
     @coin_transactions = pc.coin_transactions.unused
     @coin_slot_session = pc.active_coin_slot_session
+    @coin_slot = @coin_slot_session&.coin_slot
   end
 
   def call
@@ -17,9 +18,12 @@ class UpdatePcSession
       update_pc_session!
       mark_transaction_used!
       deactivate_coin_slot_session!
+      set_coin_slot_status_to_active!
       schedule_expiration
       queue_send_pc_command!
     end
+
+    @coin_slot.broadcast_badge_status if @coin_slot.present?
 
     Result.success(@pc_session)
   rescue ActiveRecord::RecordInvalid => e
@@ -46,6 +50,10 @@ class UpdatePcSession
       if @coin_slot_session.present? && @coin_slot_session.active?
         @coin_slot_session.mark_inactive_and_disable_esp!
       end
+    end
+
+    def set_coin_slot_status_to_active!
+      @coin_slot.active! if @coin_slot.present?
     end
 
     def mark_transaction_used!

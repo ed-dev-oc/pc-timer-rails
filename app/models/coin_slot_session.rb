@@ -3,7 +3,6 @@ class CoinSlotSession < ApplicationRecord
   include ActionView::RecordIdentifier
   include PublicUid::ModelConcern
 
-
   enum :status, [ :active, :inactive ]
 
   belongs_to :coin_slot
@@ -14,17 +13,6 @@ class CoinSlotSession < ApplicationRecord
   validate :coin_slot_has_only_one_session!, on: :create
 
   before_validation :set_started_and_ended_at
-  after_create :set_coin_slot_status_to_active_session
-  after_update :set_coin_slot_status_to_active
-
-  after_update_commit do
-    broadcast_replace_to(
-      "coin_slot_session_button",
-      target: dom_id(self.pc, :insert_coin_card),
-      partial: "winform/pcs/button",
-      locals: { pc: self.pc }
-    )
-  end
 
   def mark_inactive_and_disable_esp!
     transaction do
@@ -51,13 +39,5 @@ class CoinSlotSession < ApplicationRecord
       if coin_slot&.coin_slot_sessions.active.present?
         errors.add(:base, "Coin slot currently used!")
       end
-    end
-
-    def set_coin_slot_status_to_active_session
-      self.coin_slot&.active_session!
-    end
-
-    def set_coin_slot_status_to_active
-      coin_slot.active! if self.inactive?
     end
 end

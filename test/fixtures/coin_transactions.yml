@@ -1,7 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  transaction_uid: MyString
+  transaction_uid: uid_one
   coin_slot: one
   pc: one
   status: unused
@@ -9,7 +9,7 @@ one:
   minutes_granted: 1
 
 two:
-  transaction_uid: MyString
+  transaction_uid: uid_two
   coin_slot: two
   pc: two
   status: unused

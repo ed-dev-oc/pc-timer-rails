@@ -12,11 +12,14 @@ class CreateCoinSlotSession
   def call
     ActiveRecord::Base.transaction do
       create_coin_slot_session!
+      set_coin_slot_status_to_active_session!
       schedule_expiration
       queue_esp_enable_command!
     end
 
     @coin_slot.reload
+    @coin_slot.broadcast_badge_status
+    @coin_slot.broadcast_session
 
     Result.success(@coin_slot_session)
   rescue ActiveRecord::RecordInvalid => e
@@ -30,6 +33,10 @@ class CreateCoinSlotSession
         pc: @pc,
         coin_slot: @coin_slot
       )
+    end
+
+    def set_coin_slot_status_to_active_session!
+      @coin_slot.active_session! if @coin_slot.present?
     end
 
     def schedule_expiration

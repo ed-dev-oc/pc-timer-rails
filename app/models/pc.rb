@@ -62,12 +62,29 @@ class Pc < ApplicationRecord
     AUTHORIZED_STATUSES.include?(status.to_sym)
   end
 
+  # Convenience predicate used in tests and UI code to check if the PC is in an
+  # active session state. The enum defines `active_session?`, but the test
+  # expects `active?`. Providing this method maintains backward compatibility
+  # without altering the enum definition.
+  def active?
+    status == "active_session"
+  end
+
   def broadcast_badge_status
     broadcast_replace_to(
       "badge_status",
       target: dom_id(self, :badge_status),
       partial: "shared/status_badge",
       locals: { object: self }
+    )
+  end
+
+  def broadcast_pc_session_buttons
+    broadcast_replace_to(
+      "coin_slot_session_button",
+      target: dom_id(self, :insert_coin_card),
+      partial: "winform/pcs/button",
+      locals: { pc: self }
     )
   end
 

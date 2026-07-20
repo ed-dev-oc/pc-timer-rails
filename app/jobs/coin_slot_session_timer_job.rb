@@ -3,9 +3,19 @@ class CoinSlotSessionTimerJob < ApplicationJob
 
   def perform(coin_slot_session_id)
     coin_slot_session = CoinSlotSession.find_by(id: coin_slot_session_id)
+    coin_slot = coin_slot_session&.coin_slot
+    pc = coin_slot_session&.pc
 
     if coin_slot_session.present? && coin_slot_session.active?
       coin_slot_session.mark_inactive_and_disable_esp!
+
+      if coin_slot.present?
+        coin_slot.active!
+        coin_slot.broadcast_badge_status
+        coin_slot.broadcast_session
+      end
+
+      pc.broadcast_pc_session_buttons if pc.present?
     end
   end
 end

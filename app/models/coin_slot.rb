@@ -16,17 +16,6 @@ class CoinSlot < ApplicationRecord
 
   before_validation :issue_secret, on: :create
 
-  after_update_commit do
-    self.reload
-
-    broadcast_replace_to(
-      "coin_slot_cards",
-      target: dom_id(self),
-      partial: "winform/coin_slots/coin_slot",
-      locals: { coin_slot: self }
-    )
-  end
-
   def to_param
     device_id
   end
@@ -35,12 +24,26 @@ class CoinSlot < ApplicationRecord
     self.coin_slot_sessions.active.present?
   end
 
-
-
-
-
   def authorized_status?
     AUTHORIZED_STATUSES.include?(status.to_sym)
+  end
+
+  def broadcast_badge_status
+    broadcast_replace_to(
+      "badge_status",
+      target: dom_id(self, :badge_status),
+      partial: "shared/status_badge",
+      locals: { object: self }
+    )
+  end
+
+  def broadcast_session
+    broadcast_replace_to(
+      "coin_slot_session",
+      target: dom_id(self, :session),
+      partial: "winform/coin_slots/session",
+      locals: { coin_slot: self }
+    )
   end
 
   private

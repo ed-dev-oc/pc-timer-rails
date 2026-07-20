@@ -24,8 +24,11 @@ class Winform::CoinSlotSessionsController < ApplicationController
   end
 
   def cancel
-    if @coin_slot_session.mark_inactive_and_disable_esp!
-      @coin_slot = @coin_slot_session.coin_slot.reload
+    @coin_slot = @coin_slot_session.coin_slot
+
+    if @coin_slot_session.mark_inactive_and_disable_esp! && @coin_slot.active!
+      @coin_slot.broadcast_badge_status
+      @coin_slot.broadcast_session
 
       flash.now[:notice] = "Cancel success!"
 

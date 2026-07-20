@@ -26,6 +26,8 @@ class Api::CoinSlotsController < Api::BaseController
 
   def heartbeat
     if @coin_slot.update(coin_slot_update_params)
+      @coin_slot.broadcast_badge_status
+
       render json: {
         status: "success",
         message: "Heartbeat received",

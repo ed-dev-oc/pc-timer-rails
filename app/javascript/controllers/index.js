@@ -4,6 +4,8 @@
 
 import { application } from "./application"
 
+import './component_controllers'
+
 import ChartController from "./chart_controller"
 application.register("chart", ChartController)
 

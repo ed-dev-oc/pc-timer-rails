@@ -1,0 +1,10 @@
+<%= turbo_frame_tag dom_id(@object, :progress_bar) do %>
+	<div class="progress" style="height: 25px;"
+			data-controller="shared--session-timer--progress-bar" 
+			data-shared--session-timer--progress-bar-expires-at-value="<%= @expires_at %>"
+			data-shared--session-timer--progress-bar-session-duration-ms-value="<%= @session_duration_ms %>">
+		<div data-shared--session-timer--progress-bar-target="bar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%;">
+			0%
+		</div>
+	</div>
+<% end %>

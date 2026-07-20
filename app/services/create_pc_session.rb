@@ -7,6 +7,7 @@ class CreatePcSession
     @pc = pc
     @coin_transactions = pc.coin_transactions.unused
     @coin_slot_session = pc.active_coin_slot_session
+    @coin_slot = @coin_slot_session&.coin_slot
     @pc_session = nil
   end
 
@@ -16,6 +17,7 @@ class CreatePcSession
     ActiveRecord::Base.transaction do
       create_pc_session!
       deactivate_coin_slot_session!
+      set_coin_slot_status_to_active!
       schedule_expiration
       active_pc_session!
       mark_transactions_used!
@@ -23,6 +25,7 @@ class CreatePcSession
 
     @pc.reload
     @pc.broadcast_badge_status
+    @coin_slot.broadcast_badge_status if @coin_slot.present?
 
     Result.success(@pc_session)
   rescue ActiveRecord::RecordInvalid => e
@@ -52,6 +55,10 @@ class CreatePcSession
       if @coin_slot_session.present? && @coin_slot_session.active?
         @coin_slot_session.mark_inactive_and_disable_esp!
       end
+    end
+
+    def set_coin_slot_status_to_active!
+      @coin_slot.active! if @coin_slot.present?
     end
 
     def active_pc_session!

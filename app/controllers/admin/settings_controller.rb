@@ -33,6 +33,9 @@ class Admin::SettingsController < Admin::BaseController
     end
 
     def update_settings
-      params.fetch(:settings, ActionController::Parameters.new).permit!.to_h
+      # Permit only known setting keys to avoid mass assignment vulnerabilities.
+      # Combine default setting keys and advanced keys defined in the Setting model.
+      allowed_keys = Setting::DEFAULTS.keys + Setting::ADVANCED_KEYS
+      params.fetch(:settings, ActionController::Parameters.new).permit(allowed_keys).to_h
     end
 end

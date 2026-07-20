@@ -57,6 +57,7 @@ module ActiveSupport
     end
 
     include BroadcastSuppressor
+    include ActiveJob::TestHelper
   end
 end
 

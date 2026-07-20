@@ -2,10 +2,6 @@
   <%= render Shared::Flash::ContainerComponent.new(flash: flash) %>
 <% end %>
 
-<%= turbo_stream.update dom_id(@coin_slot) do %>
-  <%= render partial: "winform/coin_slots/coin_slot", locals: { coin_slot: @coin_slot } %>
-<% end %>
-
 <%= turbo_stream.update dom_id(@pc, :insert_coin_card) do %>
   <%= render partial: "winform/pcs/button", locals: { pc: @pc } %>
 <% end %>

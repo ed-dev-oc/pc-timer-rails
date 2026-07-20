@@ -1,0 +1,9 @@
+<%= turbo_frame_tag dom_id(coin_slot, :session) do %>
+  <% if coin_slot.has_current_active_session? %>
+    <%= render partial: "winform/coin_slot_sessions/coin_slot_session", locals: { coin_slot_session: coin_slot.active_coin_slot_session } %>
+  <% else %>
+    <div class="text-center">
+      <span class="badge text-bg-secondary py-2">No Active Session</span>
+    </div>
+  <% end %>
+<% end %>
