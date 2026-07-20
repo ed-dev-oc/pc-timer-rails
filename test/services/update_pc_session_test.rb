@@ -19,7 +19,7 @@ class UpdatePcSessionTest < ActiveSupport::TestCase
       peso_amount: 3
     )
 
-    result = UpdatePcSession.call(pc, pc_session)
+    result = Pc::Sessions::Update.call(pc, pc_session)
 
     assert result.success?
     assert_equal 15, pc_session.reload.total_amount
