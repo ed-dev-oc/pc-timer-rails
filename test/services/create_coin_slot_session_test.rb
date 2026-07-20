@@ -1,12 +1,12 @@
 require "test_helper"
 
-class CreateCoinSlotSessionTest < ActiveSupport::TestCase
+class CoinSlotCreateSessionTest < ActiveSupport::TestCase
   test "successful creation creates session, updates coin slot status, enqueues job and creates esp enable log" do
     coin_slot = coin_slots(:one)
     pc = pcs(:one)
 
     assert_enqueued_with(job: CoinSlotSessionTimerJob) do
-      result = CreateCoinSlotSession.call(pc, coin_slot)
+      result = ::CoinSlot::CreateSession.call(pc, coin_slot)
       assert result.success?
       session = result.value
       assert_instance_of CoinSlotSession, session
@@ -25,7 +25,7 @@ class CreateCoinSlotSessionTest < ActiveSupport::TestCase
   test "failure when record invalid returns failure result" do
     # Pass nil pc to trigger validation error on CoinSlotSession creation
     coin_slot = coin_slots(:one)
-    result = CreateCoinSlotSession.call(nil, coin_slot)
+    result = ::CoinSlot::CreateSession.call(nil, coin_slot)
     refute result.success?
     assert_match /Pc must exist/, result.error
   end

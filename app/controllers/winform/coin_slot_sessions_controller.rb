@@ -4,7 +4,7 @@ class Winform::CoinSlotSessionsController < ApplicationController
   before_action :set_coin_slot_session!, only: [ :cancel ]
 
   def create
-    result = CreateCoinSlotSession.call(@pc, @coin_slot)
+    result = CoinSlot::CreateSession.call(@pc, @coin_slot)
 
     if result.success?
       flash.now[:notice] = "Insert coin to #{ @coin_slot.name }!"
