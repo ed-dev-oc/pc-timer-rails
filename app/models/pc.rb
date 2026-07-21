@@ -62,13 +62,8 @@ class Pc < ApplicationRecord
     AUTHORIZED_STATUSES.include?(status.to_sym)
   end
 
-  # Convenience predicate used in tests and UI code to check if the PC is in an
-  # active session state. The enum defines `active_session?`, but the test
-  # expects `active?`. Providing this method maintains backward compatibility
-  # without altering the enum definition.
-  def active?
-    status == "active_session"
-  end
+  # The enum `status` already provides the predicate `active_session?`.
+  # The legacy `active?` method has been removed as it was only used in tests.
 
   private
 

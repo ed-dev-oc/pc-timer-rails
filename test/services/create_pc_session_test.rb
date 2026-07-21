@@ -22,7 +22,8 @@ class CreatePcSessionTest < ActiveSupport::TestCase
     assert_instance_of PcSession, pc_session
     # PC should be marked active
     pc.reload
-    assert pc.active?
+    # Use the enum predicate `active_session?` instead of the legacy `active?`
+    assert pc.active_session?
     # Active coin slot session should be marked inactive and have a disable esp log
     active_session.reload
     assert_equal "inactive", active_session.status
