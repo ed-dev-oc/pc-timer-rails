@@ -26,7 +26,7 @@ class Pc
         else
           @pc_session.update!(status: :active)
         end
-        @pc.broadcast_badge_status
+        Pc::Broadcasts::BadgeStatus.call(@pc)
         Result.success(@pc_session)
       rescue ActiveRecord::RecordInvalid => e
         Result.failure(e.message)

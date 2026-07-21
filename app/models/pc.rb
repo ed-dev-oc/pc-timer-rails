@@ -70,24 +70,6 @@ class Pc < ApplicationRecord
     status == "active_session"
   end
 
-  def broadcast_badge_status
-    broadcast_replace_to(
-      "badge_status",
-      target: dom_id(self, :badge_status),
-      partial: "shared/status_badge",
-      locals: { object: self }
-    )
-  end
-
-  def broadcast_pc_session_buttons
-    broadcast_replace_to(
-      "coin_slot_session_button",
-      target: dom_id(self, :insert_coin_card),
-      partial: "winform/pcs/button",
-      locals: { pc: self }
-    )
-  end
-
   private
 
     def issue_secret

@@ -4,7 +4,7 @@ class PcStatusHeartbeatJob < ApplicationJob
   def perform
     Pc.where("last_seen_at < ?", Setting.integer("pc_offline_threshold").minutes.ago).find_in_batches(batch_size: 100) do |batch|
       batch.each do |pc|
-        pc.broadcast_badge_status
+        Pc::Broadcasts::BadgeStatus.call(pc)
       end
     end
   end

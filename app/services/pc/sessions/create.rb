@@ -41,7 +41,7 @@ class Pc
           active_cs.mark_inactive_and_disable_esp!
         end
 
-        @pc.broadcast_badge_status
+        Pc::Broadcasts::BadgeStatus.call(@pc)
         Result.success(pc_session)
       rescue ActiveRecord::RecordInvalid => e
         Result.failure(e.message)

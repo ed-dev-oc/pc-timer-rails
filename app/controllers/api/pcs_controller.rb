@@ -36,7 +36,7 @@ class Api::PcsController < Api::BaseController
     end
 
     if @pc.update(status: pc_status)
-      @pc.broadcast_badge_status
+      Pc::Broadcasts::BadgeStatus.call(@pc)
 
       render json: {
         status: "success",
@@ -49,7 +49,7 @@ class Api::PcsController < Api::BaseController
 
   def signout
     if @pc.update(status: :offline, last_seen_at: Time.current)
-      @pc.broadcast_badge_status
+      Pc::Broadcasts::BadgeStatus.call(@pc)
 
       render json: {
         status: "success",
@@ -62,7 +62,7 @@ class Api::PcsController < Api::BaseController
 
   def heartbeat
     if @pc.update(pc_update_params)
-      @pc.broadcast_badge_status
+      Pc::Broadcasts::BadgeStatus.call(@pc)
 
       pc_session = @pc.active_pc_session
 

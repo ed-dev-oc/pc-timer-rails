@@ -18,7 +18,7 @@ class Pc
         end
 
         @pc.reload
-        @pc.broadcast_badge_status
+        Pc::Broadcasts::BadgeStatus.call(@pc)
 
         Result.success(@pc_session)
       rescue ActiveRecord::RecordInvalid => e

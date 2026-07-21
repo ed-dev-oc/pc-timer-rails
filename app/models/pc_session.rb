@@ -14,7 +14,9 @@ class PcSession < ApplicationRecord
   validate :has_one_pc_session_active!, on: :create
   validate :peso_amount_meets_minimum_credit, if: :coin_funded_session?
 
-  after_commit :broadcast_updated_pc_session, :boradcast_updated_pc_button, on: [ :create, :update ]
+  after_commit -> { Pc::Broadcasts::UpdatedPcSession.call(self) },
+               -> { Pc::Broadcasts::UpdatedPcButton.call(self) },
+               on: [ :create, :update ]
   after_create :mark_unused_coin_transactions_used
 
   def to_param
@@ -53,26 +55,6 @@ class PcSession < ApplicationRecord
       end
     end
 
-    def broadcast_updated_pc_session
-      pc = self.pc.reload
-      pc_session = pc.active_pc_session&.reload
-
-      broadcast_replace_to "pc_card",
-        target: dom_id(pc, :pc_session),
-        partial: "winform/pc_sessions/pc_session",
-        locals: { pc: pc, pc_session: pc_session }
-    end
-
-    def boradcast_updated_pc_button
-      pc = self.pc.reload
-
-      broadcast_replace_to(
-        "coin_slot_session_button",
-        target: dom_id(pc, :insert_coin_card),
-        partial: "winform/pcs/button",
-        locals: { pc: pc }
-      )
-    end
 
     def mark_unused_coin_transactions_used
       return unless coin_funded_session?
