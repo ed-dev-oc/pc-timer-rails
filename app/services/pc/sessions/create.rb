@@ -42,6 +42,9 @@ class Pc
         end
 
         Pc::Broadcasts::BadgeStatus.call(@pc)
+        # Broadcast updates for the newly created session
+        Pc::Broadcasts::UpdatedPcSession.call(pc_session)
+        Pc::Broadcasts::UpdatedPcButton.call(pc_session)
         Result.success(pc_session)
       rescue ActiveRecord::RecordInvalid => e
         Result.failure(e.message)

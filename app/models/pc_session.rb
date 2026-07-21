@@ -13,10 +13,6 @@ class PcSession < ApplicationRecord
 
   validate :has_one_pc_session_active!, on: :create
   validate :peso_amount_meets_minimum_credit, if: :coin_funded_session?
-
-  after_commit -> { Pc::Broadcasts::UpdatedPcSession.call(self) },
-               -> { Pc::Broadcasts::UpdatedPcButton.call(self) },
-               on: [ :create, :update ]
   after_create :mark_unused_coin_transactions_used
 
   def to_param
