@@ -1,0 +1,19 @@
+<%= helpers.turbo_frame_tag dom_id(pc, :pc_session_button) do %>
+	<% if pc.has_unused_coin_transaction? %>
+		<% if pc.active_pc_session.present? %>
+			<%= link_to winform_pc_pc_session_path(pc.device_id, pc.active_pc_session),
+						class: "btn btn-success",
+						data: { turbo_frame: :_top, turbo_method: :PATCH, turbo_submits_with: "Sending..." } do %>
+				<i class="bi bi-plus-circle"></i>
+				Extend Time!
+			<% end %>
+		<% else %>
+			<%= link_to winform_pc_pc_sessions_path(pc.device_id),
+							class: "btn btn-success",
+							data: { turbo_frame: :_top, turbo_method: :POST, turbo_submits_with: "Sending..." } do %>
+				<i class="bi bi-dash-circle"></i>
+				Use Credit!
+			<% end %>
+		<% end %>
+	<% end %>
+<% end %>

@@ -62,9 +62,6 @@ class Pc < ApplicationRecord
     AUTHORIZED_STATUSES.include?(status.to_sym)
   end
 
-  # The enum `status` already provides the predicate `active_session?`.
-  # The legacy `active?` method has been removed as it was only used in tests.
-
   private
 
     def issue_secret

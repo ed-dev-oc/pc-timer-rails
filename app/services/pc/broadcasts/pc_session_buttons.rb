@@ -2,17 +2,25 @@
 
 class Pc
   module Broadcasts
-    # Service object for broadcasting the PC session buttons UI.
-    # Mirrors the original `Pc#broadcast_pc_session_buttons` method.
     class PcSessionButtons
-      # @param pc [Pc] the PC record to broadcast
+      COMPONENTS = {
+        coin_slot_button: Winform::Pc::CoinSlotSessionButtonComponent,
+        pc_session_button: Winform::Pc::PcSessionButtonComponent
+      }.freeze
+
       def self.call(pc)
-        pc.broadcast_replace_to(
-          "coin_slot_session_button",
-          target: ActionView::RecordIdentifier.dom_id(pc, :insert_coin_card),
-          partial: "winform/pcs/button",
-          locals: { pc: pc }
-        )
+        pc.reload
+
+        COMPONENTS.each do |target, component|
+          Turbo::StreamsChannel.broadcast_replace_to(
+            target.to_s,
+            target: ActionView::RecordIdentifier.dom_id(pc, target),
+            html: ApplicationController.render(
+              component.new(pc: pc),
+              layout: false
+            )
+          )
+        end
       end
     end
   end

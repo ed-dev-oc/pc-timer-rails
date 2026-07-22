@@ -1,0 +1,17 @@
+<%= helpers.turbo_frame_tag dom_id(pc, :coin_slot_button) do %>
+	<% if pc.has_active_coin_slot_session? %>
+		<%= link_to cancel_winform_pc_coin_slot_sessions_path(pc.device_id),
+					class: "btn btn-danger",
+					data: { turbo_frame: :_top, turbo_method: :PATCH, turbo_submits_with: "Sending..." } do %>
+			<i class="bi bi-x-circle"></i>
+			Cancel
+		<% end %>
+	<% else %>
+		<%= link_to winform_pc_coin_slot_sessions_path(pc.device_id),
+				class: "btn btn-primary",
+				data: { turbo_frame: :_top, turbo_method: :POST, turbo_submits_with: "Sending..." } do %>
+			<i class="bi bi-plus-circle"></i>
+			Insert Coin
+		<% end %>
+	<% end %>
+<% end %>

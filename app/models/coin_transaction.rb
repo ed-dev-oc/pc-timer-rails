@@ -24,11 +24,22 @@ class CoinTransaction < ApplicationRecord
       locals: { pc: pc }
     )
 
-    broadcast_replace_to(
-      "coin_slot_session_button",
-      target: dom_id(pc, :insert_coin_card),
-      partial: "winform/pcs/button",
-      locals: { pc: pc }
+    # Append the coin‑slot button component HTML to the stream
+    broadcast_append_to(
+      "coin_slot_button",
+      target: dom_id(pc, :coin_slot_button),
+      html: ApplicationController.render(
+        Winform::Pc::CoinSlotSessionButtonComponent.new(pc: pc)
+      )
+    )
+
+    # Append the PC‑session button component HTML to the stream
+    broadcast_append_to(
+      "pc_session_button",
+      target: dom_id(pc, :pc_session_button),
+      html: ApplicationController.render(
+        Winform::Pc::PcSessionButtonComponent.new(pc: pc)
+      )
     )
   end
 

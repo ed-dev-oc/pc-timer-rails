@@ -19,7 +19,9 @@
       </div>
     </div>
     <div>
-      <%= turbo_stream_from "coin_slot_session_button" %>
+      <%= turbo_stream_from "coin_slot_button" %>
+      <%= turbo_stream_from "pc_session_button" %>
+
       <div class="card">
         <div class="card-body">
           <div class="d-flex gap-2">
@@ -30,7 +32,8 @@
             <%= render partial: "winform/coin_transactions/total_amount_badge", locals: { pc: @pc } %>
           </div>
           <hr>
-          <%= render partial: "winform/pcs/button", locals: { pc: @pc } %>
+          <%= render(Winform::Pc::CoinSlotSessionButtonComponent.new(pc: @pc)) %>
+          <%= render(Winform::Pc::PcSessionButtonComponent.new(pc: @pc)) %>
         </div>
       </div>
     </div>
