@@ -1,4 +1,4 @@
-module Pc
+class Pc
   class AgentClient
     def initialize(pc)
       @pc = pc

@@ -23,6 +23,7 @@ class Pc
             status: :active
           )
           unused.update_all(status: :used)
+          CoinTransaction::BroadcastService.call(@pc)
         else
           @pc_session.update!(status: :active)
         end

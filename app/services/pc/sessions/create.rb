@@ -35,6 +35,8 @@ class Pc
 
         # Mark coin transactions as used
         unused.update_all(status: :used)
+        # Broadcast the updated total amount badge after marking transactions used
+        CoinTransaction::BroadcastService.call(@pc)
 
         # Deactivate any active coin slot session and log disable command
         if (active_cs = @pc.active_coin_slot_session)

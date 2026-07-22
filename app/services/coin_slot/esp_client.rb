@@ -1,4 +1,4 @@
-class EspClient
+class CoinSlot::EspClient
   def initialize(coin_slot)
     @coin_slot = coin_slot
 

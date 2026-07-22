@@ -7,6 +7,9 @@ class Api::CoinTransactionsController < Api::BaseController
     @coin_transaction.pc = @coin_slot_session.pc
 
     if @coin_transaction.save
+      # Trigger broadcasting after the transaction is persisted.
+      CoinTransaction::BroadcastService.call(@coin_transaction.pc)
+
       render json: {
         status: "created",
         message: "Coin transaction saved",

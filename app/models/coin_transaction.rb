@@ -14,33 +14,12 @@ class CoinTransaction < ApplicationRecord
 
   before_validation :set_minutes_granted
 
-  after_commit on: [ :create, :update ] do
-    pc = self.pc.reload
+  # Broadcasting is now handled explicitly after a successful save in the
+  # controller (or other service) via CoinTransaction::BroadcastService.
 
-    broadcast_replace_to(
-      "coin_slot_session_button",
-      target: dom_id(pc, :inserted_amount),
-      partial: "winform/coin_transactions/total_amount_badge",
-      locals: { pc: pc }
-    )
-
-    # Append the coin‑slot button component HTML to the stream
-    broadcast_append_to(
-      "coin_slot_button",
-      target: dom_id(pc, :coin_slot_button),
-      html: ApplicationController.render(
-        Winform::Pc::CoinSlotSessionButtonComponent.new(pc: pc)
-      )
-    )
-
-    # Append the PC‑session button component HTML to the stream
-    broadcast_append_to(
-      "pc_session_button",
-      target: dom_id(pc, :pc_session_button),
-      html: ApplicationController.render(
-        Winform::Pc::PcSessionButtonComponent.new(pc: pc)
-      )
-    )
+  # Ensure broadcasts also occur when a transaction is updated (e.g., status change).
+  after_update_commit do
+    CoinTransaction::BroadcastService.call(self.pc)
   end
 
   private
