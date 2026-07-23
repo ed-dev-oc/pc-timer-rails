@@ -14,10 +14,6 @@ class CoinTransaction < ApplicationRecord
 
   before_validation :set_minutes_granted
 
-  # Broadcasting is now handled explicitly after a successful save in the
-  # controller (or other service) via CoinTransaction::BroadcastService.
-
-  # Ensure broadcasts also occur when a transaction is updated (e.g., status change).
   after_update_commit do
     CoinTransaction::BroadcastService.call(self.pc)
   end

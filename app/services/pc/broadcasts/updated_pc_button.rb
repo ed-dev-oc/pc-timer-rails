@@ -6,8 +6,8 @@ class Pc
         pc_session_button: Winform::Pc::PcSessionButtonComponent
       }.freeze
 
-      def self.call(pc_session)
-        pc = pc_session.pc.reload
+      def self.call(pc)
+        pc = pc
 
         COMPONENTS.each do |target, component|
           Turbo::StreamsChannel.broadcast_replace_to(

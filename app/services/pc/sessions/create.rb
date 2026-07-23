@@ -7,49 +7,73 @@ class Pc
 
       def initialize(pc)
         @pc = pc
+        @coin_transactions = pc.coin_transactions.unused
+        @coin_slot_session = pc.active_coin_slot_session
+        @coin_slot = @coin_slot_session&.coin_slot
+        @pc_session = nil
       end
 
       def call
-        unused = @pc.coin_transactions.unused
-        return Result.failure("No inserted coin found") if unused.empty?
+        return Result.failure("No inserted coin found!") if @coin_transactions.blank?
 
-        total_amount = unused.sum(:peso_amount)
-        minimum_credit = Setting.get("minimum_credit", 1)
-        return Result.failure("Insufficient credit") if total_amount < minimum_credit
+        ActiveRecord::Base.transaction do
+          create_pc_session!
+          deactivate_coin_slot_session!
+          set_coin_slot_status_to_active!
+          schedule_expiration
+          active_pc_session!
+          mark_transactions_used!
+        end
 
-        minutes_per_credit = Setting.get("minutes_per_credit", 6)
-        total_minutes = total_amount * minutes_per_credit
+        @pc.reload
 
-        started_at = Time.current
-        expires_at = started_at + total_minutes.minutes
-        pc_session = PcSession.create!(
-          pc: @pc,
-          total_amount: total_amount,
-          total_minutes_purchased: total_minutes,
-          total_minutes_used: 0,
-          status: :active,
-          started_at: started_at,
-          expires_at: expires_at
-        )
-        @pc.update!(status: :active_session)
-
-        # Mark coin transactions as used
-        unused.update_all(status: :used)
-        # Broadcast the updated total amount badge after marking transactions used
-        CoinTransaction::BroadcastService.call(@pc)
-
-        # Deactivate any active coin slot session and log disable command
-        if (active_cs = @pc.active_coin_slot_session)
-          active_cs.mark_inactive_and_disable_esp!
+        if @coin_slot.present?
+          @coin_slot.broadcast_badge_status
+          @coin_slot.broadcast_session
         end
 
         Pc::Broadcasts::BadgeStatus.call(@pc)
-        # Broadcast updates for the newly created session
-        Pc::Broadcasts::UpdatedPcSession.call(pc_session)
-        Pc::Broadcasts::UpdatedPcButton.call(pc_session)
-        Result.success(pc_session)
+
+        Result.success(@pc_session)
       rescue ActiveRecord::RecordInvalid => e
         Result.failure(e.message)
+      end
+
+    private
+
+      def create_pc_session!
+        total_minutes = @coin_transactions.sum(:minutes_granted)
+        total_amount = @coin_transactions.sum(:peso_amount)
+
+        @pc_session = PcSession.create!(
+          pc: @pc,
+          total_minutes_purchased: total_minutes,
+          total_amount: total_amount,
+          started_at: Time.current,
+          expires_at: Time.current + total_minutes.minutes
+        )
+      end
+
+      def schedule_expiration
+        PcSessionExpirationJob.set(wait_until: @pc_session.expires_at).perform_later(@pc_session.id)
+      end
+
+      def deactivate_coin_slot_session!
+        if @coin_slot_session.present? && @coin_slot_session.active?
+          @coin_slot_session.mark_inactive_and_disable_esp!
+        end
+      end
+
+      def set_coin_slot_status_to_active!
+        @coin_slot.active! if @coin_slot.present?
+      end
+
+      def active_pc_session!
+        @pc.mark_active_session_and_unlock_pc!
+      end
+
+      def mark_transactions_used!
+        @coin_transactions.each(&:used!)
       end
     end
   end

@@ -13,3 +13,7 @@
 <%= turbo_stream.update dom_id(@pc, :pc_session_button) do %>
   <%= render(Winform::Pc::PcSessionButtonComponent.new(pc: @pc)) %>
 <% end %>
+
+<%= turbo_stream.replace dom_id(@pc, :inserted_amount) do %>
+  <%= render(Winform::CoinTransactions::TotalAmountBadgeComponent.new(pc: @pc)) %>
+<% end %>
