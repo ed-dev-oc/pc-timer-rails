@@ -7,12 +7,14 @@
           <%= coin_slot.name %>
         </h5>
       </div>
+
       <div>
         <%= render Ui::StatusBadgeComponent.new(object: coin_slot) %>
       </div>
     </div>
   </div>
+
   <div class="card-body">
-    <%= render partial: "winform/coin_slots/session", locals: { coin_slot: coin_slot } %>
+    <%= render Winform::CoinSlots::SessionComponent.new(coin_slot: coin_slot) %>
   </div>
 </div>

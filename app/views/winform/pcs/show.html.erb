@@ -14,7 +14,7 @@
 
       <div id="coin_slots">
         <% @coin_slots.each do |coin_slot| %>
-          <%= render partial: "winform/coin_slots/coin_slot", locals: { coin_slot: coin_slot } %>
+          <%= render coin_slot %>
         <% end %>
       </div>
     </div>

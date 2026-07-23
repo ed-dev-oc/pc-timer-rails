@@ -1,5 +1,5 @@
 <%= turbo_frame_tag dom_id(coin_slot) do %>
   <% if coin_slot.authorized_status? %>
-    <%= render partial: "winform/coin_slots/card", locals: { coin_slot: coin_slot } %>
+    <%= render Winform::CoinSlots::CardComponent.new(coin_slot: coin_slot) %>
   <% end %>
 <% end %>

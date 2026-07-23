@@ -11,8 +11,7 @@ class CoinSlotBroadcastsSessionTest < ActiveSupport::TestCase
       stream_name, options = args
       assert_equal "coin_slot_session", stream_name
       assert_equal expected_target, options[:target]
-      assert_equal "winform/coin_slots/session", options[:partial]
-      assert_equal({ coin_slot: coin_slot }, options[:locals])
+      assert options[:html].is_a?(String), "Expected :html key with rendered component"
     end do
       CoinSlot::Broadcasts::Session.call(coin_slot)
     end

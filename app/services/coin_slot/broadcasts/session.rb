@@ -7,8 +7,10 @@ class CoinSlot
         Turbo::StreamsChannel.broadcast_replace_to(
           "coin_slot_session",
           target: dom_id(coin_slot, :session),
-          partial: "winform/coin_slots/session",
-          locals: { coin_slot: coin_slot }
+          html: ApplicationController.render(
+            Winform::CoinSlots::SessionComponent.new(coin_slot: coin_slot),
+            layout: false
+          )
         )
       end
     end
