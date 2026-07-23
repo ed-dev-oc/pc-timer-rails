@@ -19,8 +19,8 @@ class CoinSlot
       end
 
       @coin_slot.reload
-      @coin_slot.broadcast_badge_status
-      @coin_slot.broadcast_session
+      CoinSlot::Broadcasts::BadgeStatus.call(@coin_slot)
+      CoinSlot::Broadcasts::Session.call(@coin_slot)
 
       Result.success(@coin_slot_session)
     rescue ActiveRecord::RecordInvalid => e

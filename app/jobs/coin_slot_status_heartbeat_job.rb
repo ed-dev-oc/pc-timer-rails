@@ -7,7 +7,7 @@ class CoinSlotStatusHeartbeatJob < ApplicationJob
       .find_in_batches(batch_size: 100) do |batch|
       batch.each do |coin_slot|
         coin_slot.update(status: "offline")
-        coin_slot.broadcast_badge_status
+        CoinSlot::Broadcasts::BadgeStatus.call(coin_slot)
       end
     end
   end

@@ -28,23 +28,9 @@ class CoinSlot < ApplicationRecord
     AUTHORIZED_STATUSES.include?(status.to_sym)
   end
 
-  def broadcast_badge_status
-    broadcast_replace_to(
-      "badge_status",
-      target: dom_id(self, :badge_status),
-      partial: "shared/status_badge",
-      locals: { object: self }
-    )
-  end
-
-  def broadcast_session
-    broadcast_replace_to(
-      "coin_slot_session",
-      target: dom_id(self, :session),
-      partial: "winform/coin_slots/session",
-      locals: { coin_slot: self }
-    )
-  end
+  # Broadcast methods moved to dedicated service classes:
+  #   CoinSlot::Broadcasts::BadgeStatus.call(self)
+  #   CoinSlot::Broadcasts::Session.call(self)
 
   private
 
