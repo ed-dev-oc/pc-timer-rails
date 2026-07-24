@@ -3,7 +3,7 @@
     <p class="mb-1"
         data-controller="session-timer"
         data-session-timer-ended-at-value="<%= pc_session.expires_at.iso8601 %>"
-        data-session-timer-total-milliseconds-expiration-value="<%= pc_session.total_minutes_purchased * 60 * 1000 %>">
+        data-session-timer-total-milliseconds-expiration-value="<%= pc_session.total_purchased_duration_ms %>">
 
       <i class="bi bi-hourglass-split"></i>
       <span>Time Remaining: </span>

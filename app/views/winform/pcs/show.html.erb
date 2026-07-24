@@ -4,8 +4,7 @@
 
   <div class="col-12 col-md-6">
     <div>
-      <%= turbo_stream_from "pc_card" %>
-      <%= render partial: "winform/pcs/card", locals: { pc: @pc, pc_session: @pc_session } %>
+      <%= render @pc %>
     </div>
   </div>
   <div class="col-12 col-md-6 d-flex flex-column gap-2">

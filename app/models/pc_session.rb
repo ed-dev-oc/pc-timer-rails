@@ -29,6 +29,16 @@ class PcSession < ApplicationRecord
     (expires_at - current_time).ceil
   end
 
+  def total_duration_formatted
+    minutes = total_minutes_purchased.to_i
+    total_seconds = minutes * 60
+    Time.at(total_seconds).utc.strftime("%H:%M:%S")
+  end
+
+  def total_purchased_duration_ms
+    total_minutes_purchased * 60 * 1000
+  end
+
   private
 
     def has_one_pc_session_active!

@@ -1,0 +1,16 @@
+<%= helpers.turbo_frame_tag dom_id(pc, :pc_session_minimize) do %>
+  <% if pc_session.present? %>
+    <div class="text-center">
+      <%= render Shared::SessionTimer::CountDownComponent.new(
+            object: pc,
+            session_object: pc_session,
+            session_duration_ms: pc_session.total_purchased_duration_ms,
+            expires_at: pc_session&.expires_at,
+            size: :large) %>
+    </div>
+  <% else %>
+    <div class="text-center">
+      <div class="fs-1 fw-bold text-success">00:00:00</div>
+    </div>
+  <% end %>
+<% end %>

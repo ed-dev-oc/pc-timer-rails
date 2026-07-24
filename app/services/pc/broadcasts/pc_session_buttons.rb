@@ -9,8 +9,6 @@ class Pc
       }.freeze
 
       def self.call(pc)
-        pc.reload
-
         COMPONENTS.each do |target, component|
           Turbo::StreamsChannel.broadcast_replace_to(
             target.to_s,

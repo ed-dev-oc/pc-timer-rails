@@ -2,9 +2,13 @@
   <%= render Shared::Flash::ContainerComponent.new(flash: flash) %>
 <% end %>
 
-<%= turbo_stream.update dom_id(@pc) do %>
-  <%= render partial: "winform/pcs/card", locals: { pc: @pc, pc_session: @pc.active_pc_session } %>
+<%= turbo_stream.update dom_id(@pc, :pc_session) do %>
+  <%= render Winform::Pcs::SessionPanelComponent.new(pc: @pc) %>
 <% end %>
+
+<%= turbo_stream.replace dom_id(@pc, :badge_status),
+  partial: "shared/status_badge",
+  locals: { object: @pc } %>
 
 <%= turbo_stream.replace dom_id(@pc, :coin_slot_button) do %>
   <%= render(Winform::Pc::CoinSlotSessionButtonComponent.new(pc: @pc)) %>

@@ -2,8 +2,6 @@
   <div data-controller="shared--session-timer--count-down" 
 			data-shared--session-timer--count-down-expires-at-value="<%= @expires_at %>"
 			data-shared--session-timer--count-down-session-duration-ms-value="<%= @session_duration_ms %>">
-    <i class="bi bi-hourglass-split"></i>
-    <span class="fw-bold">Insert Time:</span>
-    <span data-shared--session-timer--count-down-target="remaining" class="<%= count_down_size %> text-success"></span>
+    <span data-shared--session-timer--count-down-target="remaining" class="<%= count_down_size %> fw-bold text-success"></span>
   </div>
 <% end %>

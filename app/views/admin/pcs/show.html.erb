@@ -211,7 +211,7 @@
 
         <div class="card-body">
           <% if @active_session %>
-            <%= render partial: "winform/pc_sessions/pc_session", locals: { pc: @pc, pc_session: @active_session } %>
+            <%= render Winform::Pcs::SessionPanelComponent.new(pc: @pc) %>
           <% else %>
             <div class="text-center py-4">
               <i class="bi bi-moon fs-1 text-muted"></i>
