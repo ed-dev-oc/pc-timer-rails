@@ -1,0 +1,9 @@
+<tr>
+  <td><%= l coin_transaction.created_at %></td>
+  <td>₱<%= coin_transaction.peso_amount %></td>
+  <td><%= coin_transaction.minutes_granted %></td>
+  <td><%= coin_transaction.pc.name %></td>
+  <td>
+    <%= render Ui::StatusBadgeComponent.new(object: coin_transaction) %>
+  </td>
+</tr>

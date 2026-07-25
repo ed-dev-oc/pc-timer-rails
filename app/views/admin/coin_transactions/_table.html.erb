@@ -1,0 +1,25 @@
+<div class="card shadow-sm">
+  <div class="card-header">
+    <i class="bi bi-cash-coin"></i>
+    Recent Coin Transactions
+  </div>
+
+  <div class="table-responsive overflow-auto" style="max-height: 40vh;">
+    <table class="table table-hover mb-0">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Amount</th>
+          <th>Minutes</th>
+          <th>PC</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% coin_transactions.each do | coin_transaction | %>
+					<%= render coin_transaction %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

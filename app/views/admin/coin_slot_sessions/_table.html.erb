@@ -1,0 +1,24 @@
+<div class="card shadow-sm">
+  <div class="card-header">
+    <i class="bi bi-clock-history"></i>
+    Session History
+  </div>
+
+  <div class="table-responsive overflow-auto" style="max-height: 40vh;">
+    <table class="table table-striped mb-0">
+      <thead>
+        <tr>
+          <th>Started</th>
+          <th>Ended</th>
+          <th>PC</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% coin_slot_sessions.each do |coin_slot_session| %>
+					<%= render coin_slot_session %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

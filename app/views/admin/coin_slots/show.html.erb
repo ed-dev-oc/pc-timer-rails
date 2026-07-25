@@ -188,110 +188,12 @@
       </div>
     </div>
 
-    <div class="col-lg-8">
-      <div class="card shadow-sm mb-4">
-        <div class="card-header">
-          <i class="bi bi-cash-coin"></i>
-          Recent Coin Transactions
-        </div>
+    <div class="col-lg-8 d-flex flex-column gap-4">
+      <%= render partial: "admin/coin_transactions/table", locals: { coin_transactions: @coin_transactions } %>
 
-        <div class="table-responsive overflow-auto" style="max-height: 40vh;">
-          <table class="table table-hover mb-0">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Minutes</th>
-                <th>PC</th>
-                <th>Status</th>
-              </tr>
-            </thead>
+      <%= render partial: "admin/command_logs/table", locals: { command_logs: @command_logs } %>
 
-            <tbody>
-              <% @coin_transactions.each do |transaction| %>
-                <tr>
-                  <td><%= l transaction.created_at %></td>
-
-                  <td>₱<%= transaction.peso_amount %></td>
-
-                  <td><%= transaction.minutes_granted %></td>
-
-                  <td><%= transaction.pc.name %></td>
-
-                  <td>
-                    <%= render Ui::StatusBadgeComponent.new(object: transaction) %>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card shadow-sm mb-4">
-        <div class="card-header">
-          <i class="bi bi-terminal"></i>
-          Recent Commands
-        </div>
-
-        <ul class="list-group list-group-flush overflow-auto" style="max-height: 40vh;">
-          <% @command_logs.each do |log| %>
-            <li class="list-group-item">
-              <div class="d-flex justify-content-between">
-                <strong>
-                  <%= log.command.humanize %>
-                </strong>
-                <small class="text-muted">
-                  <%= time_ago_in_words(log.created_at) %> ago
-                </small>
-              </div>
-
-              <div>
-                Status
-                <%= render Ui::StatusBadgeComponent.new(object: log) %>
-              </div>
-
-              <% if log.error_message.present? %>
-                <div class="alert alert-danger mt-2 mb-0">
-                  <%= log.error_message %>
-                </div>
-              <% end %>
-            </li>
-          <% end %>
-        </ul>
-      </div>
-
-      <div class="card shadow-sm">
-        <div class="card-header">
-          <i class="bi bi-clock-history"></i>
-          Session History
-        </div>
-
-        <div class="table-responsive overflow-auto" style="max-height: 40vh;">
-          <table class="table table-striped mb-0">
-            <thead>
-              <tr>
-                <th>Started</th>
-                <th>Ended</th>
-                <th>PC</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @sessions.each do |session| %>
-                <tr>
-                  <td><%= l session.started_at %></td>
-                  <td><%= l session.ended_at %></td>
-                  <td><%= session.pc.name %></td>
-                  <td>
-                    <%= render Ui::StatusBadgeComponent.new(object: session) %>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <%= render partial: "admin/coin_slot_sessions/table", locals: { coin_slot_sessions: @coin_slot_sessions } %>
     </div>
   </div>
 </div>

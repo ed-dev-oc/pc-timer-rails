@@ -33,7 +33,7 @@ class Admin::CoinSlotsController < Admin::BaseController
       .order(created_at: :desc)
       .limit(20)
 
-    @sessions = @coin_slot.coin_slot_sessions
+    @coin_slot_sessions = @coin_slot.coin_slot_sessions
       .order(created_at: :desc)
       .limit(10)
   end
