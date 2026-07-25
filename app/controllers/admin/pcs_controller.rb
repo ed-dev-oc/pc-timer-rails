@@ -33,7 +33,7 @@ class Admin::PcsController < Admin::BaseController
       .order(created_at: :desc)
       .limit(20)
 
-    @sessions = @pc.pc_sessions
+    @pc_sessions = @pc.pc_sessions
       .order(created_at: :desc)
       .limit(10)
   end

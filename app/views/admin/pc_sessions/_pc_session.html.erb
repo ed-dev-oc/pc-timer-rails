@@ -1,0 +1,9 @@
+<tr>
+  <td><%= l pc_session.started_at %></td>
+  <td><%= l pc_session.expires_at %></td>
+  <td>₱<%= pc_session.total_amount %></td>
+  <td><%= pc_session.total_minutes_used %></td>
+  <td>
+    <%= render Ui::StatusBadgeComponent.new(object: pc_session) %>
+  </td>
+</tr>

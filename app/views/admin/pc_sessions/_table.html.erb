@@ -1,0 +1,25 @@
+<div class="card shadow-sm">
+  <div class="card-header">
+    <i class="bi bi-clock-history"></i>
+    Session History
+  </div>
+
+  <div class="table-responsive overflow-auto" style="max-height: 40vh;">
+    <table class="table table-striped mb-0">
+      <thead>
+        <tr>
+          <th>Started</th>
+          <th>Ended</th>
+          <th>Amount</th>
+          <th>Minutes</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% pc_sessions.each do | pc_session | %>
+          <%= render pc_session %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
