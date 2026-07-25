@@ -14,10 +14,10 @@
         session_duration_ms: pc_session.total_purchased_duration_ms,
         expires_at: pc_session&.expires_at) %>
       
-      <div class="mt-1 d-none d-md-block text-end">
+      <div class="mt-1 d-none d-md-block text-end text-muted">
         <i class="bi bi-smartwatch"></i>
-        <span>Total Time: </span>
-        <span data-session-timer-target="totalTime"><%= pc_session.total_duration_formatted %></span>
+        <small>Total Time: </small>
+        <small data-session-timer-target="totalTime"><%= pc_session.total_duration_formatted %></small>
       </div>
     </div>
   <% else %>

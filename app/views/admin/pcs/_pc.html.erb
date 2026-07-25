@@ -17,38 +17,10 @@
 
     <div class="card-body">
       <div class="d-flex flex-column justify-content-between h-100">
-        <%= turbo_frame_tag dom_id(pc, :pc_session), class: "h-100" do %>
-          <% if pc.active_pc_session.present? %>
-            <div class="h-100">
-              <div class="d-flex flex-column justify-content-center gap-2 mb-2 h-100"
-                data-controller="session-timer"
-                data-session-timer-ended-at-value="<%= pc.active_pc_session.expires_at.iso8601 %>"
-                data-session-timer-total-milliseconds-expiration-value="<%= pc.active_pc_session.total_purchased_duration_ms %>">
+        <%= turbo_stream_from "pc_session" %>
+        <%= render Winform::Pcs::SessionPanelComponent.new(pc: pc) %>
 
-                <div class="d-flex gap-2 justify-content-between align-items-center">
-                  <span class="small fw-semibold">
-                    <i class="bi bi-hourglass-split me-1"></i>Time Remaining
-                  </span>
-                  <span class="badge bg-primary" data-session-timer-target="remaining">
-                  </span>
-                </div>
-
-                <div class="progress" style="height: 25px;">
-                  <div data-session-timer-target="bar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%;">
-                    0%
-                  </div>
-                </div>
-              </div>
-            </div>
-          <% else %>
-            <div class="text-center py-3 bg-light rounded-3 mb-3">
-              <i class="bi bi-hourglass-bottom text-muted"></i>
-              <p class="mb-0 small text-muted">No active session</p>
-            </div>
-          <% end %>
-        <% end %>
-
-        <div class="d-flex flex-nowrap gap-2 small text-muted">
+        <div class="d-flex flex-nowrap gap-2 small text-muted mt-2">
           <div>
             <i class="bi bi-clock me-1"></i>
             <span>Last seen</span>
@@ -62,29 +34,15 @@
 
     <div class="card-footer bg-white border-top">
       <div class="btn-group w-100">
-        <%= link_to [:admin, pc], class: "btn btn-outline-primary btn-sm" do %>
+        <%= link_to [:admin, pc], class: "btn btn-primary" do %>
           <i class="bi bi-eye"></i>
           <span class="d-none d-sm-inline ms-1">View</span>
         <% end %>
 
-        <% if pc.active_pc_session.present? %>
-          <%= link_to stop_session_admin_pc_pc_session_path(pc, pc.active_pc_session, format: :html),
-                      class: "btn btn-outline-warning btn-sm",
-                      data: { turbo_method: :POST, turbo_submits_with: "Sending...", turbo_confirm: "Stop this session?" } do %>
-            <i class="bi bi-lock"></i>
-            <span class="d-none d-sm-inline ms-1">Lock</span>
-          <% end %>
-        <% else %>
-          <%= button_tag type: "button", class: "btn btn-outline-success btn-sm", 
-            data: { bs_toggle: "modal", bs_target: "##{dom_id(pc, "unlock_pc_modal")}" } do %>
-            <i class="bi bi-unlock"></i>
-            <span class="d-none d-sm-inline ms-1">Unlock</span>
-          <% end %>
+        <%= turbo_stream_from :pc_session_controls %>
+        <%= render Admin::PcSessionControlsComponent.new(pc: pc) %>
 
-          <%= render partial: "admin/pc_sessions/unlock_modal", locals: { pc: pc } %>
-        <% end %>
-
-        <%= link_to shutdown_admin_pc_path(pc), class: "btn btn-outline-danger btn-sm", data: { turbo_method: :POST, turbo_confirm: "Are you sure to shutdown the PC?", turbo_submits_with: "Sending..." } do %>
+        <%= link_to shutdown_admin_pc_path(pc), class: "btn btn-danger", data: { turbo_method: :POST, turbo_confirm: "Are you sure to shutdown the PC?", turbo_submits_with: "Sending..." } do %>
           <i class="bi bi-power"></i>
         <% end %>
       </div>

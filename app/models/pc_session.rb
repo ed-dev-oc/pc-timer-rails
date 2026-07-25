@@ -13,7 +13,6 @@ class PcSession < ApplicationRecord
 
   validate :has_one_pc_session_active!, on: :create
   validate :peso_amount_meets_minimum_credit, if: :coin_funded_session?
-  after_create :mark_unused_coin_transactions_used
 
   def to_param
     public_uid
@@ -59,11 +58,5 @@ class PcSession < ApplicationRecord
         # errors.add(:total_amount, "must be greater than or equal to #{minimum_credit}")
         errors.add(:base, "Please insert ₱#{minimum_credit} or more to play!")
       end
-    end
-
-
-    def mark_unused_coin_transactions_used
-      return unless coin_funded_session?
-      pc.coin_transactions.unused.update_all(status: :used)
     end
 end

@@ -33,6 +33,7 @@ class Pc
         end
 
         Pc::Broadcasts::BadgeStatus.call(@pc)
+        PcSessions::BroadcastService.call(@pc)
 
         Result.success(@pc_session)
       rescue ActiveRecord::RecordInvalid => e

@@ -15,7 +15,7 @@ class CoinSlotSessionTimerJob < ApplicationJob
         CoinSlot::Broadcasts::Session.call(coin_slot)
       end
 
-      Pc::Broadcasts::PcSessionButtons.call(pc) if pc.present?
+      PcSessions::BroadcastService.call(pc) if pc.present?
     end
   end
 end

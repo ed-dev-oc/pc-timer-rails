@@ -19,20 +19,10 @@
       <%= render partial: "shared/status_badge", locals: { object: @pc } %>
 
       <div class="btn-toolbar mt-2">
+        <%= turbo_stream_from :pc_session_controls %>
+        
         <div class="btn-group gap-2 me-2">
-          <% if @pc.active_pc_session.present? %>
-            <%= link_to stop_session_admin_pc_pc_session_path(@pc, @pc.active_pc_session, format: :html), class: "btn btn-warning", data: { turbo_method: :POST, turbo_submits_with: "Sending...", turbo_confirm: "Are you sure?" } do %>
-              <i class="bi bi-lock"></i>
-              Lock
-            <% end %>
-          <% else %>
-            <%= button_tag type: "button", class: "btn btn-success", data: { bs_toggle: "modal", bs_target: "##{dom_id(@pc, "unlock_pc_modal")}" } do %>
-              <i class="bi bi-unlock"></i>
-              Unlock
-            <% end %>
-
-            <%= render partial: "admin/pc_sessions/unlock_modal", locals: { pc: @pc } %>
-          <% end %>
+          <%= render Admin::PcSessionControlsComponent.new(pc: @pc) %>
 
           <%= link_to restart_admin_pc_path(@pc), class: "btn btn-warning", data: { turbo_method: :POST, turbo_confirm: "Are you sure to restart the PC?", turbo_submits_with: "Sending..." } do %>
             <i class="bi bi-arrow-clockwise"></i>
@@ -210,17 +200,8 @@
         </div>
 
         <div class="card-body">
-          <% if @active_session %>
-            <%= render Winform::Pcs::SessionPanelComponent.new(pc: @pc) %>
-          <% else %>
-            <div class="text-center py-4">
-              <i class="bi bi-moon fs-1 text-muted"></i>
-
-              <p class="text-muted mt-3">
-                No Active Session
-              </p>
-            </div>
-          <% end %>
+          <%= turbo_stream_from "pc_session" %>
+          <%= render Winform::Pcs::SessionPanelComponent.new(pc: @pc) %>
         </div>
       </div>
     </div>
