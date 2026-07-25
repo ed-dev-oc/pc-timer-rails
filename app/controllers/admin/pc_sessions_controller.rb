@@ -5,7 +5,7 @@ class Admin::PcSessionsController < Admin::BaseController
   def create
     pc_session = PcSession.new(pc_session_params)
 
-    result = Pc::Sessions::CreateManual.call(pc_session)
+    result = Pcs::Sessions::CreateManual.call(pc_session)
 
     if result.success?
       flash[:notice] = "Session created to #{@pc.name}!"
@@ -19,7 +19,7 @@ class Admin::PcSessionsController < Admin::BaseController
   end
 
   def stop_session
-    result = Pc::Sessions::Stop.call(@pc, @pc_session)
+    result = Pcs::Sessions::Stop.call(@pc, @pc_session)
 
     if result.success?
       flash[:notice] = "Session stop to #{@pc.name}!"

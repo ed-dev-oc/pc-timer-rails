@@ -1,4 +1,6 @@
-class Pc
+# frozen_string_literal: true
+
+module Pcs
   class AgentClient
     def initialize(pc)
       @pc = pc
@@ -57,14 +59,12 @@ class Pc
         req.headers["X-TIMESTAMP"] = timestamp.to_s
       end
 
-      # ❗ IMPORTANT: FORCE FAILURE TO RAISE EXCEPTION
       unless response.success?
         raise Faraday::ConnectionFailed, "HTTP #{response.status}"
       end
 
       { status: "success" }
     rescue Faraday::TimeoutError, Faraday::ConnectionFailed => e
-      # re-raise so ActiveJob retry works
       raise e
     end
   end

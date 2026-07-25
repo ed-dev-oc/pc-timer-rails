@@ -1,4 +1,6 @@
-class Pc
+# frozen_string_literal: true
+
+module Pcs
   module Sessions
     class Update
       def self.call(pc, pc_session)
@@ -33,7 +35,7 @@ class Pc
           CoinSlot::Broadcasts::Session.call(@coin_slot)
         end
 
-        Pc::Broadcasts::BadgeStatus.call(@pc)
+        Pcs::Broadcasts::BadgeStatus.call(@pc)
         PcSessions::BroadcastService.call(@pc)
 
         Result.success(@pc_session)
@@ -41,7 +43,7 @@ class Pc
         Result.failure(e.message)
       end
 
-      private
+    private
 
       def update_pc_session!
         total_minutes = @coin_transactions.sum(:minutes_granted)

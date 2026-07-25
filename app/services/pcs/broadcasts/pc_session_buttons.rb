@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Pc
+module Pcs
   module Broadcasts
     class PcSessionButtons
       COMPONENTS = {

@@ -3,7 +3,7 @@ module PcSessions
     include ActionView::RecordIdentifier
 
     def self.call(pc)
-      Pc::Broadcasts::PcSessionButtons.call(pc)
+      Pcs::Broadcasts::PcSessionButtons.call(pc)
 
       Turbo::StreamsChannel.broadcast_replace_to(
         "pc_session",

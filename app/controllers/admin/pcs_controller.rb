@@ -69,7 +69,7 @@ class Admin::PcsController < Admin::BaseController
     status = @pc.disabled_kiosk? ? :online : :disabled_kiosk
 
     if @pc.update(status: status)
-      Pc::Broadcasts::BadgeStatus.call(@pc)
+      Pcs::Broadcasts::BadgeStatus.call(@pc)
 
       flash[:notice] = "Status set to #{ @pc.status.titleize }."
 
@@ -111,7 +111,7 @@ class Admin::PcsController < Admin::BaseController
 
   def kiosk_uninstalled
     if @pc.update(status: :uninstalled)
-      Pc::Broadcasts::BadgeStatus.call(@pc)
+      Pcs::Broadcasts::BadgeStatus.call(@pc)
 
       flash[:notice] = "Status set to #{ @pc.status.titleize }."
 

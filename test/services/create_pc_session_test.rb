@@ -16,7 +16,7 @@ class CreatePcSessionTest < ActiveSupport::TestCase
     active_session = CoinSlotSession.create!(coin_slot: coin_slot, pc: pc)
     # Ensure there is at least one unused coin transaction for the pc (fixture provides one)
     assert_not_empty pc.coin_transactions.unused
-    result = Pc::Sessions::Create.call(pc)
+    result = Pcs::Sessions::Create.call(pc)
     assert result.success?
     pc_session = result.value
     assert_instance_of PcSession, pc_session
@@ -36,7 +36,7 @@ class CreatePcSessionTest < ActiveSupport::TestCase
     pc = pcs(:two)
     # Ensure pc two has no unused transactions (remove them)
     pc.coin_transactions.update_all(status: :used)
-    result = Pc::Sessions::Create.call(pc)
+    result = Pcs::Sessions::Create.call(pc)
     refute result.success?
     assert_match /No inserted coin found/, result.error
   end
@@ -52,7 +52,7 @@ class CreatePcSessionTest < ActiveSupport::TestCase
       peso_amount: 1
     )
 
-    result = Pc::Sessions::Create.call(pc)
+    result = Pcs::Sessions::Create.call(pc)
     assert_not result.success?
   end
 
@@ -72,7 +72,7 @@ class CreatePcSessionTest < ActiveSupport::TestCase
       peso_amount: 3
     )
 
-    result = Pc::Sessions::Create.call(pc)
+    result = Pcs::Sessions::Create.call(pc)
     assert result.success?
     assert_equal 5, result.value.total_amount
     assert_equal 30, result.value.total_minutes_purchased

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 # Service object responsible for broadcasting the PC status badge.
-# It mirrors the original `Pc#broadcast_badge_status` implementation.
-class Pc
+# It mirrors the original `Pc#broadcast_badge_status` implementation but
+# lives under the `Pcs` namespace.
+module Pcs
   module Broadcasts
     class BadgeStatus
       # @param pc [Pc] the PC record to broadcast

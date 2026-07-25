@@ -16,7 +16,7 @@ class PcSessionExpirationJob < ApplicationJob
       )
 
       pc.mark_online_and_lock_pc!
-      Pc::Broadcasts::BadgeStatus.call(pc)
+      Pcs::Broadcasts::BadgeStatus.call(pc)
       PcSessions::BroadcastService.call(pc)
     end
   end

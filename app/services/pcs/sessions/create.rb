@@ -1,4 +1,6 @@
-class Pc
+# frozen_string_literal: true
+
+module Pcs
   module Sessions
     class Create
       def self.call(pc)
@@ -32,7 +34,7 @@ class Pc
           CoinSlot::Broadcasts::Session.call(@coin_slot)
         end
 
-        Pc::Broadcasts::BadgeStatus.call(@pc)
+        Pcs::Broadcasts::BadgeStatus.call(@pc)
         PcSessions::BroadcastService.call(@pc)
 
         Result.success(@pc_session)

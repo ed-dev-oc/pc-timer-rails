@@ -1,4 +1,6 @@
-class Pc
+# frozen_string_literal: true
+
+module Pcs
   module Sessions
     class CreateManual
       def self.call(pc_session)
@@ -18,7 +20,7 @@ class Pc
         end
 
         @pc.reload
-        Pc::Broadcasts::BadgeStatus.call(@pc)
+        Pcs::Broadcasts::BadgeStatus.call(@pc)
         PcSessions::BroadcastService.call(@pc)
 
         Result.success(@pc_session)
@@ -26,22 +28,22 @@ class Pc
         Result.failure(e.message)
       end
 
-      private
+    private
 
-        def create_pc_session!
-          @pc_session.update!(
-            started_at: Time.current,
-            expires_at: Time.current + @pc_session.total_minutes_purchased.minutes
-          )
-        end
+      def create_pc_session!
+        @pc_session.update!(
+          started_at: Time.current,
+          expires_at: Time.current + @pc_session.total_minutes_purchased.minutes
+        )
+      end
 
-        def schedule_expiration
-          PcSessionExpirationJob.set(wait_until: @pc_session.expires_at).perform_later(@pc_session.id)
-        end
+      def schedule_expiration
+        PcSessionExpirationJob.set(wait_until: @pc_session.expires_at).perform_later(@pc_session.id)
+      end
 
-        def active_pc_session!
-          @pc.mark_active_session_and_unlock_pc!
-        end
+      def active_pc_session!
+        @pc.mark_active_session_and_unlock_pc!
+      end
     end
   end
 end
