@@ -1,5 +1,5 @@
 module CoinSlots
-  module EspClient
+  class EspClient
     def initialize(coin_slot)
       @coin_slot = coin_slot
 
