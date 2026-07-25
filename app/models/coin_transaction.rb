@@ -15,7 +15,7 @@ class CoinTransaction < ApplicationRecord
   before_validation :set_minutes_granted
 
   after_update_commit do
-    CoinTransaction::BroadcastService.call(self.pc)
+    CoinTransactions::BroadcastService.call(self.pc)
   end
 
   private

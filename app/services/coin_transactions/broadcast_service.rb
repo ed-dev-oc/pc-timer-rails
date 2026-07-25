@@ -1,6 +1,6 @@
-class CoinTransaction
+module CoinTransactions
   # Service object responsible for broadcasting updates related to a PC.
-  # It is defined inside the CoinTransaction class namespace to avoid
+  # It is defined inside the CoinTransactions module namespace to avoid
   # constant name collisions with the CoinTransaction model.
   class BroadcastService
     include ActionView::RecordIdentifier

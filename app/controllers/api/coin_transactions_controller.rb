@@ -9,7 +9,7 @@ class Api::CoinTransactionsController < Api::BaseController
 
     if @coin_transaction.save
       # Trigger broadcasting after the transaction is persisted.
-      CoinTransaction::BroadcastService.call(@pc)
+      CoinTransactions::BroadcastService.call(@pc)
       PcSessions::BroadcastService.call(@pc)
 
       render json: {
