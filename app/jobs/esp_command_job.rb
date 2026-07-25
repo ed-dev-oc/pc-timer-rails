@@ -24,7 +24,7 @@ class EspCommandJob < ApplicationJob
     log = EspCommandLog.find(command_log_id)
     coin_slot = log.coin_slot
     coin_slot_session = coin_slot_session_id.present? ? CoinSlotSession.find_by(id: coin_slot_session_id) : nil
-    client = CoinSlot::EspClient.new(coin_slot)
+    client = CoinSlots::EspClient.new(coin_slot)
 
     case log.command
     when "enable"

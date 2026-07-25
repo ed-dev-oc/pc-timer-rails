@@ -13,7 +13,7 @@ class CoinSlotBroadcastsSessionTest < ActiveSupport::TestCase
       assert_equal expected_target, options[:target]
       assert options[:html].is_a?(String), "Expected :html key with rendered component"
     end do
-      CoinSlot::Broadcasts::Session.call(coin_slot)
+      CoinSlots::Broadcasts::Session.call(coin_slot)
     end
 
     assert called, "Turbo::StreamsChannel.broadcast_replace_to was not called"

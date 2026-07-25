@@ -11,8 +11,8 @@ class CoinSlotSessionTimerJob < ApplicationJob
 
       if coin_slot.present?
         coin_slot.active!
-        CoinSlot::Broadcasts::BadgeStatus.call(coin_slot)
-        CoinSlot::Broadcasts::Session.call(coin_slot)
+        CoinSlots::Broadcasts::BadgeStatus.call(coin_slot)
+        CoinSlots::Broadcasts::Session.call(coin_slot)
       end
 
       PcSessions::BroadcastService.call(pc) if pc.present?

@@ -31,8 +31,8 @@ module Pcs
 
         # Broadcast badge status via the coin slot if present
         if @coin_slot.present?
-          CoinSlot::Broadcasts::BadgeStatus.call(@coin_slot)
-          CoinSlot::Broadcasts::Session.call(@coin_slot)
+          CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
+          CoinSlots::Broadcasts::Session.call(@coin_slot)
         end
 
         Pcs::Broadcasts::BadgeStatus.call(@pc)

@@ -70,7 +70,7 @@ class Admin::CoinSlotsController < Admin::BaseController
 
     if esp_command_log.save
       @coin_slot.offline!
-      CoinSlot::Broadcasts::BadgeStatus.call(@coin_slot)
+      CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
 
       flash[:notice] = "Restarting coin slot!"
 
@@ -86,7 +86,7 @@ class Admin::CoinSlotsController < Admin::BaseController
     status = CoinSlot::AUTHORIZED_STATUSES.include?(@coin_slot.status.to_sym) ? :locked : :offline
 
     if @coin_slot.update(status: status)
-      CoinSlot::Broadcasts::BadgeStatus.call(@coin_slot)
+      CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
 
       flash[:notice] = "Coin slot status changed to #{ status.to_s.titleize }"
 

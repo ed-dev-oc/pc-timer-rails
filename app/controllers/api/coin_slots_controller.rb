@@ -26,7 +26,7 @@ class Api::CoinSlotsController < Api::BaseController
 
   def heartbeat
     if @coin_slot.update(coin_slot_update_params)
-      CoinSlot::Broadcasts::BadgeStatus.call(@coin_slot)
+      CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
 
       render json: {
         status: "success",

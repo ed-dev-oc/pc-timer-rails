@@ -14,7 +14,7 @@ class CoinSlotBroadcastsBadgeStatusTest < ActiveSupport::TestCase
       assert_equal "shared/status_badge", options[:partial]
       assert_equal({ object: coin_slot }, options[:locals])
     end do
-      CoinSlot::Broadcasts::BadgeStatus.call(coin_slot)
+      CoinSlots::Broadcasts::BadgeStatus.call(coin_slot)
     end
 
     assert called, "Turbo::StreamsChannel.broadcast_replace_to was not called"

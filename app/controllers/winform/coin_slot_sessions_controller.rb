@@ -4,7 +4,7 @@ class Winform::CoinSlotSessionsController < ApplicationController
   before_action :set_coin_slot_session!, only: [ :cancel ]
 
   def create
-    result = CoinSlot::CreateSession.call(@pc, @coin_slot)
+    result = CoinSlots::CreateSession.call(@pc, @coin_slot)
 
     if result.success?
       flash.now[:notice] = "Insert coin to #{ @coin_slot.name }!"
@@ -27,8 +27,8 @@ class Winform::CoinSlotSessionsController < ApplicationController
     @coin_slot = @coin_slot_session.coin_slot
 
     if @coin_slot_session.mark_inactive_and_disable_esp! && @coin_slot.active!
-      CoinSlot::Broadcasts::BadgeStatus.call(@coin_slot)
-      CoinSlot::Broadcasts::Session.call(@coin_slot)
+      CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
+      CoinSlots::Broadcasts::Session.call(@coin_slot)
 
       flash.now[:notice] = "Cancel success!"
 

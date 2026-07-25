@@ -1,4 +1,4 @@
-class CoinSlot
+module CoinSlots
   class CreateSession
     def self.call(pc, coin_slot)
       new(pc, coin_slot).call
@@ -19,8 +19,8 @@ class CoinSlot
       end
 
       @coin_slot.reload
-      CoinSlot::Broadcasts::BadgeStatus.call(@coin_slot)
-      CoinSlot::Broadcasts::Session.call(@coin_slot)
+      CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
+      CoinSlots::Broadcasts::Session.call(@coin_slot)
 
       Result.success(@coin_slot_session)
     rescue ActiveRecord::RecordInvalid => e

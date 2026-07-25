@@ -1,4 +1,4 @@
-class CoinSlot
+module CoinSlots
   module Broadcasts
     class Session
       extend ActionView::RecordIdentifier

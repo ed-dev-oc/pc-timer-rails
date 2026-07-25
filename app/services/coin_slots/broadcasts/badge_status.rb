@@ -1,4 +1,4 @@
-class CoinSlot
+module CoinSlots
   module Broadcasts
     class BadgeStatus
       extend ActionView::RecordIdentifier

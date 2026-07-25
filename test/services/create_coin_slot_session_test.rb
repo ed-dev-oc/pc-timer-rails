@@ -6,7 +6,7 @@ class CoinSlotCreateSessionTest < ActiveSupport::TestCase
     pc = pcs(:one)
 
     assert_enqueued_with(job: CoinSlotSessionTimerJob) do
-      result = ::CoinSlot::CreateSession.call(pc, coin_slot)
+      result = ::CoinSlots::CreateSession.call(pc, coin_slot)
       assert result.success?
       session = result.value
       assert_instance_of CoinSlotSession, session
@@ -25,7 +25,7 @@ class CoinSlotCreateSessionTest < ActiveSupport::TestCase
   test "failure when record invalid returns failure result" do
     # Pass nil pc to trigger validation error on CoinSlotSession creation
     coin_slot = coin_slots(:one)
-    result = ::CoinSlot::CreateSession.call(nil, coin_slot)
+    result = ::CoinSlots::CreateSession.call(nil, coin_slot)
     refute result.success?
     assert_match /Pc must exist/, result.error
   end
