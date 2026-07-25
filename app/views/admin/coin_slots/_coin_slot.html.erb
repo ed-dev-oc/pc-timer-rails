@@ -17,38 +17,9 @@
 
     <div class="card-body">
       <div class="d-flex flex-column justify-content-between h-100">
-        <%= turbo_frame_tag dom_id(coin_slot, :coin_slot_session), class: "h-100" do %>
-          <% if coin_slot.active_coin_slot_session.present? %>
-            <div class="h-100">
-              <div class="d-flex flex-column justify-content-center gap-2 mb-2 h-100"
-                data-controller="session-timer"
-                data-session-timer-ended-at-value="<%= coin_slot.active_coin_slot_session.ended_at.iso8601 %>"
-                data-session-timer-total-milliseconds-expiration-value="<%= Setting.duration('coin_slot_session_duration') * 1000 %>">
+        <%= render Winform::CoinSlots::SessionComponent.new(coin_slot: coin_slot) %>
 
-                <div class="d-flex gap-2 justify-content-between align-items-center">
-                  <span class="small fw-semibold">
-                    <i class="bi bi-hourglass-split me-1"></i>Time Remaining
-                  </span>
-                  <span class="badge bg-primary" data-session-timer-target="remaining">
-                  </span>
-                </div>
-
-                <div class="progress" style="height: 25px;">
-                  <div data-session-timer-target="bar" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%;">
-                    0%
-                  </div>
-                </div>
-              </div>
-            </div>
-          <% else %>
-            <div class="text-center py-3 bg-light rounded-3 mb-3">
-              <i class="bi bi-hourglass-bottom text-muted"></i>
-              <p class="mb-0 small text-muted">No active session</p>
-            </div>
-          <% end %>
-        <% end %>
-
-        <div class="d-flex flex-nowrap gap-2 small text-muted">
+        <div class="d-flex flex-nowrap gap-2 small text-muted mt-1">
           <div>
             <i class="bi bi-clock me-1"></i>
             <span>Last seen</span>

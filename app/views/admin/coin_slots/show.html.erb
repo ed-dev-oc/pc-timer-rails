@@ -181,38 +181,9 @@
         </div>
 
         <div class="card-body">
-          <% if @active_session %>
-            <table class="table table-sm mb-0">
-              <tr>
-                <th>Session ID</th>
-                <td><code><%= @active_session.public_uid %></code></td>
-              </tr>
-              <tr>
-                <th>PC</th>
-                <td><%= @active_session.pc.name %></td>
-              </tr>
-              <tr>
-                <th>Started At</th>
-                <td><%= l @active_session.started_at %></td>
-              </tr>
-              <tr>
-                <th>Ends At</th>
-                <td><%= l @active_session.ended_at %></td>
-              </tr>
-              <tr>
-                <th>Duration</th>
-                <td><%= Setting.duration('coin_slot_session_duration') / 60 %> minutes</td>
-              </tr>
-            </table>
-          <% else %>
-            <div class="text-center py-4">
-              <i class="bi bi-moon fs-1 text-muted"></i>
+          <%= turbo_stream_from "coin_slot_session" %>
 
-              <p class="text-muted mt-3">
-                No Active Session
-              </p>
-            </div>
-          <% end %>
+          <%= render Winform::CoinSlots::SessionComponent.new(coin_slot: @coin_slot) %>
         </div>
       </div>
     </div>
