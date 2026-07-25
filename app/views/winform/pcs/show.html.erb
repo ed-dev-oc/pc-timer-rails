@@ -32,8 +32,8 @@
           <%= turbo_stream_from "coin_slot_button" %>
           <%= turbo_stream_from "pc_session_button" %>
 
-          <%= render(Winform::Pc::CoinSlotSessionButtonComponent.new(pc: @pc)) %>
-          <%= render(Winform::Pc::PcSessionButtonComponent.new(pc: @pc)) %>
+          <%= render(Winform::Pcs::CoinSlotSessionButtonComponent.new(pc: @pc)) %>
+          <%= render(Winform::Pcs::PcSessionButtonComponent.new(pc: @pc)) %>
         </div>
       </div>
     </div>

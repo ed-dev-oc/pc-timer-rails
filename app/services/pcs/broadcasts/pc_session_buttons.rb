@@ -4,8 +4,8 @@ module Pcs
   module Broadcasts
     class PcSessionButtons
       COMPONENTS = {
-        coin_slot_button: Winform::Pc::CoinSlotSessionButtonComponent,
-        pc_session_button: Winform::Pc::PcSessionButtonComponent
+        coin_slot_button: Winform::Pcs::CoinSlotSessionButtonComponent,
+        pc_session_button: Winform::Pcs::PcSessionButtonComponent
       }.freeze
 
       def self.call(pc)

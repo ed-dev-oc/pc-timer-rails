@@ -11,11 +11,11 @@
   locals: { object: @pc } %>
 
 <%= turbo_stream.replace dom_id(@pc, :coin_slot_button) do %>
-  <%= render(Winform::Pc::CoinSlotSessionButtonComponent.new(pc: @pc)) %>
+  <%= render(Winform::Pcs::CoinSlotSessionButtonComponent.new(pc: @pc)) %>
 <% end %>
 
 <%= turbo_stream.replace dom_id(@pc, :pc_session_button) do %>
-  <%= render(Winform::Pc::PcSessionButtonComponent.new(pc: @pc)) %>
+  <%= render(Winform::Pcs::PcSessionButtonComponent.new(pc: @pc)) %>
 <% end %>
 
 <%= turbo_stream.replace dom_id(@pc, :inserted_amount) do %>
