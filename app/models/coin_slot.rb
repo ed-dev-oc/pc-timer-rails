@@ -48,17 +48,13 @@ class CoinSlot < ApplicationRecord
     end
   end
 
-  def reaceive_heartbeat!(attributes)
-    # Updated method name to correctly reflect its purpose.
-    # It updates the coin slot with the incoming heartbeat attributes
-    # and broadcasts the updated badge status.
+  def receive_heartbeat!(attributes)
     update!(attributes)
     broadcast_badge!
   end
 
   def queue_esp_command!(command:, coin_slot_session: nil)
-    # Use the current instance (`self`) to create the ESP command log.
-    self.esp_command_logs.create!(
+    esp_command_logs.create!(
       command: command,
       status: :pending,
       sent_at: Time.current,
