@@ -62,40 +62,27 @@ class Admin::CoinSlotsController < Admin::BaseController
   end
 
   def restart
-    esp_command_log = @coin_slot.esp_command_logs.new(
-      command: :restart,
-      status: :pending,
-      sent_at: Time.current
-    )
+    @coin_slot.restart!
 
-    if esp_command_log.save
-      @coin_slot.offline!
-      CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
+    flash[:notice] = "Restarting coin slot!"
 
-      flash[:notice] = "Restarting coin slot!"
+    redirect_back fallback_location: admin_coin_slot_path(@coin_slot.device_id), status: :moved_permanently
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:alert] = e.record.errors.full_messages
 
-      redirect_back fallback_location: admin_coin_slot_path(@coin_slot.device_id), status: :moved_permanently
-    else
-      flash[:alert] = esp_command_log.errors.full_messages
-
-      redirect_back fallback_location: admin_coin_slot_path(@coin_slot.device_id), status: :unprocessable_entity
-    end
+    redirect_back fallback_location: admin_coin_slot_path(@coin_slot.device_id), status: :unprocessable_entity
   end
 
   def toggle_lock
-    status = CoinSlot::AUTHORIZED_STATUSES.include?(@coin_slot.status.to_sym) ? :locked : :offline
+    @coin_slot.toggle_lock!
 
-    if @coin_slot.update(status: status)
-      CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
+    flash[:notice] = "Coin slot status changed to #{ status.to_s.titleize }"
 
-      flash[:notice] = "Coin slot status changed to #{ status.to_s.titleize }"
+    redirect_back fallback_location: admin_coin_slot_path(@coin_slot.device_id), status: :moved_permanently
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:alert] = e.record.errors.full_messages
 
-      redirect_back fallback_location: admin_coin_slot_path(@coin_slot.device_id), status: :moved_permanently
-    else
-      flash[:alert] = @coin_slot.errors.full_messages
-
-      redirect_back fallback_location: admin_coin_slot_path(@coin_slot.device_id), status: :unprocessable_entity
-    end
+    redirect_back fallback_location: admin_coin_slot_path(@coin_slot.device_id), status: :unprocessable_entity
   end
 
   private

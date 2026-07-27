@@ -24,15 +24,8 @@ module Pcs
           update_pc_session!
           mark_transaction_used!
           deactivate_coin_slot_session!
-          set_coin_slot_status_to_active!
           schedule_expiration
           queue_send_pc_command!
-        end
-
-        # Broadcast badge status via the coin slot if present
-        if @coin_slot.present?
-          CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
-          CoinSlots::Broadcasts::Session.call(@coin_slot)
         end
 
         Pcs::Broadcasts::BadgeStatus.call(@pc)
@@ -62,12 +55,8 @@ module Pcs
 
       def deactivate_coin_slot_session!
         if @coin_slot_session.present? && @coin_slot_session.active?
-          @coin_slot_session.mark_inactive_and_disable_esp!
+          @coin_slot_session.stop_session!
         end
-      end
-
-      def set_coin_slot_status_to_active!
-        @coin_slot.active! if @coin_slot.present?
       end
 
       def mark_transaction_used!

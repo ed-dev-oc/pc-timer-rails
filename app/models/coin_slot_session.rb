@@ -14,16 +14,19 @@ class CoinSlotSession < ApplicationRecord
 
   before_validation :set_started_and_ended_at
 
-  def mark_inactive_and_disable_esp!
+  def stop_session!
     transaction do
       inactive!
-      coin_slot.esp_command_logs.create!(
-        command: :disable,
-        status: :pending,
-        sent_at: Time.current,
-        coin_slot_session: self
-      )
+      coin_slot.active!
+      coin_slot.queue_esp_command!(command: :disable, coin_slot_session: self)
     end
+
+    coin_slot.broadcast_badge!
+    coin_slot.broadcast_session!
+  end
+
+  def schedule_expiration
+    CoinSlotSessionTimerJob.set(wait_until: ended_at).perform_later(id)
   end
 
   private

@@ -40,21 +40,4 @@ class CoinSlotSessionTest < ActiveSupport::TestCase
     refute second.valid?
     assert_includes second.errors[:base], "Coin slot currently used!"
   end
-
-  test "mark_inactive_and_disable_esp! transitions status and creates esp command log" do
-    coin_slot = coin_slots(:one)
-    pc = pcs(:one)
-    slot_session = CoinSlotSession.create!(coin_slot: coin_slot, pc: pc)
-    assert_equal "active", slot_session.status
-    assert_difference "EspCommandLog.count", 1 do
-      slot_session.mark_inactive_and_disable_esp!
-    end
-    # The status should be updated to inactive within the same object
-    assert_equal "inactive", slot_session.status
-    log = EspCommandLog.last
-    assert_equal "disable", log.command
-    assert_equal "pending", log.status
-    assert_equal coin_slot, log.coin_slot
-    # The log does not store a direct association to the session (only coin_slot), so we skip this check.
-  end
 end

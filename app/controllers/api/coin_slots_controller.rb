@@ -2,40 +2,30 @@ class Api::CoinSlotsController < Api::BaseController
   before_action :authenticate_device!, :set_coin_slot!, except: [ :register ]
 
   def register
-    @coin_slot = CoinSlot.find_or_initialize_by(device_id: coin_slot_params[:device_id])
-    @coin_slot.assign_attributes(
-      name: coin_slot_params[:name],
-      ip_address: coin_slot_params[:ip_address],
-      mac_address: coin_slot_params[:mac_address]
-    )
-    is_new = @coin_slot.new_record?
+    @coin_slot = CoinSlot.register(coin_slot_params)
 
-    if @coin_slot.save
-      response_json = {
-        status: is_new ? "created" : "updated",
-        coin_slot_id: @coin_slot.id,
-        device_id: @coin_slot.device_id,
-        secret: @coin_slot.secret
-      }
+    response_json = {
+      status: "success",
+      coin_slot_id: @coin_slot.id,
+      device_id: @coin_slot.device_id,
+      secret: @coin_slot.secret
+    }
 
-      render json: response_json, status: is_new ? :created : :ok
-    else
-      render_validation_failed(@coin_slot)
-    end
+    render json: response_json, status: :ok
+  rescue ActiveRecord::RecordInvalid => e
+    render_validation_failed(e.record)
   end
 
   def heartbeat
-    if @coin_slot.update(coin_slot_update_params)
-      CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
+    @coin_slot.receive_heartbeat!(coin_slot_update_params)
 
-      render json: {
-        status: "success",
-        message: "Heartbeat received",
-        coin_slot_status: @coin_slot.status
-      }, status: :ok
-    else
-      render_validation_failed(@coin_slot, "Failed to process heartbeat")
-    end
+    render json: {
+      status: "success",
+      message: "Heartbeat received",
+      coin_slot_status: @coin_slot.status
+    }, status: :ok
+  rescue ActiveRecord::RecordInvalid
+    render_validation_failed(@coin_slot, "Failed to process heartbeat")
   end
 
   private

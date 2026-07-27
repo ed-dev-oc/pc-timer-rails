@@ -21,17 +21,9 @@ module Pcs
         ActiveRecord::Base.transaction do
           create_pc_session!
           deactivate_coin_slot_session!
-          set_coin_slot_status_to_active!
           schedule_expiration
           active_pc_session!
           mark_transactions_used!
-        end
-
-        @pc.reload
-
-        if @coin_slot.present?
-          CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
-          CoinSlots::Broadcasts::Session.call(@coin_slot)
         end
 
         Pcs::Broadcasts::BadgeStatus.call(@pc)
@@ -63,12 +55,8 @@ module Pcs
 
       def deactivate_coin_slot_session!
         if @coin_slot_session.present? && @coin_slot_session.active?
-          @coin_slot_session.mark_inactive_and_disable_esp!
+          @coin_slot_session.stop_session!
         end
-      end
-
-      def set_coin_slot_status_to_active!
-        @coin_slot.active! if @coin_slot.present?
       end
 
       def active_pc_session!

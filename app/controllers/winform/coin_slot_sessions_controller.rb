@@ -4,7 +4,7 @@ class Winform::CoinSlotSessionsController < ApplicationController
   before_action :set_coin_slot_session!, only: [ :cancel ]
 
   def create
-    result = CoinSlots::CreateSession.call(@pc, @coin_slot)
+    result = CoinSlots::StartSession.call(@pc, @coin_slot)
 
     if result.success?
       flash.now[:notice] = "Insert coin to #{ @coin_slot.name }!"
@@ -24,25 +24,20 @@ class Winform::CoinSlotSessionsController < ApplicationController
   end
 
   def cancel
-    @coin_slot = @coin_slot_session.coin_slot
+    @coin_slot_session.stop_session!
 
-    if @coin_slot_session.mark_inactive_and_disable_esp! && @coin_slot.active!
-      CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
-      CoinSlots::Broadcasts::Session.call(@coin_slot)
+    flash.now[:notice] = "Cancel success!"
 
-      flash.now[:notice] = "Cancel success!"
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_back fallback_location: winform_pc_path(@pc.device_id), notice: "Insert coin now!" }
+    end
+  rescue ActiveRecord::RecordInvalid => e
+    flash.now[:alert] = e.record.errors.full_messages
 
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_back fallback_location: winform_pc_path(@pc.device_id), notice: "Insert coin now!" }
-      end
-    else
-      flash.now[:alert] = @coin_slot_session.errors.full_messages
-
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_back fallback_location: winform_pc_path(@pc.device_id), alert: @coin_slot_session.errors.full_messages }
-      end
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_back fallback_location: winform_pc_path(@pc.device_id), alert: e.errors.full_messages }
     end
   end
 
