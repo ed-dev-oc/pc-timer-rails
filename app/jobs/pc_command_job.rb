@@ -22,7 +22,7 @@ class PcCommandJob < ApplicationJob
     Rails.logger.info "🔥 Attempt ##{executions}"
 
     log = PcCommandLog.find(command_log_id)
-    client = Pc::AgentClient.new(log.pc)
+    client = Pcs::AgentClient.new(log.pc)
 
     case log.command
     when "restart"  then client.restart

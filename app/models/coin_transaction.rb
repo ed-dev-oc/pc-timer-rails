@@ -14,8 +14,14 @@ class CoinTransaction < ApplicationRecord
 
   before_validation :set_minutes_granted
 
+  scope :unused, -> { where(status: :unused) }
+
   after_update_commit do
     CoinTransactions::BroadcastService.call(self.pc)
+  end
+
+  def self.mark_used(transactions)
+    transactions.each(&:used!)
   end
 
   private

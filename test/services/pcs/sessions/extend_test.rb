@@ -1,6 +1,6 @@
 require "test_helper"
 
-class UpdatePcSessionTest < ActiveSupport::TestCase
+class PcSessionsExtendTest < ActiveSupport::TestCase
   test "adds unused coin total to session total amount" do
     pc = pcs(:one)
     pc.coin_transactions.destroy_all
@@ -19,7 +19,7 @@ class UpdatePcSessionTest < ActiveSupport::TestCase
       peso_amount: 3
     )
 
-    result = Pcs::Sessions::Update.call(pc, pc_session)
+    result = Pcs::Sessions::Extend.call(pc, pc_session)
 
     assert result.success?
     assert_equal 15, pc_session.reload.total_amount

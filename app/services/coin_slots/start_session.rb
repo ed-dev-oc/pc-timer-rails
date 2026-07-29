@@ -18,6 +18,7 @@ class CoinSlots::StartSession
       @coin_slot.queue_esp_command!(command: :enable)
     end
 
+    @coin_slot.reload
     @coin_slot.broadcast_badge!
     @coin_slot.broadcast_session!
 

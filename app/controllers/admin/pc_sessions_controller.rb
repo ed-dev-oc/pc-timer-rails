@@ -3,9 +3,7 @@ class Admin::PcSessionsController < Admin::BaseController
   before_action :set_pc_session!, only: [ :stop_session ]
 
   def create
-    pc_session = PcSession.new(pc_session_params)
-
-    result = Pcs::Sessions::CreateManual.call(pc_session)
+    result = PcSession.start_manual!(pc_session_params)
 
     if result.success?
       flash[:notice] = "Session created to #{@pc.name}!"

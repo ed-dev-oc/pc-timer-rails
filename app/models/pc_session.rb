@@ -38,6 +38,61 @@ class PcSession < ApplicationRecord
     total_minutes_purchased * 60 * 1000
   end
 
+  def self.start!(pc, coin_transactions)
+    total_minutes = coin_transactions.sum(:minutes_granted)
+
+    create!(
+      pc: pc,
+      total_minutes_purchased: total_minutes,
+      total_amount: coin_transactions.sum(:peso_amount),
+      started_at: Time.current,
+      expires_at: Time.current + total_minutes.minutes
+    )
+  end
+
+  def self.start_manual!(attributes)
+    current_time = Time.current
+    pc_session = new(attributes)
+
+    pc_session.assign_attributes(
+      started_at: current_time,
+      expires_at: current_time + pc_session.total_minutes_purchased.minutes
+    )
+
+    Pcs::Sessions::StartManual.call(pc_session)
+  end
+
+  def stop!
+    current_time = Time.current
+    total_minutes_used = (current_time - started_at).ceil / 60
+
+    update!(
+      status: :ended,
+      total_minutes_used: total_minutes_used
+    )
+  end
+
+  def extend!(coin_transactions)
+    total_minutes = coin_transactions.sum(:minutes_granted)
+    extend_total_amount = coin_transactions.sum(:peso_amount)
+    expiration_datetime = expires_at + total_minutes.minutes
+    new_total_minutes_purchased = total_minutes_purchased + total_minutes
+    accumulated_total_amount = total_amount + extend_total_amount
+
+    update!(
+      expires_at: expiration_datetime,
+      total_minutes_purchased: new_total_minutes_purchased,
+      total_amount: accumulated_total_amount,
+      status: :active
+    )
+  end
+
+  def schedule_expiration
+    PcSessionExpirationJob
+      .set(wait_until: expires_at)
+      .perform_later(id)
+  end
+
   private
 
     def has_one_pc_session_active!

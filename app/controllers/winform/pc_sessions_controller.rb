@@ -2,7 +2,7 @@ class Winform::PcSessionsController < ApplicationController
   before_action :authenticate_device!, :set_pc!
   before_action :set_pc_session!, only: [ :update ]
   def create
-    result = Pcs::Sessions::Create.call(@pc)
+    result = Pcs::Sessions::Start.call(@pc)
 
     if result.success?
       flash.now[:notice] = "Session created to #{@pc.name}!"
@@ -22,7 +22,7 @@ class Winform::PcSessionsController < ApplicationController
   end
 
   def update
-    result = Pcs::Sessions::Update.call(@pc, @pc_session)
+    result = Pcs::Sessions::Extend.call(@pc, @pc_session)
 
     if result.success?
       flash.now[:notice] = "Session extended to #{@pc.name}!"

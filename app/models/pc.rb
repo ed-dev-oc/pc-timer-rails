@@ -38,11 +38,7 @@ class Pc < ApplicationRecord
     transaction do
       active_session!
 
-      pc_command_logs.create!(
-        command: :unlock,
-        status: :pending,
-        sent_at: Time.current
-      )
+      queue_pc_command!(:unlock)
     end
   end
 
@@ -50,16 +46,68 @@ class Pc < ApplicationRecord
     transaction do
       online! if active_session?
 
-      pc_command_logs.create!(
-        command: :lock,
-        status: :pending,
-        sent_at: Time.current
-      )
+      queue_pc_command!(:lock)
     end
   end
 
   def authorized_status?
     AUTHORIZED_STATUSES.include?(status.to_sym)
+  end
+
+  def self.register!(attributes)
+    pc = find_or_initialize_by(device_id: attributes[:device_id])
+    pc.assign_attributes(attributes.slice(:name, :ip_address, :mac_address))
+    pc.save!
+    broadcast_badge!
+
+    pc
+  end
+
+  def signin!
+    pc_session = active_pc_session
+    pc_status = self.status
+
+    unless disabled_kiosk?
+      pc_status = pc_session.present? ? :active_session : :online
+    end
+
+    update!(status: pc_status)
+  end
+
+  def signout!
+    update!(status: :offline, last_seen_at: Time.current)
+    broadcast_badge!
+  end
+
+  def receive_heartbeat!(attributes)
+    update!(attributes)
+    broadcast_badge!
+  end
+
+  def queue_pc_command!(command)
+    pc_command_logs.create!(
+      command: command,
+      status: :pending,
+      sent_at: Time.current
+    )
+  end
+
+  def broadcast_badge!
+    Pcs::Broadcasts::BadgeStatus.call(self)
+  end
+
+  def broadcast_session!
+    PcSessions::BroadcastService.call(self)
+  end
+
+  def active_session_json
+    pc_session = active_pc_session
+
+    pc_session.present? ? {
+      id: pc_session&.public_uid,
+      status: pc_session&.status,
+      expires_at_utc: pc_session&.expires_at&.utc
+    } : nil
   end
 
   private
