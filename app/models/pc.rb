@@ -54,6 +54,22 @@ class Pc < ApplicationRecord
     AUTHORIZED_STATUSES.include?(status.to_sym)
   end
 
+  def start_session!
+    Pcs::Sessions::Start.call(self)
+  end
+
+  def start_manual_session!(attributes)
+    PcSession.start_manual!(pc_session_params)
+  end
+
+  def extend_session!(session)
+    Pcs::Sessions::Extend.call(self, session)
+  end
+
+  def stop_session!(session)
+    Pcs::Sessions::Stop.call(self, session)
+  end
+
   def self.register!(attributes)
     pc = find_or_initialize_by(device_id: attributes[:device_id])
     pc.assign_attributes(attributes.slice(:name, :ip_address, :mac_address))
