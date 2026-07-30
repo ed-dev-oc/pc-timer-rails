@@ -85,18 +85,23 @@ class PcSession < ApplicationRecord
   end
 
   def extend!(coin_transactions)
-    total_minutes = coin_transactions.sum(:minutes_granted)
-    extend_total_amount = coin_transactions.sum(:peso_amount)
-    expiration_datetime = expires_at + total_minutes.minutes
-    new_total_minutes_purchased = total_minutes_purchased + total_minutes
-    accumulated_total_amount = total_amount + extend_total_amount
+    transaction do
+      total_minutes = coin_transactions.sum(:minutes_granted)
+      extend_total_amount = coin_transactions.sum(:peso_amount)
+      expiration_datetime = expires_at + total_minutes.minutes
+      new_total_minutes_purchased = total_minutes_purchased + total_minutes
+      accumulated_total_amount = total_amount + extend_total_amount
 
-    update!(
-      expires_at: expiration_datetime,
-      total_minutes_purchased: new_total_minutes_purchased,
-      total_amount: accumulated_total_amount,
-      status: :active
-    )
+      update!(
+        expires_at: expiration_datetime,
+        total_minutes_purchased: new_total_minutes_purchased,
+        total_amount: accumulated_total_amount,
+        status: :active
+      )
+      coin_transactions.each(&:mark_used!)
+
+      schedule_expiration
+    end
   end
 
   def schedule_expiration

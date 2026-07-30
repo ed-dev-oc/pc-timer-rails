@@ -12,23 +12,9 @@ class Winform::PcSessionsController < ApplicationController
   end
 
   def update
-    result = @pc.extend_session!(@pc_session)
+    @pc.extend_session!(@pc_session)
 
-    if result.success?
-      flash.now[:notice] = "Session extended to #{@pc.name}!"
-
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_back fallback_location: winform_pc_path(@pc.device_id), notice: "Session created to #{@pc.name}!" }
-      end
-    else
-      flash.now[:alert] = result.error
-
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_back fallback_location: winform_pc_path(@pc.device_id), alert: result.error }
-      end
-    end
+    respond_with_notice(winform_pc_path(@pc.device_id), "Session extended to #{@pc.name}!")
   end
 
   private

@@ -57,10 +57,11 @@ class Pc < ApplicationRecord
   end
 
   def start_session!
-    raise NoInsertedCoinsError, "No inserted coin found." if coin_transactions.unused.empty?
+    unused_credits = coin_transactions.unused
+    raise NoInsertedCoinsError, "No inserted coin found." if unused_credits.empty?
 
     transaction do
-      PcSession.start!(self, coin_transactions.unused)
+      PcSession.start!(self, unused_credits)
       mark_active_session_and_unlock_pc!
       active_coin_slot_session&.stop_session!
     end
@@ -82,7 +83,18 @@ class Pc < ApplicationRecord
   end
 
   def extend_session!(session)
-    Pcs::Sessions::Extend.call(self, session)
+    unused_credits = coin_transactions.unused
+    raise NoInsertedCoinsError, "No inserted coin found." if unused_credits.empty?
+
+    transaction do
+      session.extend!(unused_credits)
+      mark_active_session_and_unlock_pc!
+      active_coin_slot_session&.stop_session!
+    end
+
+    self.reload
+    broadcast_badge!
+    broadcast_session!
   end
 
   def stop_session!(session)
