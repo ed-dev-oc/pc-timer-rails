@@ -1,4 +1,6 @@
 class Admin::PcSessionsController < Admin::BaseController
+  rescue_from ActiveRecord::RecordInvalid, with: :handle_record_invalid
+
   before_action :set_pc!
   before_action :set_pc_session!, only: [ :stop_session ]
 
@@ -6,22 +8,12 @@ class Admin::PcSessionsController < Admin::BaseController
     @pc.start_manual_session!(pc_session_params)
 
     respond_with_notice(admin_pc_path(@pc.device_id), "Session created to #{@pc.name}!")
-  rescue ActiveRecord::RecordInvalid => e
-    respond_with_alert(admin_pc_path(@pc.device_id), e.record.errors.full_messages)
   end
 
   def stop_session
-    result = Pcs::Sessions::Stop.call(@pc, @pc_session)
+    @pc.stop_session!(@pc_session)
 
-    if result.success?
-      flash[:notice] = "Session stop to #{@pc.name}!"
-
-      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
-    else
-      flash[:alert] = result.error
-
-      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
-    end
+    respond_with_notice(admin_pc_path(@pc.device_id), "Session stop to #{@pc.name}!")
   end
 
   private
@@ -40,5 +32,9 @@ class Admin::PcSessionsController < Admin::BaseController
 
     def pc_session_params
       params.expect(pc_session: [ :total_minutes_purchased ]).merge(pc_id: @pc.id)
+    end
+
+    def handle_record_invalid(error)
+      respond_with_alert(admin_pc_path(@pc.device_id), error.record.errors.full_messages)
     end
 end

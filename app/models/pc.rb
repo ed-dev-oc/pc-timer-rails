@@ -98,7 +98,14 @@ class Pc < ApplicationRecord
   end
 
   def stop_session!(session)
-    Pcs::Sessions::Stop.call(self, session)
+    transaction do
+      session.stop!
+      mark_online_and_lock_pc!
+    end
+
+    self.reload
+    broadcast_badge!
+    broadcast_session!
   end
 
   def self.register!(attributes)
@@ -155,10 +162,6 @@ class Pc < ApplicationRecord
       status: pc_session&.status,
       expires_at_utc: pc_session&.expires_at&.utc
     } : nil
-  end
-
-  def consume_inserted_coins!
-    coin_transactions.unused.find_each(&:mark_used!)
   end
 
   private
