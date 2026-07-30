@@ -57,4 +57,22 @@ class ApplicationController < ActionController::Base
     def after_sign_out_path_for(resource_or_scope)
       new_user_session_path
     end
+
+    def respond_with_notice(path, message)
+      flash.now[:notice] = message
+
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_back fallback_location: path, notice: message }
+      end
+    end
+
+    def respond_with_alert(path, message)
+      flash.now[:alert] = message
+
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_back fallback_location: path, alert: message }
+      end
+    end
 end

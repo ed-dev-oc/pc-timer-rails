@@ -20,8 +20,8 @@ class CoinTransaction < ApplicationRecord
     CoinTransactions::BroadcastService.call(self.pc)
   end
 
-  def self.mark_used(transactions)
-    transactions.each(&:used!)
+  def mark_used!
+    self.used!
   end
 
   private

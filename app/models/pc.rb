@@ -1,4 +1,6 @@
 class Pc < ApplicationRecord
+  class NoInsertedCoinsError < StandardError; end
+
   include ActionView::RecordIdentifier
 
   encrypts :secret
@@ -55,7 +57,17 @@ class Pc < ApplicationRecord
   end
 
   def start_session!
-    Pcs::Sessions::Start.call(self)
+    raise NoInsertedCoinsError, "No inserted coin found." if coin_transactions.unused.empty?
+
+    transaction do
+      PcSession.start!(self, coin_transactions.unused)
+      mark_active_session_and_unlock_pc!
+      active_coin_slot_session&.stop_session!
+    end
+
+    self.reload
+    broadcast_badge!
+    broadcast_session!
   end
 
   def start_manual_session!(attributes)
@@ -124,6 +136,10 @@ class Pc < ApplicationRecord
       status: pc_session&.status,
       expires_at_utc: pc_session&.expires_at&.utc
     } : nil
+  end
+
+  def consume_inserted_coins!
+    coin_transactions.unused.find_each(&:mark_used!)
   end
 
   private

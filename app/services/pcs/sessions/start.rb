@@ -25,7 +25,7 @@ module Pcs
 
           @pc.mark_active_session_and_unlock_pc!
 
-          CoinTransaction.mark_used(@coin_transactions)
+          @coin_transactions.each(&:mark_used!)
 
           @coin_slot_session&.stop_session! if @coin_slot_session&.active?
         end

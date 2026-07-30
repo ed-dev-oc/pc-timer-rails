@@ -39,15 +39,23 @@ class PcSession < ApplicationRecord
   end
 
   def self.start!(pc, coin_transactions)
-    total_minutes = coin_transactions.sum(:minutes_granted)
+    transaction do
+      total_minutes = coin_transactions.sum(:minutes_granted)
 
-    create!(
-      pc: pc,
-      total_minutes_purchased: total_minutes,
-      total_amount: coin_transactions.sum(:peso_amount),
-      started_at: Time.current,
-      expires_at: Time.current + total_minutes.minutes
-    )
+      session = create!(
+        pc: pc,
+        total_minutes_purchased: total_minutes,
+        total_amount: coin_transactions.sum(:peso_amount),
+        started_at: Time.current,
+        expires_at: Time.current + total_minutes.minutes
+      )
+
+      coin_transactions.each(&:mark_used!)
+
+      session.schedule_expiration
+
+      session
+    end
   end
 
   def self.start_manual!(attributes)

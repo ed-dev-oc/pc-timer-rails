@@ -23,7 +23,7 @@ module Pcs
           @pc_session.extend!(@coin_transactions)
           @pc_session.schedule_expiration
           @pc.queue_pc_command!(:unlock)
-          CoinTransaction.mark_used(@coin_transactions)
+          @coin_transactions.each(&:mark_used!)
           @coin_slot_session&.stop_session! if @coin_slot_session&.active?
         end
 
