@@ -59,15 +59,19 @@ class PcSession < ApplicationRecord
   end
 
   def self.start_manual!(attributes)
-    current_time = Time.current
-    pc_session = new(attributes)
+    transaction do
+      current_time = Time.current
+      session = new(attributes)
 
-    pc_session.assign_attributes(
-      started_at: current_time,
-      expires_at: current_time + pc_session.total_minutes_purchased.minutes
-    )
+      session.assign_attributes(
+        started_at: current_time,
+        expires_at: current_time + session.total_minutes_purchased.to_i.minutes
+      )
+      session.save!
+      session.schedule_expiration
 
-    Pcs::Sessions::StartManual.call(pc_session)
+      session
+    end
   end
 
   def stop!

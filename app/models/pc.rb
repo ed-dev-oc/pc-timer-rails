@@ -71,7 +71,14 @@ class Pc < ApplicationRecord
   end
 
   def start_manual_session!(attributes)
-    PcSession.start_manual!(pc_session_params)
+    transaction do
+      PcSession.start_manual!(attributes)
+      mark_active_session_and_unlock_pc!
+    end
+
+    self.reload
+    broadcast_badge!
+    broadcast_session!
   end
 
   def extend_session!(session)

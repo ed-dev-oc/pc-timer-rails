@@ -3,17 +3,11 @@ class Admin::PcSessionsController < Admin::BaseController
   before_action :set_pc_session!, only: [ :stop_session ]
 
   def create
-    result = @pc.start_manual_session!(pc_session_params)
+    @pc.start_manual_session!(pc_session_params)
 
-    if result.success?
-      flash[:notice] = "Session created to #{@pc.name}!"
-
-      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
-    else
-      flash[:alert] = result.error
-
-      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
-    end
+    respond_with_notice(admin_pc_path(@pc.device_id), "Session created to #{@pc.name}!")
+  rescue ActiveRecord::RecordInvalid => e
+    respond_with_alert(admin_pc_path(@pc.device_id), e.record.errors.full_messages)
   end
 
   def stop_session
