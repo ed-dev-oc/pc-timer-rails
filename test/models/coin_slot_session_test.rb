@@ -6,10 +6,15 @@ class CoinSlotSessionTest < ActiveSupport::TestCase
     assert session.valid?
   end
 
-  test "set_started_and_ended_at sets timestamps correctly" do
+  test "set_started_and_ended_at sets timestamps correctly and enqueues expiration job" do
     coin_slot = coin_slots(:one)
     pc = pcs(:one)
-    session = CoinSlotSession.create!(coin_slot: coin_slot, pc: pc)
+    session = nil
+    # Ensure the expiration job is scheduled when we start a session
+    assert_enqueued_with(job: CoinSlotSessionTimerJob) do
+      session = CoinSlotSession.start!(coin_slot, pc)
+    end
+
     assert_not_nil session.started_at
     assert_not_nil session.ended_at
     expected_duration = Setting.duration("coin_slot_session_duration").seconds
@@ -32,12 +37,28 @@ class CoinSlotSessionTest < ActiveSupport::TestCase
     pc1 = pcs(:one)
     pc2 = pcs(:two)
     # first active session
-    first = CoinSlotSession.create!(coin_slot: coin_slot, pc: pc1)
+    first = CoinSlotSession.start!(coin_slot, pc1)
     assert_equal "active", first.status
-    # attempt second active session should be invalid
+    # reload the coin slot to clear any cached association
+    coin_slot = CoinSlot.find(coin_slot.id)
+    # attempt second active session should be invalid – use a new instance so we can inspect validation errors
     second = CoinSlotSession.new(coin_slot: coin_slot, pc: pc2)
     second.status = :active
     refute second.valid?
     assert_includes second.errors[:base], "Coin slot currently used!"
+  end
+
+  test "start! raises when coin slot already has an active session" do
+    coin_slot = coin_slots(:one)
+    pc1 = pcs(:one)
+    pc2 = pcs(:two)
+    # first session succeeds
+    CoinSlotSession.start!(coin_slot, pc1)
+    # reload the coin slot to ensure the association cache is cleared
+    coin_slot = CoinSlot.find(coin_slot.id)
+    # second attempt should raise ActiveRecord::RecordInvalid
+    assert_raises(ActiveRecord::RecordInvalid) do
+      CoinSlotSession.start!(coin_slot, pc2)
+    end
   end
 end

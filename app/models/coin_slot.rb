@@ -8,7 +8,8 @@ class CoinSlot < ApplicationRecord
   attribute :last_seen_at, :datetime, default: -> { Time.current }
 
   has_many :coin_slot_sessions, dependent: :destroy
-  has_one :active_coin_slot_session, -> { where(status: :active) }, class_name: "CoinSlotSession"
+  has_one :active_coin_slot_session, -> { where(status: :active) }, class_name: "CoinSlotSession" # TODO: Remove this and replace to active_session
+  has_one :active_session, -> { active }, class_name: "CoinSlotSession"
   has_many :coin_transactions, dependent: :destroy
   has_many :esp_command_logs, class_name: "EspCommandLog", dependent: :destroy
 
@@ -41,11 +42,22 @@ class CoinSlot < ApplicationRecord
 
   def start_session!(pc)
     transaction do
-      coin_slot_session = coin_slot_sessions.create!(pc: pc)
+      CoinSlotSession.start!(self, pc)
       active_session!
-
-      coin_slot_session
+      queue_esp_command!(command: :enable)
     end
+
+    self.reload
+    broadcast_badge!
+    broadcast_session!
+  end
+
+  def stop_session!
+    active_session&.stop!
+
+    self.reload
+    broadcast_badge!
+    broadcast_session!
   end
 
   def receive_heartbeat!(attributes)

@@ -6,7 +6,8 @@ class CoinSlotSessionTimerJob < ApplicationJob
     pc = coin_slot_session&.pc
 
     if coin_slot_session.present?
-      coin_slot_session.stop_session! if coin_slot_session.active?
+      coin_slot = coin_slot_session.coin_slot
+      coin_slot.stop_session! if coin_slot_session.active?
 
       if pc.present?
         pc.reload

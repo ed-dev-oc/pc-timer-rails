@@ -14,15 +14,22 @@ class CoinSlotSession < ApplicationRecord
 
   before_validation :set_started_and_ended_at
 
-  def stop_session!
+  scope :active, -> { where(status: :active) }
+
+  def self.start!(coin_slot, pc)
+    transaction do
+      session = create!(pc: pc, coin_slot: coin_slot)
+      session.schedule_expiration
+      session
+    end
+  end
+
+  def stop!
     transaction do
       inactive!
       coin_slot.active!
       coin_slot.queue_esp_command!(command: :disable, coin_slot_session: self)
     end
-
-    coin_slot.broadcast_badge!
-    coin_slot.broadcast_session!
   end
 
   def schedule_expiration
@@ -39,7 +46,7 @@ class CoinSlotSession < ApplicationRecord
     def coin_slot_has_only_one_session!
       coin_slot = self.coin_slot
 
-      if coin_slot&.coin_slot_sessions.active.present?
+      if coin_slot&.active_coin_slot_session.present?
         errors.add(:base, "Coin slot currently used!")
       end
     end

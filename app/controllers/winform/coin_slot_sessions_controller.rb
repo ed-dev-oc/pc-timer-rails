@@ -1,44 +1,20 @@
 class Winform::CoinSlotSessionsController < ApplicationController
+  rescue_from ActiveRecord::RecordInvalid, with: :handle_record_invalid
+
   before_action :authenticate_device!, :set_pc!
   before_action :set_coin_slot!, only: [ :create ]
-  before_action :set_coin_slot_session!, only: [ :cancel ]
+  before_action :set_active_coin_slot, only: [ :cancel ]
 
   def create
-    result = CoinSlots::StartSession.call(@pc, @coin_slot)
+    @coin_slot.start_session!(@pc)
 
-    if result.success?
-      flash.now[:notice] = "Insert coin to #{ @coin_slot.name }!"
-
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_back fallback_location: winform_pc_path(@pc.device_id), notice: "Insert coin now!" }
-      end
-    else
-      flash.now[:alert] = result.error
-
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_back fallback_location: winform_pc_path(@pc.device_id), alert: result.error }
-      end
-    end
+    respond_with_notice(winform_pc_path(@pc.device_id), "Insert coin to #{ @coin_slot.name }!")
   end
 
   def cancel
-    @coin_slot_session.stop_session!
+    @coin_slot.stop_session!
 
-    flash.now[:notice] = "Cancel success!"
-
-    respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_back fallback_location: winform_pc_path(@pc.device_id), notice: "Insert coin now!" }
-    end
-  rescue ActiveRecord::RecordInvalid => e
-    flash.now[:alert] = e.record.errors.full_messages
-
-    respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_back fallback_location: winform_pc_path(@pc.device_id), alert: e.errors.full_messages }
-    end
+    respond_with_notice(winform_pc_path(@pc.device_id), "Cancel success!")
   end
 
   private
@@ -55,9 +31,13 @@ class Winform::CoinSlotSessionsController < ApplicationController
       redirect_to winform_pc_path(@pc.device_id), alert: "No coin slot found!" if @coin_slot.nil?
     end
 
-    def set_coin_slot_session!
-      @coin_slot_session = @pc.active_coin_slot_session
+    def set_active_coin_slot
+      @coin_slot = @pc.active_coin_slot
 
-      redirect_to winform_pc_path(@pc.device_id), alert: "No coin slot session active found!" if @coin_slot_session.nil?
+      redirect_to winform_pc_path(@pc.device_id), alert: "No coin slot session active found!" if @coin_slot.nil?
+    end
+
+    def handle_record_invalid(error)
+      respond_with_alert(winform_pc_path(@pc.device_id), error.record.errors.full_messages)
     end
 end

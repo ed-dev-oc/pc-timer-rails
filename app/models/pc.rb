@@ -13,8 +13,12 @@ class Pc < ApplicationRecord
   has_many :pc_command_logs, class_name: "PcCommandLog", dependent: :destroy
 
   has_one :active_coin_slot_session,
-          -> { where(status: :active) },
+          -> { active },
           class_name: "CoinSlotSession"
+  has_one :active_coin_slot,
+          through: :active_coin_slot_session,
+          source: :coin_slot
+
   has_one :active_pc_session,
           -> { where(status: :active) },
           class_name: "PcSession"
