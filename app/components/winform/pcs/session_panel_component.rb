@@ -10,6 +10,6 @@ class Winform::Pcs::SessionPanelComponent < ViewComponent::Base
   attr_reader :pc
 
   def pc_session
-    @pc.active_pc_session
+    @pc.active_session
   end
 end

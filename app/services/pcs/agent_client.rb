@@ -26,7 +26,7 @@ module Pcs
     end
 
     def unlock
-      pc_session = @pc.active_pc_session
+      pc_session = @pc.active_session
 
       session_json = pc_session.present? ? {
         id: pc_session&.public_uid,

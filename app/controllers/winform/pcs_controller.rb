@@ -29,6 +29,6 @@ class Winform::PcsController < Winform::BaseController
     end
 
     def set_pc_session!
-      @pc_session = @pc.active_pc_session
+      @pc_session = @pc.active_session
     end
 end

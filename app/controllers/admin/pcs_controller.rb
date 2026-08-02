@@ -3,7 +3,7 @@ class Admin::PcsController < Admin::BaseController
 
   # GET /admin/pcs or /admin/pcs.json
   def index
-    @pcs = Pc.includes(:active_pc_session).all
+    @pcs = Pc.includes(:active_session).all
   end
 
   # GET /admin/pcs/1 or /admin/pcs/1.json

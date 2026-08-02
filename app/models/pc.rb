@@ -19,8 +19,8 @@ class Pc < ApplicationRecord
           through: :active_coin_slot_session,
           source: :coin_slot
 
-  has_one :active_pc_session,
-          -> { where(status: :active) },
+  has_one :active_session,
+          -> { active },
           class_name: "PcSession"
 
   validates :name, :device_id, presence: true, uniqueness: true
@@ -122,7 +122,7 @@ class Pc < ApplicationRecord
   end
 
   def signin!
-    pc_session = active_pc_session
+    pc_session = active_session
     pc_status = self.status
 
     unless disabled_kiosk?
@@ -163,7 +163,7 @@ class Pc < ApplicationRecord
   end
 
   def active_session_json
-    pc_session = active_pc_session
+    pc_session = active_session
 
     pc_session.present? ? {
       id: pc_session&.public_uid,

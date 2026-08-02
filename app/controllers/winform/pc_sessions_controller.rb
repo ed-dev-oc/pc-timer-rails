@@ -26,7 +26,7 @@ class Winform::PcSessionsController < ApplicationController
     end
 
     def set_pc_session!
-      @pc_session = @pc.active_pc_session
+      @pc_session = @pc.active_session
 
       redirect_back fallback_location: winform_pc_path(@pc&.device_id), alert: "PC session not found!" if @pc_session.nil?
     end

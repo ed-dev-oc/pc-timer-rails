@@ -14,6 +14,8 @@ class PcSession < ApplicationRecord
   validate :has_one_pc_session_active!, on: :create
   validate :peso_amount_meets_minimum_credit, if: :coin_funded_session?
 
+  scope :active, -> { where(status: :active) }
+
   def to_param
     public_uid
   end
@@ -113,7 +115,7 @@ class PcSession < ApplicationRecord
   private
 
     def has_one_pc_session_active!
-      if pc.active_pc_session.present?
+      if pc.active_session.present?
         errors.add(:base, "This PC already have active session!")
       end
     end
