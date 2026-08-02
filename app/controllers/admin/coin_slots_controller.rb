@@ -64,6 +64,8 @@ class Admin::CoinSlotsController < Admin::BaseController
   def restart
     @coin_slot.restart!
 
+    CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
+
     flash[:notice] = "Restarting coin slot!"
 
     redirect_back fallback_location: admin_coin_slot_path(@coin_slot.device_id), status: :moved_permanently
@@ -75,6 +77,8 @@ class Admin::CoinSlotsController < Admin::BaseController
 
   def toggle_lock
     @coin_slot.toggle_lock!
+
+    CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
 
     flash[:notice] = "Coin slot status changed to #{ status.to_s.titleize }"
 

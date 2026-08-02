@@ -49,21 +49,16 @@ class CoinSlot < ApplicationRecord
     end
 
     self.reload
-    broadcast_badge!
-    broadcast_session!
   end
 
   def stop_session!
     active_session&.stop!
 
     self.reload
-    broadcast_badge!
-    broadcast_session!
   end
 
   def receive_heartbeat!(attributes)
     update!(attributes)
-    broadcast_badge!
   end
 
   def queue_esp_command!(command:, coin_slot_session: nil)
@@ -80,8 +75,6 @@ class CoinSlot < ApplicationRecord
       queue_esp_command!(command: :restart)
       offline!
     end
-
-    broadcast_badge!
   end
 
   def toggle_lock!
@@ -93,16 +86,6 @@ class CoinSlot < ApplicationRecord
       end
 
     update!(status: new_status)
-
-    broadcast_badge!
-  end
-
-  def broadcast_badge!
-    CoinSlots::Broadcasts::BadgeStatus.call(self)
-  end
-
-  def broadcast_session!
-    CoinSlots::Broadcasts::Session.call(self)
   end
 
   private

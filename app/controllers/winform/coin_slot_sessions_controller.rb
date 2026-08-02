@@ -8,11 +8,17 @@ class Winform::CoinSlotSessionsController < ApplicationController
   def create
     @coin_slot.start_session!(@pc)
 
+    CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
+    CoinSlots::Broadcasts::Session.call(@coin_slot)
+
     respond_with_notice(winform_pc_path(@pc.device_id), "Insert coin to #{ @coin_slot.name }!")
   end
 
   def cancel
     @coin_slot.stop_session!
+
+    CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
+    CoinSlots::Broadcasts::Session.call(@coin_slot)
 
     respond_with_notice(winform_pc_path(@pc.device_id), "Cancel success!")
   end
