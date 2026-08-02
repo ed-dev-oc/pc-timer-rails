@@ -43,7 +43,7 @@ class CoinSlotTest < ActiveSupport::TestCase
   test "authorized_status? works for authorized statuses" do
     @slot.update!(status: :online)
     assert @slot.authorized_status?
-    @slot.update!(status: :active_session)
+    @slot.update!(status: :active)
     assert @slot.authorized_status?
     @slot.update!(status: :offline)
     assert @slot.authorized_status?

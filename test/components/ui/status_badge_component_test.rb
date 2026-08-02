@@ -6,7 +6,7 @@ require "ostruct"
 class Ui::StatusBadgeComponentTest < ViewComponent::TestCase
   # Mapping of status values to the expected CSS variant class and Bootstrap Icon class
   STATUS_EXPECTATIONS = {
-    "active"          => { variant: "text-bg-success",   icon: "bi-play-circle-fill" },
+    "active"          => { variant: "text-bg-warning",   icon: "bi-play-circle-fill" },
     "inactive"        => { variant: "text-bg-secondary", icon: "bi-stop-circle-fill" },
     "offline"         => { variant: "text-bg-secondary", icon: "bi-wifi-off" },
     "online"          => { variant: "text-bg-primary",   icon: "bi-wifi" },

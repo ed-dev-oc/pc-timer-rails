@@ -3,8 +3,9 @@ class CoinSlot < ApplicationRecord
 
   encrypts :secret
   # Updated status enum: replace :active with :online
-  enum :status, [ :online, :active_session, :offline, :locked ]
-  AUTHORIZED_STATUSES = [ :online, :active_session, :offline ]
+  # Updated status enum: replace :active_session with :active
+  enum :status, [ :online, :active, :offline, :locked ]
+  AUTHORIZED_STATUSES = [ :online, :active, :offline ]
 
   attribute :last_seen_at, :datetime, default: -> { Time.current }
 
@@ -43,7 +44,7 @@ class CoinSlot < ApplicationRecord
   def start_session!(pc)
     transaction do
       CoinSlotSession.start!(self, pc)
-      active_session!
+      active!
       queue_esp_command!(command: :enable)
     end
 

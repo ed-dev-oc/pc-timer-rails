@@ -15,7 +15,7 @@ module CoinSlots
     end
 
     def enable(coin_slot_session)
-      pc = coin_slot_session.pc
+      pc = coin_slot_session.pc # TODO: Find issue where causing coin_slot_session is nil.
 
       params = {
         ended_at: coin_slot_session.ended_at.to_i,

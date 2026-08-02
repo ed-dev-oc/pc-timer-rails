@@ -14,7 +14,7 @@ class Ui::StatusBadgeComponent < ViewComponent::Base
 
     def variant
       {
-        "active"     => "text-bg-success",
+        "active"     => "text-bg-warning",
         "inactive"   => "text-bg-secondary",
         "offline"    => "text-bg-secondary",
         "online"   => "text-bg-primary",
