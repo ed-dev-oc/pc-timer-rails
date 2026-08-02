@@ -158,6 +158,10 @@ class Pc < ApplicationRecord
     PcSessions::BroadcastService.call(self)
   end
 
+  def broadcast_credits!
+    CoinTransactions::BroadcastService.call(self)
+  end
+
   def active_session_json
     pc_session = active_pc_session
 

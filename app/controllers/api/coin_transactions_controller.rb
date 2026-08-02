@@ -2,23 +2,15 @@ class Api::CoinTransactionsController < Api::BaseController
   before_action :authenticate_device!, :set_coin_slot!, :set_coin_slot_session!
 
   def create
-    @coin_transaction = CoinTransaction.new(coin_transaction_params)
-    @coin_transaction.coin_slot = @coin_slot
-    @coin_transaction.pc = @coin_slot_session.pc
+    @coin_transaction = CoinTransaction.insert_coin(coin_transaction_params)
 
-    if @coin_transaction.save
-      pc = @coin_transaction.pc
-      CoinTransactions::BroadcastService.call(pc)
-      PcSessions::BroadcastService.call(pc)
-
-      render json: {
-        status: "created",
-        message: "Coin transaction saved",
-        transaction_uid: @coin_transaction.transaction_uid
-      }, status: :created
-    else
-      render_validation_failed(@coin_transaction, "Failed to save coin transaction")
-    end
+    render json: {
+      status: "created",
+      message: "Coin transaction saved",
+      transaction_uid: @coin_transaction.transaction_uid
+    }, status: :created
+  rescue ActiveRecord::RecordInvalid => e
+    render_validation_failed(e.record, "Failed to save coin transaction")
   end
 
   private
@@ -33,6 +25,11 @@ class Api::CoinTransactionsController < Api::BaseController
     end
 
     def coin_transaction_params
-      params.expect(coin_transaction: [ :transaction_uid, :peso_amount ])
+      params.expect(
+        coin_transaction: [ :transaction_uid, :peso_amount ]
+      ).merge(
+        coin_slot: @coin_slot,
+        pc: @coin_slot_session.pc
+      )
     end
 end

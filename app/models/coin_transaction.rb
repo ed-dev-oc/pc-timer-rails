@@ -24,6 +24,16 @@ class CoinTransaction < ApplicationRecord
     self.used!
   end
 
+  def self.insert_coin(attributes)
+    transaction = create!(attributes)
+    pc = transaction.pc
+
+    pc.broadcast_credits!
+    pc.broadcast_session!
+
+    transaction
+  end
+
   private
 
     def set_minutes_granted
