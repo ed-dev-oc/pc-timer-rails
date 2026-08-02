@@ -28,7 +28,7 @@ class EspCommandJob < ApplicationJob
 
     case log.command
     when "enable"
-      client.enable(coin_slot.active_coin_slot_session)
+      client.enable(coin_slot.active_session)
     when "disable"
       raise ArgumentError, "coin_slot_session_id is required for disable command" if coin_slot_session.nil?
       client.disable(coin_slot_session)

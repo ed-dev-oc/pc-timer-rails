@@ -25,7 +25,7 @@ class Winform::PcsController < Winform::BaseController
     end
 
     def set_coin_slots_active!
-      @coin_slots = CoinSlot.includes(:active_coin_slot_session).where(status: CoinSlot::AUTHORIZED_STATUSES)
+      @coin_slots = CoinSlot.includes(:active_session).where(status: CoinSlot::AUTHORIZED_STATUSES)
     end
 
     def set_pc_session!

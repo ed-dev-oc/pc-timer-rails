@@ -27,7 +27,7 @@ class CoinSlotSession < ApplicationRecord
   def stop!
     transaction do
       inactive!
-      coin_slot.active!
+      coin_slot.online!
       coin_slot.queue_esp_command!(command: :disable, coin_slot_session: self)
     end
   end
@@ -46,7 +46,7 @@ class CoinSlotSession < ApplicationRecord
     def coin_slot_has_only_one_session!
       coin_slot = self.coin_slot
 
-      if coin_slot&.active_coin_slot_session.present?
+      if coin_slot&.active_session.present?
         errors.add(:base, "Coin slot currently used!")
       end
     end

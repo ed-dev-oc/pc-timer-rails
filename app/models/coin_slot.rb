@@ -2,13 +2,13 @@ class CoinSlot < ApplicationRecord
   include ActionView::RecordIdentifier
 
   encrypts :secret
-  enum :status, [ :active, :active_session, :offline, :locked ]
-  AUTHORIZED_STATUSES = [ :active, :active_session, :offline ]
+  # Updated status enum: replace :active with :online
+  enum :status, [ :online, :active_session, :offline, :locked ]
+  AUTHORIZED_STATUSES = [ :online, :active_session, :offline ]
 
   attribute :last_seen_at, :datetime, default: -> { Time.current }
 
   has_many :coin_slot_sessions, dependent: :destroy
-  has_one :active_coin_slot_session, -> { where(status: :active) }, class_name: "CoinSlotSession" # TODO: Remove this and replace to active_session
   has_one :active_session, -> { active }, class_name: "CoinSlotSession"
   has_many :coin_transactions, dependent: :destroy
   has_many :esp_command_logs, class_name: "EspCommandLog", dependent: :destroy

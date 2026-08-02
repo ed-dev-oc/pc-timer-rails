@@ -26,7 +26,7 @@ class Winform::CoinSlotSessionsController < ApplicationController
     end
 
     def set_coin_slot!
-      @coin_slot = CoinSlot.includes(:active_coin_slot_session).where(status: [ :active ]).first
+      @coin_slot = CoinSlot.includes(:active_session).where(status: [ :online ]).first
 
       redirect_to winform_pc_path(@pc.device_id), alert: "No coin slot found!" if @coin_slot.nil?
     end

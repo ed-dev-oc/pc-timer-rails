@@ -19,7 +19,7 @@ class CoinSlotTest < ActiveSupport::TestCase
       mac_address: @slot.mac_address,
       ip_address: @slot.ip_address,
       device_id: @slot.device_id,
-      status: :active
+      status: :online
     )
     refute duplicate.valid?
     assert_includes duplicate.errors[:name], "has already been taken"
@@ -34,14 +34,14 @@ class CoinSlotTest < ActiveSupport::TestCase
       mac_address: "AA:BB:CC:DD:EE:FF",
       ip_address: "192.168.1.200",
       device_id: "new-slot",
-      status: :active
+      status: :online
     )
     assert new_slot.secret.present?
     assert_match(/^sk_[0-9a-f]{64}$/, new_slot.secret)
   end
 
   test "authorized_status? works for authorized statuses" do
-    @slot.update!(status: :active)
+    @slot.update!(status: :online)
     assert @slot.authorized_status?
     @slot.update!(status: :active_session)
     assert @slot.authorized_status?

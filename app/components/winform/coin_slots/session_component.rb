@@ -19,7 +19,7 @@ module Winform
 
       # Convenience accessor for the active session object.
       def coin_slot_session
-        coin_slot.active_coin_slot_session
+        coin_slot.active_session
       end
 
       # Renders the default "No Active Session" badge. Callers may supply +empty_message+.
