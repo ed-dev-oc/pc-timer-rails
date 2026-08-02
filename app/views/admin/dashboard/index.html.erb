@@ -7,7 +7,7 @@
           <div>
             <h6 class="text-muted mb-1">Online PCs</h6>
             <h2 class="mb-0"><%= @stats[:online_pcs] %></h2>
-            <small class="text-success"><i class="bi bi-arrow-up"></i> <%= @pc_status_counts[:active_session] %> in use</small>
+            <small class="text-success"><i class="bi bi-arrow-up"></i> <%= @pc_status_counts[:active] %> in use</small>
           </div>
           <i class="bi bi-pc-display-horizontal fs-1 text-success opacity-50"></i>
         </div>
@@ -150,7 +150,7 @@
           <canvas
           data-chart-target="pcStatus"
           data-labels='["Online", "In Use", "Offline", "Disabled", "Uninstalled"]'
-          data-data="[<%= @pc_status_counts[:online] %>, <%= @pc_status_counts[:active_session] %>, <%= @pc_status_counts[:offline] %>, <%= @pc_status_counts[:disabled] %>, <%= @pc_status_counts[:uninstalled] %>]"
+          data-data="[<%= @pc_status_counts[:online] %>, <%= @pc_status_counts[:active] %>, <%= @pc_status_counts[:offline] %>, <%= @pc_status_counts[:disabled] %>, <%= @pc_status_counts[:uninstalled] %>]"
         ></canvas>
         </div>
       </div>

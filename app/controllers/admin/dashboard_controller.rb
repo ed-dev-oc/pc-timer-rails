@@ -1,7 +1,7 @@
 class Admin::DashboardController < Admin::BaseController
   def index
     @stats = {
-      online_pcs: Pc.online.count + Pc.active_session.count,
+      online_pcs: Pc.online.count + Pc.active.count,
       active_sessions: PcSession.active.count,
       offline_pcs: Pc.offline.count,
       revenue_today: CoinTransaction.used.where(created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).sum(:peso_amount),
@@ -13,7 +13,7 @@ class Admin::DashboardController < Admin::BaseController
 
     @pc_status_counts = {
       online: Pc.online.count,
-      active_session: Pc.active_session.count,
+      active: Pc.active.count,
       offline: Pc.offline.count,
       disabled: Pc.disabled_kiosk.count,
       uninstalled: Pc.uninstalled.count

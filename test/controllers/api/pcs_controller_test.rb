@@ -14,7 +14,7 @@ class Api::PcsControllerTest < ActionDispatch::IntegrationTest
     post path, headers: headers
     assert_response :ok
     assert_equal "success", json_response["status"]
-    assert_equal "active_session", @pc.reload.status
+    assert_equal "active", @pc.reload.status
   end
 
   test "should post signin and set to online when no active session exists" do

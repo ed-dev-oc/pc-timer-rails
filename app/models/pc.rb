@@ -4,8 +4,9 @@ class Pc < ApplicationRecord
   include ActionView::RecordIdentifier
 
   encrypts :secret
-  enum :status, [ :offline, :online, :active_session, :disabled_kiosk, :uninstalled ]
-  AUTHORIZED_STATUSES = [ :offline, :online, :active_session, :disabled_kiosk ]
+  # Rename enum value :active_session to :active (status representing an active PC session)
+  enum :status, [ :offline, :online, :active, :disabled_kiosk, :uninstalled ]
+  AUTHORIZED_STATUSES = [ :offline, :online, :active, :disabled_kiosk ]
 
   has_many :coin_slot_sessions, dependent: :destroy
   has_many :coin_transactions, dependent: :destroy
@@ -42,7 +43,8 @@ class Pc < ApplicationRecord
 
   def mark_active_session_and_unlock_pc!
     transaction do
-      active_session!
+      # Update status to :active (previously :active_session)
+      active!
 
       queue_pc_command!(:unlock)
     end
@@ -50,7 +52,7 @@ class Pc < ApplicationRecord
 
   def mark_online_and_lock_pc!
     transaction do
-      online! if active_session?
+      online! if active?
 
       queue_pc_command!(:lock)
     end
@@ -126,7 +128,7 @@ class Pc < ApplicationRecord
     pc_status = self.status
 
     unless disabled_kiosk?
-      pc_status = pc_session.present? ? :active_session : :online
+      pc_status = pc_session.present? ? :active : :online
     end
 
     update!(status: pc_status)

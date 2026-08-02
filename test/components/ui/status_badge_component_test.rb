@@ -10,7 +10,6 @@ class Ui::StatusBadgeComponentTest < ViewComponent::TestCase
     "inactive"        => { variant: "text-bg-secondary", icon: "bi-stop-circle-fill" },
     "offline"         => { variant: "text-bg-secondary", icon: "bi-wifi-off" },
     "online"          => { variant: "text-bg-primary",   icon: "bi-wifi" },
-    "active_session"  => { variant: "text-bg-warning",   icon: "bi-person-check" },
     "disabled_kiosk" => { variant: "text-bg-danger",    icon: "bi-lock" },
     "uninstalled"     => { variant: "text-bg-dark",      icon: "bi-trash3" },
     "used"            => { variant: "text-bg-success",   icon: "bi-check-circle-fill" },
