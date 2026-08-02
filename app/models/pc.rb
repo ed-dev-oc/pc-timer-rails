@@ -73,8 +73,6 @@ class Pc < ApplicationRecord
     end
 
     self.reload
-    broadcast_badge!
-    broadcast_session!
   end
 
   def start_manual_session!(attributes)
@@ -82,10 +80,6 @@ class Pc < ApplicationRecord
       PcSession.start_manual!(attributes)
       mark_active_session_and_unlock_pc!
     end
-
-    self.reload
-    broadcast_badge!
-    broadcast_session!
   end
 
   def extend_session!(session)
@@ -97,10 +91,6 @@ class Pc < ApplicationRecord
       mark_active_session_and_unlock_pc!
       active_coin_slot&.stop_session!
     end
-
-    self.reload
-    broadcast_badge!
-    broadcast_session!
   end
 
   def stop_session!(session)
@@ -110,15 +100,12 @@ class Pc < ApplicationRecord
     end
 
     self.reload
-    broadcast_badge!
-    broadcast_session!
   end
 
   def self.register!(attributes)
     pc = find_or_initialize_by(device_id: attributes[:device_id])
     pc.assign_attributes(attributes.slice(:name, :ip_address, :mac_address))
     pc.save!
-    broadcast_badge!
 
     pc
   end
@@ -136,12 +123,10 @@ class Pc < ApplicationRecord
 
   def signout!
     update!(status: :offline, last_seen_at: Time.current)
-    broadcast_badge!
   end
 
   def receive_heartbeat!(attributes)
     update!(attributes)
-    broadcast_badge!
   end
 
   def queue_pc_command!(command)
@@ -150,18 +135,6 @@ class Pc < ApplicationRecord
       status: :pending,
       sent_at: Time.current
     )
-  end
-
-  def broadcast_badge!
-    Pcs::Broadcasts::BadgeStatus.call(self)
-  end
-
-  def broadcast_session!
-    PcSessions::BroadcastService.call(self)
-  end
-
-  def broadcast_credits!
-    CoinTransactions::BroadcastService.call(self)
   end
 
   def active_session_json

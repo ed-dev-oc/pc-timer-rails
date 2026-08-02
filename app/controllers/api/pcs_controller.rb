@@ -4,6 +4,8 @@ class Api::PcsController < Api::BaseController
   def register
     @pc = Pc.register!(params)
 
+    Pcs::Broadcasts::BadgeStatus.call(@pc)
+
     render json: {
       status: "success",
       pc_id: @pc.id,
@@ -28,6 +30,8 @@ class Api::PcsController < Api::BaseController
   def signout
     @pc.signout!
 
+    Pcs::Broadcasts::BadgeStatus.call(@pc)
+
     render json: {
       status: "success",
       message: "Offline status set"
@@ -38,6 +42,8 @@ class Api::PcsController < Api::BaseController
 
   def heartbeat
     @pc.receive_heartbeat!(pc_update_params)
+
+    Pcs::Broadcasts::BadgeStatus.call(@pc)
 
     render json: {
       status: "success",

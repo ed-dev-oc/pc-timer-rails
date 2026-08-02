@@ -8,11 +8,17 @@ class Winform::PcSessionsController < ApplicationController
   def create
     @pc.start_session!
 
+    Pcs::Broadcasts::BadgeStatus.call(@pc)
+    PcSessions::BroadcastService.call(@pc)
+
     respond_with_notice(winform_pc_path(@pc.device_id), "Session created to #{ @pc.name }!")
   end
 
   def update
     @pc.extend_session!(@pc_session)
+
+    Pcs::Broadcasts::BadgeStatus.call(@pc)
+    PcSessions::BroadcastService.call(@pc)
 
     respond_with_notice(winform_pc_path(@pc.device_id), "Session extended to #{@pc.name}!")
   end

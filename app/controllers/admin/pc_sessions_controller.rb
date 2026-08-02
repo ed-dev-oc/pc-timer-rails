@@ -7,11 +7,17 @@ class Admin::PcSessionsController < Admin::BaseController
   def create
     @pc.start_manual_session!(pc_session_params)
 
+    Pcs::Broadcasts::BadgeStatus.call(@pc)
+    PcSessions::BroadcastService.call(@pc)
+
     respond_with_notice(admin_pc_path(@pc.device_id), "Session created to #{@pc.name}!")
   end
 
   def stop_session
     @pc.stop_session!(@pc_session)
+
+    Pcs::Broadcasts::BadgeStatus.call(@pc)
+    PcSessions::BroadcastService.call(@pc)
 
     respond_with_notice(admin_pc_path(@pc.device_id), "Session stop to #{@pc.name}!")
   end

@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
 
     return render_unauthorized("Missing headers") if device_id.blank? || signature.blank?
 
-    device = Pc.find_by(device_id: device_id) || CoinSlot.find_by(device_id: device_id)
+    device = Pc.includes(:active_session, :active_coin_slot).find_by(device_id: device_id) || CoinSlot.find_by(device_id: device_id)
 
     return render_unauthorized("Missing device") if device.nil?
     return render_unauthorized("Invalid device") unless device&.authorized_status?

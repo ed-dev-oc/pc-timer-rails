@@ -2,7 +2,10 @@ class Api::CoinTransactionsController < Api::BaseController
   before_action :authenticate_device!, :set_coin_slot!, :set_coin_slot_session!
 
   def create
-    @coin_transaction = CoinTransaction.insert_coin(coin_transaction_params)
+    @coin_transaction = CoinTransaction.insert_coin!(coin_transaction_params)
+
+    CoinTransactions::BroadcastService.call(@coin_transaction.pc)
+    PcSessions::BroadcastService.call(@coin_transaction.pc)
 
     render json: {
       status: "created",
