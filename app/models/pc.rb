@@ -67,7 +67,7 @@ class Pc < ApplicationRecord
     transaction do
       PcSession.start!(self, unused_credits)
       mark_active_session_and_unlock_pc!
-      active_coin_slot_session&.stop_session!
+      active_coin_slot&.stop_session!
     end
 
     self.reload
@@ -93,7 +93,7 @@ class Pc < ApplicationRecord
     transaction do
       session.extend!(unused_credits)
       mark_active_session_and_unlock_pc!
-      active_coin_slot_session&.stop_session!
+      active_coin_slot&.stop_session!
     end
 
     self.reload
