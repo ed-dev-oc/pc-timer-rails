@@ -2,7 +2,7 @@ class Api::PcsController < Api::BaseController
   before_action :authenticate_device!, :set_pc!, except: [ :register ]
 
   def register
-    @pc = Pc.register!(params)
+    @pc = Pc.register!(pc_params)
 
     Pcs::Broadcasts::BadgeStatus.call(@pc)
 

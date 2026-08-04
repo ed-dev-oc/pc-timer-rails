@@ -104,7 +104,7 @@ class Pc < ApplicationRecord
 
   def self.register!(attributes)
     pc = find_or_initialize_by(device_id: attributes[:device_id])
-    pc.assign_attributes(attributes.slice(:name, :ip_address, :mac_address))
+    pc.assign_attributes(attributes)
     pc.save!
 
     pc
