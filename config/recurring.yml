@@ -18,7 +18,7 @@ development:
     queue: background
     schedule: every 2 minutes
   periodic_coin_slot_status:
-    class: "CoinSlotStatusHeartbeatJob"
+    class: "CoinSlots::StatusHeartbeatJob"
     queue: background
     schedule: every 2 minutes
 
@@ -31,6 +31,6 @@ production:
     queue: background
     schedule: every two minutes
   periodic_coin_slot_status:
-    class: "CoinSlotStatusHeartbeatJob"
+    class: "CoinSlots::StatusHeartbeatJob"
     queue: background
     schedule: every two minutes

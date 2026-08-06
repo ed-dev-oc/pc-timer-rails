@@ -11,6 +11,6 @@ class EspCommandLog < CommandLog
   private
 
     def enqueue_job
-      EspCommandJob.set(wait_until: 2.seconds.from_now).perform_later(self.id, coin_slot_session&.id)
+      CoinSlots::EspCommandJob.set(wait_until: 2.seconds.from_now).perform_later(self.id, coin_slot_session&.id)
     end
 end

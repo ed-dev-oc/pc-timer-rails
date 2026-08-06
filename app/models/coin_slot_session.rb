@@ -33,7 +33,7 @@ class CoinSlotSession < ApplicationRecord
   end
 
   def schedule_expiration
-    CoinSlotSessionTimerJob.set(wait_until: ended_at).perform_later(id)
+    CoinSlots::SessionTimerJob.set(wait_until: ended_at).perform_later(id)
   end
 
   private

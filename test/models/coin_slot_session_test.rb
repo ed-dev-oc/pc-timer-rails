@@ -11,7 +11,7 @@ class CoinSlotSessionTest < ActiveSupport::TestCase
     pc = pcs(:one)
     session = nil
     # Ensure the expiration job is scheduled when we start a session
-    assert_enqueued_with(job: CoinSlotSessionTimerJob) do
+    assert_enqueued_with(job: CoinSlots::SessionTimerJob) do
       session = CoinSlotSession.start!(coin_slot, pc)
     end
 
