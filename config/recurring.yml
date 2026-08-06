@@ -14,7 +14,7 @@ development:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12
   periodic_pc_status:
-    class: "PcStatusHeartbeatJob"
+    class: "Pcs::StatusHeartbeatJob"
     queue: background
     schedule: every 2 minutes
   periodic_coin_slot_status:
@@ -27,7 +27,7 @@ production:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12
   periodic_pc_status:
-    class: "PcStatusHeartbeatJob"
+    class: "Pcs::StatusHeartbeatJob"
     queue: background
     schedule: every two minutes
   periodic_coin_slot_status:

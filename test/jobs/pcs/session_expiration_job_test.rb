@@ -1,6 +1,6 @@
 require "test_helper"
 
-class PcCommandJobTest < ActiveJob::TestCase
+class Pcs::SessionExpirationJobTest < ActiveJob::TestCase
   # test "the truth" do
   #   assert true
   # end

@@ -9,6 +9,6 @@ class PcCommandLog < CommandLog
   private
 
     def enqueue_job
-      PcCommandJob.set(wait_until: 2.seconds.from_now).perform_later(self.id)
+      Pcs::CommandJob.set(wait_until: 2.seconds.from_now).perform_later(self.id)
     end
 end

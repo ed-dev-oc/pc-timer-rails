@@ -1,6 +1,6 @@
 require "test_helper"
 
-class PcStatusHeartbeatJobTest < ActiveJob::TestCase
+class Pcs::CommandJobTest < ActiveJob::TestCase
   # test "the truth" do
   #   assert true
   # end

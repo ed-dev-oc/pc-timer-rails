@@ -107,7 +107,7 @@ class PcSession < ApplicationRecord
   end
 
   def schedule_expiration
-    PcSessionExpirationJob
+    Pcs::SessionExpirationJob
       .set(wait_until: expires_at)
       .perform_later(id)
   end
