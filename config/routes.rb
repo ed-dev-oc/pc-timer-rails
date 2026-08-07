@@ -56,7 +56,7 @@ Rails.application.routes.draw do
 
     resource :settings, only: [ :show, :update ]
 
-    resources :coin_slots, except: [ :new, :create, :edit ] do
+    resources :coin_slots, except: [ :new, :create, :edit, :update ] do
       member do
         post :restart
         patch :toggle_lock

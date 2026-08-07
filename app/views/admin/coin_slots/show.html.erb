@@ -48,9 +48,9 @@
 
           <ul class="dropdown-menu dropdown-menu-end">
             <li>
-              <%= button_tag type: "button", class: "dropdown-item", data: { bs_toggle: "modal", bs_target: "#editCoinSlotModal" } do %>
-                <i class="bi bi-pencil"></i>
-                Edit
+              <%= link_to @coin_slot.esp_url, class: "dropdown-item" do %>
+                <i class="bi bi-gear"></i>
+                Configure ESP
               <% end %>
             </li>
             <li>
@@ -197,5 +197,3 @@
     </div>
   </div>
 </div>
-
-<%= render partial: "admin/coin_slots/edit_modal", locals: { coin_slot: @coin_slot } %>

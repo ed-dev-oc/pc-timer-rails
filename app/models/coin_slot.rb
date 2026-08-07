@@ -24,6 +24,10 @@ class CoinSlot < ApplicationRecord
     device_id
   end
 
+  def esp_url
+    "http://#{ip_address}"
+  end
+
   def has_current_active_session?
     self.coin_slot_sessions.active.present?
   end

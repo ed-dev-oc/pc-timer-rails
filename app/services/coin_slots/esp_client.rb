@@ -38,6 +38,14 @@ module CoinSlots
       post("/reboot")
     end
 
+    def get_config
+      get("/api/device/config")
+    end
+
+    def set_config(payload)
+      post("/api/device/config", payload)
+    end
+
     private
 
     def post(path, params = {})
@@ -61,6 +69,32 @@ module CoinSlots
       end
 
       { status: "success" }
+    rescue Faraday::TimeoutError, Faraday::ConnectionFailed => e
+      # re-raise so ActiveJob retry works
+      raise e
+    end
+
+    def get(path)
+      timestamp = Time.current.to_i
+      signature = HmacSigner.sign(
+        @coin_slot.secret,
+        "SERVER",
+        path,
+        timestamp,
+        ""
+      )
+
+      response = @connection.get(path) do |req|
+        req.headers["X-SIGNATURE"] = signature.to_s
+        req.headers["X-TIMESTAMP"] = timestamp.to_s
+      end
+
+      # ❗ IMPORTANT: FORCE FAILURE TO RAISE EXCEPTION
+      unless response.success?
+        raise Faraday::ConnectionFailed, "HTTP #{response.status}"
+      end
+
+      { status: "success", data: response.body }
     rescue Faraday::TimeoutError, Faraday::ConnectionFailed => e
       # re-raise so ActiveJob retry works
       raise e

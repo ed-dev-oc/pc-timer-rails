@@ -1,5 +1,5 @@
 class Admin::CoinSlotsController < Admin::BaseController
-  before_action :set_coin_slot, only: %i[ show update destroy restart toggle_lock ]
+  before_action :set_coin_slot, only: %i[ show destroy restart toggle_lock ]
 
   # GET /admin/coin_slots or /admin/coin_slots.json
   def index
@@ -36,19 +36,6 @@ class Admin::CoinSlotsController < Admin::BaseController
     @coin_slot_sessions = @coin_slot.coin_slot_sessions
       .order(created_at: :desc)
       .limit(10)
-  end
-
-  # PATCH/PUT /admin/coin_slots/1 or /admin/coin_slots/1.json
-  def update
-    respond_to do |format|
-      if @coin_slot.update(coin_slot_params)
-        format.html { redirect_to [ :admin, @coin_slot ], notice: "Coin slot was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @coin_slot }
-      else
-        format.html { render :edit, status: :unprocessable_content }
-        format.json { render json: @coin_slot.errors, status: :unprocessable_content }
-      end
-    end
   end
 
   # DELETE /admin/coin_slots/1 or /admin/coin_slots/1.json

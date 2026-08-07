@@ -44,6 +44,6 @@ class Api::CoinSlotsController < Api::BaseController
   def coin_slot_update_params
     status = @coin_slot.has_current_active_session? ? :active : :online
 
-    params.expect(coin_slot: [ :mac_address, :ip_address ]).merge(status: status, last_seen_at: Time.current)
+    params.expect(coin_slot: [ :name, :mac_address, :ip_address ]).merge(status: status, last_seen_at: Time.current)
   end
 end
