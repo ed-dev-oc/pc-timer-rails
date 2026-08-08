@@ -7,14 +7,13 @@ class Ui::StatusBadgeComponentTest < ViewComponent::TestCase
   # Mapping of status values to the expected CSS variant class and Bootstrap Icon class
   STATUS_EXPECTATIONS = {
     "active"          => { variant: "text-bg-warning",   icon: "bi-play-circle-fill" },
-    "inactive"        => { variant: "text-bg-secondary", icon: "bi-stop-circle-fill" },
     "offline"         => { variant: "text-bg-secondary", icon: "bi-wifi-off" },
     "online"          => { variant: "text-bg-primary",   icon: "bi-wifi" },
     "disabled_kiosk" => { variant: "text-bg-danger",    icon: "bi-lock" },
     "uninstalled"     => { variant: "text-bg-dark",      icon: "bi-trash3" },
     "used"            => { variant: "text-bg-success",   icon: "bi-check-circle-fill" },
     "unused"          => { variant: "text-bg-secondary", icon: "bi-circle" },
-    "ended"           => { variant: "text-bg-secondary", icon: "bi-stop-circle-fill" },
+    "stopped"           => { variant: "text-bg-secondary", icon: "bi-stop-circle-fill" },
     "locked"          => { variant: "text-bg-dark",      icon: "bi-lock-fill" },
     "pending"         => { variant: "text-bg-secondary", icon: "bi-hourglass-split" },
     "sent"            => { variant: "text-bg-primary",   icon: "bi-send-check" },

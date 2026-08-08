@@ -26,7 +26,7 @@ class CoinSlotSessionTest < ActiveSupport::TestCase
     pc = pcs(:one)
     session = CoinSlotSession.new(coin_slot: coin_slot, pc: pc)
     # default status will be nil, validation should add error unless status is active
-    session.status = :inactive
+    session.status = :stopped
     refute session.valid?
     session.status = :active
     assert session.valid?
@@ -71,7 +71,7 @@ class CoinSlotSessionTest < ActiveSupport::TestCase
       current = Time.current
       session.stop!
       session.reload
-      assert_equal "inactive", session.status
+      assert_equal "stopped", session.status
       assert_in_delta current.to_i, session.ended_at.to_i, 1
     end
   end

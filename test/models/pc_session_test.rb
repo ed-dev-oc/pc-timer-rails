@@ -45,7 +45,7 @@ class PcSessionTest < ActiveSupport::TestCase
 
   test "total_remaining_seconds returns zero when session ended" do
     session = pc_sessions(:one)
-    session.update!(status: :ended)
+    session.update!(status: :stopped)
     assert_equal 0, session.total_remaining_seconds
   end
 
@@ -71,7 +71,7 @@ class PcSessionTest < ActiveSupport::TestCase
       current = Time.current
       session.stop!
       session.reload
-      assert_equal "ended", session.status
+      assert_equal "stopped", session.status
       assert_in_delta current.to_i, session.ended_at.to_i, 1
     end
   end

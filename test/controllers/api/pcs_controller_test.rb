@@ -18,7 +18,7 @@ class Api::PcsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should post signin and set to online when no active session exists" do
-    pc_sessions(:one).update!(status: :ended)
+    pc_sessions(:one).update!(status: :stopped)
     path = "/api/pcs/#{@pc.device_id}/signin"
     headers = signed_headers(@pc, method: "POST", path: path)
 

@@ -2,8 +2,9 @@ class CoinSlotSession < ApplicationRecord
   generate_public_uid generator: PublicUid::Generators::NumberRandom.new
   include ActionView::RecordIdentifier
   include PublicUid::ModelConcern
+  include Lifecycle
 
-  enum :status, [ :active, :inactive ]
+  enum :status, [ :active, :stopped ]
 
   belongs_to :coin_slot
   belongs_to :pc
@@ -26,7 +27,7 @@ class CoinSlotSession < ApplicationRecord
 
   def stop!
     transaction do
-      inactive!
+      stopped!
       update!(ended_at: Time.current)
       coin_slot.online!
       coin_slot.queue_esp_command!(command: :disable, coin_slot_session: self)

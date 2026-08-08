@@ -1,8 +1,9 @@
 class PcSession < ApplicationRecord
   generate_public_uid
   include ActionView::RecordIdentifier
+  include Lifecycle
 
-  enum :status, [ :active, :ended ]
+  enum :status, [ :active, :stopped ]
 
   belongs_to :pc
 
@@ -23,7 +24,7 @@ class PcSession < ApplicationRecord
   def total_remaining_seconds
     current_time = Time.current
 
-    if self.ended? || expires_at < current_time
+    if expired? || ended?
      return 0
     end
 
@@ -81,7 +82,7 @@ class PcSession < ApplicationRecord
     total_minutes_used = (current_time - started_at).ceil / 60
 
     update!(
-      status: :ended,
+      status: :stopped,
       total_minutes_used: total_minutes_used,
       ended_at: current_time
     )
