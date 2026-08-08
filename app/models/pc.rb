@@ -116,6 +116,13 @@ class Pc < ApplicationRecord
     end
   end
 
+  def restart!
+    transaction do
+      queue_pc_command!(:restart)
+      offline!
+    end
+  end
+
   def receive_heartbeat!(attributes)
     update!(attributes)
   end

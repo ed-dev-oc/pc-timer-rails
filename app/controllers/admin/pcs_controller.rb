@@ -82,31 +82,27 @@ class Admin::PcsController < Admin::BaseController
   end
 
   def restart
-    pc_command_log = PcCommandLog.new(pc: @pc, command: :restart, status: :pending)
+    @pc.restart!
 
-    if pc_command_log.save
-      flash[:notice] = "Restart PC processing."
+    flash[:notice] = "Restart PC processing."
 
-      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
-    else
-      flash[:alert] = pc_command_log.errors.full_messages
+    redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:alert] = e.record.errors.full_messages
 
-      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
-    end
+    redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
   end
 
   def shutdown
-    pc_command_log = PcCommandLog.new(pc: @pc, command: :shutdown, status: :pending)
+    @pc.shutdown!
 
-    if pc_command_log.save
-      flash[:notice] = "Shutdown PC processing."
+    flash[:notice] = "Shutdown PC processing."
 
-      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
-    else
-      flash[:alert] = pc_command_log.errors.full_messages
+    redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:alert] = e.record.errors.full_messages
 
-      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
-    end
+    redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
   end
 
   def kiosk_uninstalled
