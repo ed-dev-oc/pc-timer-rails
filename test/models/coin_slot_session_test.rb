@@ -61,4 +61,18 @@ class CoinSlotSessionTest < ActiveSupport::TestCase
       CoinSlotSession.start!(coin_slot, pc2)
     end
   end
+
+  test "stop! sets ended_at timestamp" do
+    coin_slot = coin_slots(:one)
+    pc = pcs(:one)
+    session = CoinSlotSession.start!(coin_slot, pc)
+
+    freeze_time do
+      current = Time.current
+      session.stop!
+      session.reload
+      assert_equal "inactive", session.status
+      assert_in_delta current.to_i, session.ended_at.to_i, 1
+    end
+  end
 end

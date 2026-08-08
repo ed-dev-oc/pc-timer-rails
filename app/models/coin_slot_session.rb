@@ -27,6 +27,7 @@ class CoinSlotSession < ApplicationRecord
   def stop!
     transaction do
       inactive!
+      update!(ended_at: Time.current)
       coin_slot.online!
       coin_slot.queue_esp_command!(command: :disable, coin_slot_session: self)
     end

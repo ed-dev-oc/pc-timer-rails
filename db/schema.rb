@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_02_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_08_094506) do
   create_table "coin_slot_sessions", force: :cascade do |t|
     t.integer "coin_slot_id", null: false
     t.datetime "created_at", null: false
+    t.datetime "ended_at"
     t.datetime "expires_at"
     t.integer "pc_id", null: false
     t.string "public_uid"
@@ -67,6 +68,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_02_000000) do
 
   create_table "pc_sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.datetime "ended_at"
     t.datetime "expires_at"
     t.integer "pc_id", null: false
     t.string "public_uid"

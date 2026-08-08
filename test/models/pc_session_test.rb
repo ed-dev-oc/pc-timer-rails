@@ -54,4 +54,25 @@ class PcSessionTest < ActiveSupport::TestCase
     session.update!(expires_at: 1.hour.ago, status: :active)
     assert_equal 0, session.total_remaining_seconds
   end
+
+  test "stop! sets ended_at timestamp" do
+    pc = pcs(:one)
+    # Create a session manually to control timestamps
+    session = PcSession.create!(
+      pc: pc,
+      total_minutes_purchased: 30,
+      total_amount: 0,
+      started_at: 1.hour.ago,
+      expires_at: 30.minutes.from_now,
+      status: :active
+    )
+
+    freeze_time do
+      current = Time.current
+      session.stop!
+      session.reload
+      assert_equal "ended", session.status
+      assert_in_delta current.to_i, session.ended_at.to_i, 1
+    end
+  end
 end

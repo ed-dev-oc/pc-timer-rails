@@ -82,7 +82,8 @@ class PcSession < ApplicationRecord
 
     update!(
       status: :ended,
-      total_minutes_used: total_minutes_used
+      total_minutes_used: total_minutes_used,
+      ended_at: current_time
     )
   end
 
