@@ -41,23 +41,6 @@ class Pc < ApplicationRecord
     coin_transactions.unused.present?
   end
 
-  def mark_active_session_and_unlock_pc!
-    transaction do
-      # Update status to :active (previously :active_session)
-      active!
-
-      queue_pc_command!(:unlock)
-    end
-  end
-
-  def mark_online_and_lock_pc!
-    transaction do
-      online! if active?
-
-      queue_pc_command!(:lock)
-    end
-  end
-
   def authorized_status?
     AUTHORIZED_STATUSES.include?(status.to_sym)
   end
@@ -97,6 +80,7 @@ class Pc < ApplicationRecord
     transaction do
       session.stop!
       mark_online_and_lock_pc!
+      schedule_shutdown
     end
 
     self.reload
@@ -125,16 +109,15 @@ class Pc < ApplicationRecord
     update!(status: :offline, last_seen_at: Time.current)
   end
 
-  def receive_heartbeat!(attributes)
-    update!(attributes)
+  def shutdown!
+    transaction do
+      queue_pc_command!(:shutdown)
+      offline!
+    end
   end
 
-  def queue_pc_command!(command)
-    pc_command_logs.create!(
-      command: command,
-      status: :pending,
-      sent_at: Time.current
-    )
+  def receive_heartbeat!(attributes)
+    update!(attributes)
   end
 
   def active_session_json
@@ -151,5 +134,38 @@ class Pc < ApplicationRecord
 
     def issue_secret
       self.secret = "sk_#{SecureRandom.hex(32)}"
+    end
+
+    def queue_pc_command!(command)
+      pc_command_logs.create!(
+        command: command,
+        status: :pending,
+        sent_at: Time.current
+      )
+    end
+
+    def mark_active_session_and_unlock_pc!
+      transaction do
+        # Update status to :active (previously :active_session)
+        active!
+
+        queue_pc_command!(:unlock)
+      end
+    end
+
+    def mark_online_and_lock_pc!
+      transaction do
+        online! if active?
+
+        queue_pc_command!(:lock)
+      end
+    end
+
+    def schedule_shutdown
+      # Use configurable wait time from settings (default 300 seconds)
+      wait_seconds = Setting.duration("pc_shutdown_wait_time")
+      Pcs::ShutdownScheduleJob
+        .set(wait_until: wait_seconds.seconds.from_now)
+        .perform_later(id)
     end
 end

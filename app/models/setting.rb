@@ -19,13 +19,15 @@ class Setting < ApplicationRecord
     "pc_command_timeout_max_attempts" => 3,
     "pc_connection_failed_retry_wait" => 5,
     "pc_command_max_attempts" => 3,
-    "heartbeat_interval" => 2
+    "heartbeat_interval" => 2,
+    "pc_shutdown_wait_time" => 300
   }.freeze
 
   DEFAULT_TYPES = {
     "business_name" => "string",
     "app_name" => "string",
-    "coin_slot_session_duration" => "duration"
+    "coin_slot_session_duration" => "duration",
+    "pc_shutdown_wait_time" => "duration"
   }.freeze
 
   DEFAULT_DESCRIPTIONS = {
@@ -48,7 +50,8 @@ class Setting < ApplicationRecord
     "pc_command_timeout_max_attempts" => "PC command timeout max attempts",
     "pc_connection_failed_retry_wait" => "PC command connection failure retry wait in seconds",
     "pc_command_max_attempts" => "PC command connection failure max attempts",
-    "heartbeat_interval" => "Heartbeat interval in minutes"
+    "heartbeat_interval" => "Heartbeat interval in minutes",
+    "pc_shutdown_wait_time" => "Auto-shutdown timeout for inactive sessions (seconds)"
   }.freeze
 
   VALUE_TYPES = %w[string integer float boolean duration].freeze
@@ -66,6 +69,7 @@ class Setting < ApplicationRecord
     pc_connection_failed_retry_wait
     pc_command_max_attempts
     heartbeat_interval
+    pc_shutdown_wait_time
   ].freeze
 
   validates :key, presence: true, uniqueness: true
@@ -112,10 +116,10 @@ class Setting < ApplicationRecord
 
   # Helper getters
   def self.string(key, default = nil)
-  setting = find_by(key: key)
-  return default if setting.nil?
-  setting.value
-end
+    setting = find_by(key: key)
+    return default if setting.nil?
+    setting.value
+  end
   def self.integer(key, default = nil)  cast(get(key, default), "integer") end
   def self.float(key, default = nil)    cast(get(key, default), "float") end
   def self.boolean(key, default = nil)  cast(get(key, default), "boolean") end
