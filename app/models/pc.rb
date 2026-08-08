@@ -102,7 +102,10 @@ class Pc < ApplicationRecord
       pc_status = pc_session.present? ? :active : :online
     end
 
-    update!(status: pc_status)
+    transaction do
+      update!(status: pc_status)
+      schedule_shutdown if pc_status == :online
+    end
   end
 
   def signout!
@@ -143,6 +146,14 @@ class Pc < ApplicationRecord
       self.secret = "sk_#{SecureRandom.hex(32)}"
     end
 
+    def schedule_shutdown(duration: Setting.duration("pc_shutdown_wait_time"))
+      wait_seconds = duration
+
+      Pcs::ShutdownScheduleJob
+        .set(wait_until: wait_seconds.seconds.from_now)
+        .perform_later(id)
+    end
+
     def queue_pc_command!(command)
       pc_command_logs.create!(
         command: command,
@@ -166,13 +177,5 @@ class Pc < ApplicationRecord
 
         queue_pc_command!(:lock)
       end
-    end
-
-    def schedule_shutdown
-      # Use configurable wait time from settings (default 300 seconds)
-      wait_seconds = Setting.duration("pc_shutdown_wait_time")
-      Pcs::ShutdownScheduleJob
-        .set(wait_until: wait_seconds.seconds.from_now)
-        .perform_later(id)
     end
 end
