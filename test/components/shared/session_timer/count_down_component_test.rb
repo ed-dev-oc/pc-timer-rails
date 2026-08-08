@@ -6,13 +6,13 @@ class CountDownComponentTest < ViewComponent::TestCase
     pc = pcs(:one)
     # Create a session that ends 5 minutes from now
     session = CoinSlotSession.create!(coin_slot: coin_slot, pc: pc)
-    session.update!(ended_at: Time.current + 5.minutes)
+    session.update!(expires_at: Time.current + 5.minutes)
 
     render_inline Shared::SessionTimer::CountDownComponent.new(
       object: session,
       session_object: session,
       session_duration_ms: Setting.duration("coin_slot_session_duration") * 1000,
-      expires_at: session.ended_at,
+      expires_at: session.expires_at,
       size: :small
     )
     # Expect the rendered HTML to contain a span with class text-success (default when time > 0)

@@ -1,6 +1,6 @@
 <tr>
     <td><%= l coin_slot_session.started_at %></td>
-    <td><%= l coin_slot_session.ended_at %></td>
+    <td><%= l coin_slot_session.expires_at %></td>
     <td><%= coin_slot_session.pc.name %></td>
     <td>
         <%= render Ui::StatusBadgeComponent.new(object: coin_slot_session) %>

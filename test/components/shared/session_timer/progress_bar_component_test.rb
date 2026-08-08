@@ -12,7 +12,7 @@ class Shared::SessionTimer::ProgressBarComponentTest < ViewComponent::TestCase
       object: session,
       session_object: session,
       session_duration_ms: Setting.duration("coin_slot_session_duration") * 1000,
-      expires_at: session.ended_at
+      expires_at: session.expires_at
     )
 
     # The component should render a turbo frame with a deterministic DOM id

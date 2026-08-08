@@ -8,11 +8,11 @@ class CoinSlotSession < ApplicationRecord
   belongs_to :coin_slot
   belongs_to :pc
 
-  validates :started_at, :ended_at, presence: true
+  validates :started_at, :expires_at, presence: true
   validates :status, inclusion: { in: [ "active" ] }, on: :create
   validate :coin_slot_has_only_one_session!, on: :create
 
-  before_validation :set_started_and_ended_at
+  before_validation :set_started_and_expires_at
 
   scope :active, -> { where(status: :active) }
 
@@ -33,14 +33,14 @@ class CoinSlotSession < ApplicationRecord
   end
 
   def schedule_expiration
-    CoinSlots::SessionTimerJob.set(wait_until: ended_at).perform_later(id)
+    CoinSlots::SessionTimerJob.set(wait_until: expires_at).perform_later(id)
   end
 
   private
 
-    def set_started_and_ended_at
+    def set_started_and_expires_at
       self.started_at = Time.current
-      self.ended_at = Time.current + Setting.duration("coin_slot_session_duration").seconds
+      self.expires_at = Time.current + Setting.duration("coin_slot_session_duration").seconds
     end
 
     def coin_slot_has_only_one_session!

@@ -81,9 +81,4 @@ class Admin::CoinSlotsController < Admin::BaseController
     def set_coin_slot
       @coin_slot = CoinSlot.find_by(device_id: params.expect(:id))
     end
-
-    # Only allow a list of trusted parameters through.
-    def coin_slot_params
-      params.expect(coin_slot: [ :name ])
-    end
 end

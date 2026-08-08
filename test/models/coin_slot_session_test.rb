@@ -6,7 +6,7 @@ class CoinSlotSessionTest < ActiveSupport::TestCase
     assert session.valid?
   end
 
-  test "set_started_and_ended_at sets timestamps correctly and enqueues expiration job" do
+  test "set_started_and_expires_at sets timestamps correctly and enqueues expiration job" do
     coin_slot = coin_slots(:one)
     pc = pcs(:one)
     session = nil
@@ -16,9 +16,9 @@ class CoinSlotSessionTest < ActiveSupport::TestCase
     end
 
     assert_not_nil session.started_at
-    assert_not_nil session.ended_at
+    assert_not_nil session.expires_at
     expected_duration = Setting.duration("coin_slot_session_duration").seconds
-    assert_in_delta expected_duration, (session.ended_at - session.started_at), 1
+    assert_in_delta expected_duration, (session.expires_at - session.started_at), 1
   end
 
   test "status validation only allows active on create" do

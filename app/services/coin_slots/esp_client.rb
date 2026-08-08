@@ -18,7 +18,7 @@ module CoinSlots
       pc = coin_slot_session.pc # TODO: Find issue where causing coin_slot_session is nil.
 
       params = {
-        ended_at: coin_slot_session.ended_at.to_i,
+        expires_at: coin_slot_session.expires_at.to_i,
         pc_name: pc.name,
         session_uid: coin_slot_session.public_uid
       }.compact
