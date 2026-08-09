@@ -8,10 +8,10 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-User.find_or_create_by(email: "admin@admin.com") do |user|
-  user.password = "admin123"
-  user.password_confirmation = "admin123"
-  user.role = :admin
-end
+# User.find_or_create_by(email: "admin@admin.com") do |user|
+#   user.password = "admin123"
+#   user.password_confirmation = "admin123"
+#   user.role = :admin
+# end
 
 Setting.ensure_defaults!

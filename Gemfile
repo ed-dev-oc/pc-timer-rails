@@ -76,3 +76,5 @@ gem "faraday", "~> 2.14"
 gem "public_uid", "~> 2.2"
 
 gem "view_component", "~> 4.12"
+
+gem "dotenv-rails", "~> 3.2"

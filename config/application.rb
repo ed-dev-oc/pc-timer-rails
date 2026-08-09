@@ -26,5 +26,8 @@ module PcTimerRails
 
     config.time_zone = "Asia/Manila"
     config.active_record.default_timezone = :utc
+
+    config.mission_control.jobs.base_controller_class = "Admin::BaseController"
+    config.mission_control.jobs.http_basic_auth_enabled = false
   end
 end

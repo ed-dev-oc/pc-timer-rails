@@ -6,7 +6,7 @@ class Admin::BaseController < ApplicationController
   private
 
   def authenticate_admin!
-    unless current_user&.admin? || current_user&.role == "admin"
+    unless [ "owner", "admin" ].any?(current_user&.role)
       redirect_to root_path, alert: "Access denied."
     end
   end

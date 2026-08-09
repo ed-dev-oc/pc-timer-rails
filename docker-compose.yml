@@ -1,0 +1,19 @@
+services:
+  web:
+    image: eddev42525/pc_timer_rails:1.0.0
+    ports:
+      - "3000:80"
+    env_file:
+      - .env
+    volumes:
+      - ./storage:/rails/storage
+    restart: unless-stopped
+
+  jobs:
+    image: eddev42525/pc_timer_rails:1.0.0
+    command: bundle exec bin/jobs start
+    env_file:
+      - .env
+    volumes:
+      - ./storage:/rails/storage
+    restart: unless-stopped

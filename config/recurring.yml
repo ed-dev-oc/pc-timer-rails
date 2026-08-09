@@ -29,8 +29,8 @@ production:
   periodic_pc_status:
     class: "Pcs::StatusHeartbeatJob"
     queue: background
-    schedule: every two minutes
+    schedule: every 2 minutes
   periodic_coin_slot_status:
     class: "CoinSlots::StatusHeartbeatJob"
     queue: background
-    schedule: every two minutes
+    schedule: every 2 minutes
