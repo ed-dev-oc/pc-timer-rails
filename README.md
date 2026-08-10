@@ -1,37 +1,256 @@
-# README
+# InternetCafe Server
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+> A self-hosted internet café management system with coin-slot billing, PC session control, and ESP32 hardware integration.
 
-Things you may want to cover:
+![Ruby](https://img.shields.io/badge/Ruby-3.4.5-CC342D?logo=ruby&logoColor=white)
+![Rails](https://img.shields.io/badge/Rails-8.1-CC0000?logo=rubyonrails&logoColor=white)
+![License](https://img.shields.io/badge/License-Internet%20Caf%C3%A9%20Community-blue)
+![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows-informational)
+![WSL](https://img.shields.io/badge/Windows-Docker%20Desktop%20%2B%20WSL2-0078D4?logo=windows&logoColor=white)
+![Docker](https://img.shields.io/badge/Deployment-Docker-2496ED?logo=docker&logoColor=white)
 
-* Ruby version
+---
 
-* System dependencies
+## Overview
 
-* Configuration
+**InternetCafe Server** is the central management backend for internet café operations. It connects to coin-slot ESP32 hardware over the local network and communicates with a WinForms PC agent installed on every gaming PC. Administrators manage everything through a web-based dashboard — including PCs, coin slots, sessions, and system settings.
 
-* Database creation
+---
 
-* Database initialization
+## System Architecture
 
-* How to run the test suite
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Internet Café LAN                    │
+│                                                         │
+│  ┌──────────────┐      HTTP/JSON      ┌──────────────┐  │
+│  │  Admin/Staff │◄───────────────────►│ Rails Server │  │
+│  │   Browser    │                     │  (this app)  │  │
+│  └──────────────┘                     └──────┬───────┘  │
+│                                              │           │
+│                          ┌───────────────────┤           │
+│                          │                   │           │
+│                    ┌─────▼──────┐    ┌───────▼──────┐   │
+│                    │ WinForms   │    │  ESP32 Coin  │   │
+│                    │ PC Agent   │    │  Slot Device │   │
+│                    │ (each PC)  │    │  (each slot) │   │
+│                    └────────────┘    └──────────────┘   │
+└─────────────────────────────────────────────────────────┘
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+| Component             | Role                                                                               |
+| --------------------- | ---------------------------------------------------------------------------------- |
+| **Rails Server**      | Central API, admin dashboard, background jobs, session lifecycle                   |
+| **WinForms PC Agent** | Runs on each gaming PC; locks/unlocks the PC, sends heartbeats, polls for commands |
+| **ESP32 Coin Slot**   | Embedded device that accepts coins and reports coin events to the server           |
+| **Admin Dashboard**   | Web UI for operators to manage PCs, sessions, coin slots, and settings             |
 
-* Deployment instructions
+---
 
-* ...
+## Features
 
-## Configuration
+- 🖥️ **PC Session Management** — Start, stop, and extend sessions. Coin-funded or manual sessions supported.
+- 🪙 **Coin-Slot Integration** — Real-time coin event tracking via ESP32 devices over HTTP. Sessions start automatically when enough credits are inserted.
+- 🎛️ **Admin Dashboard** — Manage PCs, coin slots, active sessions, and system-wide settings from a browser.
+- 🔒 **PC Lock/Unlock Control** — The server commands the WinForms agent to lock or unlock each gaming PC based on session state.
+- ⏱️ **Session Expiration & Auto-Shutdown** — Sessions expire automatically. PCs are scheduled for shutdown after a configurable grace period.
+- ⚙️ **Configurable Settings** — Adjust rates, timeouts, thresholds, and more from the admin UI without changing code.
+- 🐳 **Docker Deployment** — One-command installation via a self-contained installer script.
 
-### Shutdown Wait Time (`pc_shutdown_wait_time`)
+---
 
-*Type*: **duration**
+## Requirements
 
-The amount of time (in seconds) the system will wait before shutting down a PC after a shutdown request is received. The default value is **300 seconds** (5 minutes). This setting can be adjusted via the **Admin Settings UI** under *Advanced* settings.
+### Server
 
-Changing this value updates the behavior of `Pc#schedule_shutdown`, which now reads the configured duration and schedules `Pcs::ShutdownScheduleJob` accordingly.
+The server can run on **Linux** or **Windows** (via Docker Desktop with WSL2):
 
-## TODO
-- Add code for sending command to ESP enable and disable coin insert.
+| Platform    | Supported Versions                      | Architecture     |
+| ----------- | --------------------------------------- | ---------------- |
+| **Linux**   | Ubuntu, Debian                          | `amd64`, `arm64` |
+| **Windows** | Windows 10 / 11 (Docker Desktop + WSL2) | `amd64`, `arm64` |
+
+Required on both platforms:
+
+- [Docker Desktop](https://docs.docker.com/get-docker/) (includes Docker Compose)
+
+> **Windows note:** Docker Desktop must be configured to use the **WSL2 backend** (the default since Docker Desktop 4.x). Enable it under _Settings → General → Use the WSL 2 based engine_.
+
+### PC Agent (per gaming PC)
+
+- Windows (WinForms-compatible)
+- Network connectivity to the Rails server
+
+### Coin Slot
+
+- ESP32-based device connected to the local network
+
+---
+
+## Getting Started (Docker Deployment)
+
+> [!IMPORTANT]
+> Full installation guides, step-by-step instructions, and troubleshooting are maintained in the dedicated installer repository:
+>
+> **➡️ [ed-dev-oc/internetcafe-system](https://github.com/ed-dev-oc/internetcafe-system)**
+
+The installer repository contains platform-specific guides for:
+
+| Platform                                      | Installer                           | Install Path                  |
+| --------------------------------------------- | ----------------------------------- | ----------------------------- |
+| 🐧 **Linux** (Ubuntu / Debian, amd64 / arm64) | `install.sh`                        | `/opt/internetcafe`           |
+| 🪟 **Windows** (Docker Desktop + WSL2)        | `install.ps1` (PowerShell as Admin) | `C:\ProgramData\InternetCafe` |
+
+Both installers will interactively guide you through:
+
+1. Prerequisites check (OS, architecture, Docker)
+2. SMTP configuration
+3. Automatic secret/encryption key generation
+4. Docker image pull and service startup (`web` + `jobs`)
+5. Initial owner account creation
+
+Once installed, access the dashboard at:
+
+```
+http://<your-server-ip>:3000
+```
+
+> **Tip:** After installation, configure your server's IP as a **static IP** or **DHCP reservation** on your router so PC agents and coin-slot devices can reliably reach the server.
+
+---
+
+## Upgrading / Repair
+
+Re-run the installer from [ed-dev-oc/internetcafe-system](https://github.com/ed-dev-oc/internetcafe-system) — it detects an existing installation and prompts for a repair, preserving your configuration (`.env`) and database.
+
+---
+
+## Local Development Setup
+
+Requires:
+
+- Ruby `3.4.5` (recommend [rbenv](https://github.com/rbenv/rbenv) or [asdf](https://asdf-vm.com/))
+- Node.js `25.2.1` (recommend [fnm](https://github.com/Schniz/fnm) or [nvm](https://github.com/nvm-sh/nvm))
+- Yarn
+- SQLite3
+
+### Steps
+
+```bash
+# Clone the repository
+git clone https://github.com/your-org/pc-timer-rails.git
+cd pc-timer-rails
+
+# Install Ruby dependencies
+bundle install
+
+# Install JS dependencies
+yarn install
+
+# Set up environment
+cp env.example .env
+# Fill in at minimum: SECRET_KEY_BASE and ACTIVE_RECORD_ENCRYPTION_* keys
+
+# Set up the database
+bin/rails db:create db:migrate db:seed
+
+# Start all dev processes
+bin/dev
+```
+
+The app will be available at `http://localhost:3000`.
+
+> `bin/dev` runs all processes defined in `Procfile.dev`:
+>
+> - `web` — Rails server
+> - `css` — CSS watcher
+> - `js` — JavaScript bundler (watch mode)
+> - `worker` — SolidQueue background job worker
+
+### Running Tests
+
+```bash
+bin/rails test
+bin/rails test:system
+```
+
+### Static Analysis
+
+```bash
+bundle exec brakeman        # Security audit
+bundle exec rubocop         # Style checks
+bundle exec bundler-audit   # Dependency vulnerability audit
+```
+
+---
+
+## Configuration Reference
+
+All settings are managed in the database and can be adjusted via the **Admin → Settings** UI. Default values are applied on first boot.
+
+### General
+
+| Key                  | Default           | Type    | Description                                     |
+| -------------------- | ----------------- | ------- | ----------------------------------------------- |
+| `business_name`      | `"Internet Cafe"` | string  | Business display name shown in the UI           |
+| `app_name`           | `"iCafe"`         | string  | Application display name                        |
+| `minutes_per_credit` | `6`               | integer | Minutes of PC time granted per coin/credit      |
+| `minimum_credit`     | `1`               | integer | Minimum peso amount required to start a session |
+
+### Session & Hardware
+
+| Key                           | Default       | Type     | Description                                                       |
+| ----------------------------- | ------------- | -------- | ----------------------------------------------------------------- |
+| `coin_slot_session_duration`  | `60` seconds  | duration | How long a coin slot session stays open to accept coins           |
+| `coin_slot_offline_threshold` | `2` minutes   | integer  | Minutes without a heartbeat before a coin slot is marked offline  |
+| `pc_offline_threshold`        | `2` minutes   | integer  | Minutes without a heartbeat before a PC is marked offline         |
+| `heartbeat_interval`          | `2` minutes   | integer  | Expected heartbeat frequency from PC agents and coin slots        |
+| `pc_shutdown_wait_time`       | `300` seconds | duration | Grace period before scheduling a PC shutdown after a session ends |
+
+### Advanced — ESP32 Connection
+
+| Key                                | Default | Description                                |
+| ---------------------------------- | ------- | ------------------------------------------ |
+| `esp_connection_open_timeout`      | `2` s   | TCP connection open timeout                |
+| `esp_connection_timeout`           | `5` s   | HTTP request timeout                       |
+| `esp_command_timeout_retry_wait`   | `3` s   | Wait between retries on timeout            |
+| `esp_command_timeout_max_attempts` | `3`     | Max retry attempts on timeout              |
+| `esp_connection_failed_retry_wait` | `5` s   | Wait between retries on connection failure |
+| `esp_command_max_attempts`         | `3`     | Max retry attempts on connection failure   |
+
+### Advanced — PC Agent Connection
+
+| Key                               | Default | Description                                |
+| --------------------------------- | ------- | ------------------------------------------ |
+| `pc_connection_open_timeout`      | `2` s   | TCP connection open timeout                |
+| `pc_connection_timeout`           | `5` s   | HTTP request timeout                       |
+| `pc_command_timeout_retry_wait`   | `3` s   | Wait between retries on timeout            |
+| `pc_command_timeout_max_attempts` | `3`     | Max retry attempts on timeout              |
+| `pc_connection_failed_retry_wait` | `5` s   | Wait between retries on connection failure |
+| `pc_command_max_attempts`         | `3`     | Max retry attempts on connection failure   |
+
+---
+
+## Tech Stack
+
+| Layer           | Technology                                       |
+| --------------- | ------------------------------------------------ |
+| Framework       | Ruby on Rails 8.1                                |
+| Language        | Ruby 3.4.5                                       |
+| Database        | SQLite3 (via Active Record)                      |
+| Background Jobs | SolidQueue + SolidCable + SolidCache             |
+| Frontend        | Hotwire (Turbo + Stimulus), ViewComponent        |
+| Asset Pipeline  | Propshaft + cssbundling-rails + jsbundling-rails |
+| Authentication  | Devise 5                                         |
+| Job Dashboard   | MissionControl::Jobs                             |
+| HTTP Client     | Faraday                                          |
+| Deployment      | Docker + Kamal + Thruster                        |
+
+---
+
+## License
+
+This project is licensed under the **Internet Café Community License**.
+See the [LICENSE](./LICENSE) file for full terms.
+
+Copyright © 2026 Edgardo B. Po Jr.
