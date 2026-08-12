@@ -25,8 +25,22 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body class="vh-100">
-    <main id="main" class="container flex-fill py-3 h-100">
+  <body>
+    <nav class="navbar border-bottom">
+      <div class="container">
+        <div class="d-flex align-items-center w-100">
+          <div class="d-flex align-items-center flex-grow-1">
+            <%= image_tag("logo.webp", height: "60", class: "navbar-brand", alt: "Logo") %>
+            <span class="d-flex flex-column">
+                <strong class="fs-6"><%= Setting.string('business_name') %></strong>
+                <small class="text-muted"><%= Setting.string('app_name') %></small>
+            </span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main id="main" class="container flex-fill py-5 h-100">
       <%= yield %>
     </main>
 

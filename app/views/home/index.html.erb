@@ -1,3 +1,196 @@
-<div class="my-5">
-  <h1>PC Timer</h1>
-</div>
+<header class="bg-dark text-white">
+  <div class="container">
+    <div class="row align-items-center justify-content-center py-5">
+      <!-- Hero Text -->
+      <div class="col-8">
+        <h1 class="display-4 fw-bold mb-4">
+          InternetCafe System
+        </h1>
+        <p class="lead mb-4">
+          A complete management system for Internet cafés,
+          providing centralized server management, desktop
+          clients, session control, billing, and hardware
+          integration.
+        </p>
+        <div class="d-flex flex-wrap gap-2">
+          <% if user_signed_in? %>
+            <% if current_user.owner? || current_user.admin? %>
+              <%= link_to admin_root_path, class: "btn btn-primary btn-lg" do %>
+                <i class="bi-speedometer2"></i>
+                Administrator
+              <% end %>
+            <% end %>
+          <% else %>
+            <%= link_to new_user_session_path, class: "btn btn-primary btn-lg" do %>
+              <i class="bi-box-arrow-in-right"></i>
+              Sign In
+            <% end %>
+          <% end %>
+          <a
+            href="https://internetcafesystem.netlify.app"
+            class="btn btn-outline-light btn-lg px-4"
+            >
+            <i class="bi bi-book me-2"></i>
+            Documentation
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row g-4">
+      <!-- Admin -->
+      <div class="col-md-6 ps-0">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body p-4">
+            <div class="bg-primary-subtle text-primary rounded-3 d-inline-flex align-items-center justify-content-center mb-3" style="width: 50px; height: 50px;">
+              <i class="bi bi-shield-lock fs-4"></i>
+            </div>
+            <h5 class="fw-bold">
+              Staff & Administration
+            </h5>
+            <p class="text-body-secondary">
+              Access the management dashboard for
+              authorized staff and administrators.
+            </p>
+            <% if user_signed_in? %>
+              <% if current_user.owner? || current_user.admin? %>
+                <%= link_to admin_root_path, class: "btn btn-primary" do %>
+                  <i class="bi-speedometer2"></i>
+                  Administrator
+                <% end %>
+              <% end %>
+            <% else %>
+              <%= link_to new_user_session_path, class: "btn btn-primary" do %>
+                <i class="bi-box-arrow-in-right"></i>
+                Sign In
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <!-- Documentation -->
+      <div class="col-md-6 pe-0">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body p-4">
+            <div
+                            class="bg-info-subtle text-info rounded-3 d-inline-flex align-items-center justify-content-center mb-3"
+                            style="width: 50px; height: 50px;"
+                        >
+              <i class="bi bi-book fs-4"></i>
+            </div>
+            <h5 class="fw-bold">
+              Documentation
+            </h5>
+            <p class="text-body-secondary">
+              Learn how to install, configure, and use
+              the InternetCafe System.
+            </p>
+            <a
+              href="https://internetcafesystem.netlify.app"
+              class="btn btn-info text-white"
+                        >
+              View Documentation
+              <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <span class="badge text-bg-primary mb-3">
+          ABOUT THE SYSTEM
+        </span>
+        <h2 class="display-6 fw-bold mb-3">
+          One system for your entire Internet café.
+        </h2>
+        <p class="lead text-body-secondary">
+          InternetCafe System is designed to connect
+          the different parts of an Internet café into
+          one centralized management platform.
+        </p>
+        <p class="text-body-secondary">
+          The system provides a server component for
+          centralized management, desktop applications
+          for customer computers, and optional ESP
+          hardware integration.
+        </p>
+        <a
+          href="https://internetcafesystem.netlify.app"
+          class="btn btn-dark">
+          Learn More
+          <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+      </div>
+      <div class="col-lg-6">
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="card border-0 bg-body-tertiary h-100">
+              <div class="card-body p-4">
+                <i class="bi bi-server fs-1 text-primary"></i>
+                <h5 class="fw-bold mt-3">
+                  Central Server
+                </h5>
+                <p class="small text-body-secondary mb-0">
+                  Centralized management and
+                  communication.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="card border-0 bg-body-tertiary h-100">
+              <div class="card-body p-4">
+                <i class="bi bi-pc-display fs-1 text-success"></i>
+                <h5 class="fw-bold mt-3">
+                  Desktop Client
+                </h5>
+                <p class="small text-body-secondary mb-0">
+                  Client software for café
+                  computers.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="card border-0 bg-body-tertiary h-100">
+              <div class="card-body p-4">
+                <i class="bi bi-cpu fs-1 text-warning"></i>
+                <h5 class="fw-bold mt-3">
+                  ESP Integration
+                </h5>
+                <p class="small text-body-secondary mb-0">
+                  Hardware and automation
+                  integration.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="card border-0 bg-body-tertiary h-100">
+              <div class="card-body p-4">
+                <i class="bi bi-diagram-3 fs-1 text-info"></i>
+                <h5 class="fw-bold mt-3">
+                  Network Ready
+                </h5>
+                <p class="small text-body-secondary mb-0">
+                  Designed for local network
+                  environments.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
