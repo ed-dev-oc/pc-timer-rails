@@ -4,7 +4,7 @@ class Pcs::ShutdownScheduleJob < ApplicationJob
   def perform(pc_id)
     pc = Pc.find(pc_id)
 
-    return if pc.active_session.present?
+    return if pc.active_session.present? || pc.disabled_kiosk?
 
     pc.shutdown!
   end
