@@ -66,7 +66,7 @@ class Admin::PcsController < Admin::BaseController
   end
 
   def enable_or_disabled_kiosk
-    status = @pc.disabled_kiosk? ? :online : :disabled_kiosk
+    status = @pc.disabled_kiosk? ? :enabled_kiosk : :disabled_kiosk
 
     if @pc.update(status: status)
       Pcs::Broadcasts::BadgeStatus.call(@pc)

@@ -5,8 +5,9 @@ class Pc < ApplicationRecord
 
   encrypts :secret
   # Rename enum value :active_session to :active (status representing an active PC session)
-  enum :status, [ :offline, :online, :active, :disabled_kiosk, :uninstalled ]
-  AUTHORIZED_STATUSES = [ :offline, :online, :active, :disabled_kiosk ]
+  enum :status, [ :offline, :online, :active, :disabled_kiosk, :enabled_kiosk, :uninstalled ]
+  AUTHORIZED_STATUSES = [ :offline, :online, :active, :disabled_kiosk, :enabled_kiosk ]
+  IMMUTABLE_STATUSES = [ :disabled_kiosk ]
 
   has_many :coin_slot_sessions, dependent: :destroy
   has_many :coin_transactions, dependent: :destroy
@@ -26,6 +27,7 @@ class Pc < ApplicationRecord
 
   validates :name, :device_id, presence: true, uniqueness: true
   validates :ip_address, :mac_address, presence: true
+  validate :status_cannot_change, if: :status_changed?
 
   before_validation :issue_secret, on: :create
 
@@ -176,6 +178,14 @@ class Pc < ApplicationRecord
         online! if active?
 
         queue_pc_command!(:lock)
+      end
+    end
+
+    def status_cannot_change
+      return if enabled_kiosk?
+
+      if IMMUTABLE_STATUSES.include?(status_in_database.to_sym)
+        self.status = status_in_database
       end
     end
 end
