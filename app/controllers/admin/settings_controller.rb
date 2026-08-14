@@ -7,9 +7,9 @@ class Admin::SettingsController < Admin::BaseController
 
   def update
     Setting.transaction do
-      update_settings.each do |id, attributes|
+      params[:settings].each do |id, attributes|
         setting = Setting.find(id)
-        setting.update!(attributes.slice("value"))
+        setting.update!(attributes.permit(:value))
       end
     end
 
@@ -30,12 +30,5 @@ class Admin::SettingsController < Admin::BaseController
       @settings = Setting.order(:key)
       @basic_settings = @settings.reject { |setting| Setting::ADVANCED_KEYS.include?(setting.key) }
       @advanced_settings = @settings.select { |setting| Setting::ADVANCED_KEYS.include?(setting.key) }
-    end
-
-    def update_settings
-      # Permit only known setting keys to avoid mass assignment vulnerabilities.
-      # Combine default setting keys and advanced keys defined in the Setting model.
-      allowed_keys = Setting::DEFAULTS.keys + Setting::ADVANCED_KEYS
-      params.fetch(:settings, ActionController::Parameters.new).permit(allowed_keys).to_h
     end
 end

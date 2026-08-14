@@ -47,6 +47,7 @@
                   <code><%= setting.key.titleize %></code>
                 </th>
                 <td>
+                  <%= hidden_field_tag "settings[#{setting.id}][id]", setting.id %>
                   <%= text_field_tag "settings[#{setting.id}][value]",
                     setting.value,
                     class: "form-control",
@@ -92,6 +93,7 @@
                       <code><%= setting.key.titleize %></code>
                     </th>
                     <td>
+                      <%= hidden_field_tag "settings[#{setting.id}][id]", setting.id %>
                       <%= text_field_tag "settings[#{setting.id}][value]",
                         setting.value,
                         class: "form-control",

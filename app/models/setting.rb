@@ -69,7 +69,6 @@ class Setting < ApplicationRecord
     pc_connection_failed_retry_wait
     pc_command_max_attempts
     heartbeat_interval
-    pc_shutdown_wait_time
   ].freeze
 
   validates :key, presence: true, uniqueness: true
