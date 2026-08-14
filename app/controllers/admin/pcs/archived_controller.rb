@@ -12,7 +12,7 @@ class Admin::Pcs::ArchivedController < Admin::BaseController
   end
 
   def destroy
-    @pc.offline!
+    @pc.unarchived!
 
     Pcs::Broadcasts::BadgeStatus.call(@pc)
 

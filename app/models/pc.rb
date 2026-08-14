@@ -6,9 +6,9 @@ class Pc < ApplicationRecord
   encrypts :secret
   # Rename enum value :active_session to :active (status representing an active PC session)
   # Updated enum to use :archived instead of legacy :archive
-  enum :status, [ :offline, :online, :active, :disabled_kiosk, :enabled_kiosk, :archived ]
-  AUTHORIZED_STATUSES = [ :offline, :online, :active, :disabled_kiosk, :enabled_kiosk ]
-  IMMUTABLE_STATUSES = [ :disabled_kiosk ]
+  enum :status, [ :offline, :online, :active, :disabled_kiosk, :enabled_kiosk, :archived, :unarchived ]
+  AUTHORIZED_STATUSES = [ :offline, :online, :active, :disabled_kiosk, :enabled_kiosk, :unarchived ]
+  IMMUTABLE_STATUSES = [ :disabled_kiosk, :archived ]
 
   has_many :coin_slot_sessions, dependent: :destroy
   has_many :coin_transactions, dependent: :destroy
@@ -183,7 +183,7 @@ class Pc < ApplicationRecord
     end
 
     def status_cannot_change
-      return if enabled_kiosk?
+      return if enabled_kiosk? || unarchived?
 
       if IMMUTABLE_STATUSES.include?(status_in_database.to_sym)
         self.status = status_in_database
