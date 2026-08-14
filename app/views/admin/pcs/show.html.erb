@@ -68,7 +68,7 @@
             <% unless @pc.archived? %>
               <li>
                 <%= button_to admin_pc_archived_path(@pc),
-                      method: :delete,
+                      method: :post,
                       form: {
                         data: {
                           turbo_confirm: "Archive this PC?",
