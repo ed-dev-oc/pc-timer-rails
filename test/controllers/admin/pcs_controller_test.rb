@@ -23,11 +23,13 @@ class Admin::PcsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Updated PC Name", @pc.reload.name
   end
 
-  test "should destroy pc" do
-    assert_difference("Pc.count", -1) do
+  test "should archive pc via destroy" do
+    assert_no_difference("Pc.count") do
       delete admin_pc_url(@pc)
     end
 
+    @pc.reload
+    assert @pc.archived?, "PC should be archived after destroy"
     assert_redirected_to admin_pcs_url
   end
 end

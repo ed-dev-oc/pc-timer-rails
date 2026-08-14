@@ -149,8 +149,8 @@
         <div class="card-body" style="height: 300px;">
           <canvas
           data-chart-target="pcStatus"
-          data-labels='["Online", "In Use", "Offline", "Disabled", "Uninstalled"]'
-          data-data="[<%= @pc_status_counts[:online] %>, <%= @pc_status_counts[:active] %>, <%= @pc_status_counts[:offline] %>, <%= @pc_status_counts[:disabled] %>, <%= @pc_status_counts[:uninstalled] %>]"
+          data-labels='["Online", "In Use", "Offline", "Disabled", "Archived"]'
+          data-data="[<%= @pc_status_counts[:online] %>, <%= @pc_status_counts[:active] %>, <%= @pc_status_counts[:offline] %>, <%= @pc_status_counts[:disabled] %>, <%= @pc_status_counts[:archived] %>]"
         ></canvas>
         </div>
       </div>

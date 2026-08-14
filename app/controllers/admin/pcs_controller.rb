@@ -1,5 +1,5 @@
 class Admin::PcsController < Admin::BaseController
-  before_action :set_pc, only: %i[ show update destroy restart shutdown enable_or_disabled_kiosk kiosk_uninstalled ]
+  before_action :set_pc, only: %i[ show update destroy restart shutdown enable_or_disabled_kiosk ]
 
   # GET /admin/pcs or /admin/pcs.json
   def index
@@ -57,10 +57,16 @@ class Admin::PcsController < Admin::BaseController
 
   # DELETE /admin/pcs/1 or /admin/pcs/1.json
   def destroy
-    @pc.destroy!
+    if @pc.update(status: :archived)
+      # Broadcast status change for UI updates
+      Pcs::Broadcasts::BadgeStatus.call(@pc)
+      flash[:notice] = "Pc was successfully archived."
+    else
+      flash[:alert] = @pc.errors.full_messages.join(", ")
+    end
 
     respond_to do |format|
-      format.html { redirect_to admin_pcs_path, notice: "Pc was successfully destroyed.", status: :see_other }
+      format.html { redirect_to admin_pcs_path, notice: flash[:notice], status: :see_other }
       format.json { head :no_content }
     end
   end
@@ -103,20 +109,6 @@ class Admin::PcsController < Admin::BaseController
     flash[:alert] = e.record.errors.full_messages
 
     redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
-  end
-
-  def kiosk_uninstalled
-    if @pc.update(status: :uninstalled)
-      Pcs::Broadcasts::BadgeStatus.call(@pc)
-
-      flash[:notice] = "Status set to #{ @pc.status.titleize }."
-
-      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
-    else
-      flash[:alert] = pc_command_log.errors.full_messages
-
-      redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
-    end
   end
 
   private

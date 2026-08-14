@@ -79,11 +79,7 @@ class Api::PcsController < Api::BaseController
     end
 
     def pc_update_params
-      status = @pc.status
-
-      unless @pc.disabled_kiosk?
-        status = @pc.active_session.present? ? :active : :online
-      end
+      status = @pc.active_session.present? ? :active : :online
 
       params.expect(pc: [ :mac_address, :ip_address ]).merge(status: status)
     end

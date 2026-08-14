@@ -5,13 +5,13 @@ one:
   coin_slot: one
   pc: one
   status: unused
-  peso_amount: 1
-  minutes_granted: 1
+  peso_amount: 5
+  minutes_granted: 5
 
 two:
   transaction_uid: uid_two
   coin_slot: two
   pc: two
   status: unused
-  peso_amount: 1
-  minutes_granted: 1
+  peso_amount: 5
+  minutes_granted: 5

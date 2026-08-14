@@ -5,7 +5,8 @@ class Pc < ApplicationRecord
 
   encrypts :secret
   # Rename enum value :active_session to :active (status representing an active PC session)
-  enum :status, [ :offline, :online, :active, :disabled_kiosk, :enabled_kiosk, :uninstalled ]
+  # Updated enum to use :archived instead of legacy :archive
+  enum :status, [ :offline, :online, :active, :disabled_kiosk, :enabled_kiosk, :archived ]
   AUTHORIZED_STATUSES = [ :offline, :online, :active, :disabled_kiosk, :enabled_kiosk ]
   IMMUTABLE_STATUSES = [ :disabled_kiosk ]
 

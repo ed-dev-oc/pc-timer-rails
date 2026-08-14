@@ -68,7 +68,8 @@ Rails.application.routes.draw do
         post :restart
         post :shutdown
         post :enable_or_disabled_kiosk
-        post :kiosk_uninstalled
+
+        resource :archived, only: [ :create, :destroy ], module: :pcs, controller: :archived, as: :pc_archived
       end
 
       resources :pc_sessions, only: [ :create ] do

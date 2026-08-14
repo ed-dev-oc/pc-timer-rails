@@ -16,7 +16,7 @@ class Admin::DashboardController < Admin::BaseController
       active: Pc.active.count,
       offline: Pc.offline.count,
       disabled: Pc.disabled_kiosk.count,
-      uninstalled: Pc.uninstalled.count
+      archived: Pc.archived.count
     }
 
     @recent_transactions = CoinTransaction.used

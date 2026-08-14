@@ -65,30 +65,37 @@
             <li>
               <hr class="dropdown-divider">
             </li>
-            <% unless @pc.uninstalled? %>
+            <% unless @pc.archived? %>
               <li>
-                <%= link_to kiosk_uninstalled_admin_pc_path(@pc), class: "dropdown-item text-danger", data: { turbo_method: :POST, turbo_confirm: "Are you sure? It means the kiosk already uninstalled.", turbo_submits_with: "Submitting..."} do %>
+                <%= button_to admin_pc_archived_path(@pc),
+                      method: :delete,
+                      form: {
+                        data: {
+                          turbo_confirm: "Archive this PC?",
+                          turbo_submits_with: "Archiving..."
+                        }
+                      },
+                      class: "dropdown-item text-danger" do %>
                   <i class="bi bi-trash"></i>
-                  Kiosk Uninstalled
+                  Archive
+                <% end %>
+              </li>
+            <% else %>
+              <li>
+                <%= button_to admin_pc_archived_path(@pc),
+                      method: :delete,
+                      form: {
+                        data: {
+                          turbo_confirm: "Unarchive this PC?",
+                          turbo_submits_with: "Unarchiving..."
+                        }
+                      },
+                      class: "dropdown-item text-warning" do %>
+                  <i class="bi-arrow-counterclockwise"></i>
+                  Unarchive
                 <% end %>
               </li>
             <% end %>
-            <li>
-              <%= button_to [:admin, @pc],
-                method: :delete,
-                form: {
-                  data: {
-                    turbo_confirm: "Delete this PC?",
-                    turbo_submits_with: "Deleting..."
-                  }
-                },
-                class: "dropdown-item text-danger" do %>
-
-                <i class="bi bi-trash"></i>
-                Delete
-
-              <% end %>
-            </li>
           </ul>
         </div>
 
