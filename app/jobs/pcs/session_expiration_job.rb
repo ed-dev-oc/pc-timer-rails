@@ -12,7 +12,6 @@ module Pcs
       if pc_session.expired?
         pc.stop_session!(pc_session)
 
-        Pcs::Broadcasts::BadgeStatus.call(pc)
         PcSessions::BroadcastService.call(pc)
       end
     end

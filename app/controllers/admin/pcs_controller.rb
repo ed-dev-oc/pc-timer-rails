@@ -58,8 +58,8 @@ class Admin::PcsController < Admin::BaseController
   # DELETE /admin/pcs/1 or /admin/pcs/1.json
   def destroy
     if @pc.update(status: :archived)
-      # Broadcast status change for UI updates
-      Pcs::Broadcasts::BadgeStatus.call(@pc)
+      Pcs::StatusChangedAction.call(@pc)
+
       flash[:notice] = "Pc was successfully archived."
     else
       flash[:alert] = @pc.errors.full_messages.join(", ")
@@ -75,7 +75,7 @@ class Admin::PcsController < Admin::BaseController
     status = @pc.disabled_kiosk? ? :enabled_kiosk : :disabled_kiosk
 
     if @pc.update(status: status)
-      Pcs::Broadcasts::BadgeStatus.call(@pc)
+      Pcs::StatusChangedAction.call(@pc)
 
       flash[:notice] = "Status set to #{ @pc.status.titleize }."
 

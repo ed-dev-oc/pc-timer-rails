@@ -13,11 +13,11 @@ module CoinSlots
         coin_slot = coin_slot_session.coin_slot
         coin_slot.stop_session! if coin_slot_session.active?
 
-        CoinSlotSessions::ChangedAction.call(@coin_slot_session)
+        CoinSlotSessions::ChangedAction.call(coin_slot_session)
 
         if pc.present?
           pc.reload
-          PcSessions::BroadcastService.call(pc)
+          Pcs::SessionControlsChanged.call(pc)
         end
       end
     end

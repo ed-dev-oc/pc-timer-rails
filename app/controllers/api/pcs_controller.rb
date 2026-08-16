@@ -4,7 +4,7 @@ class Api::PcsController < Api::BaseController
   def register
     @pc = Pc.register!(pc_params)
 
-    Pcs::Broadcasts::BadgeStatus.call(@pc)
+    Pcs::StatusChangedAction.call(@pc)
 
     render json: {
       status: "success",
@@ -30,7 +30,7 @@ class Api::PcsController < Api::BaseController
   def signout
     @pc.signout!
 
-    Pcs::Broadcasts::BadgeStatus.call(@pc)
+    Pcs::StatusChangedAction.call(@pc)
 
     render json: {
       status: "success",
@@ -43,7 +43,7 @@ class Api::PcsController < Api::BaseController
   def heartbeat
     @pc.receive_heartbeat!(pc_update_params)
 
-    Pcs::Broadcasts::BadgeStatus.call(@pc)
+    Pcs::StatusChangedAction.call(@pc)
 
     render json: {
       status: "success",

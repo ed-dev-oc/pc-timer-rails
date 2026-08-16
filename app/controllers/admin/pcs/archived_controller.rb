@@ -4,7 +4,7 @@ class Admin::Pcs::ArchivedController < Admin::BaseController
   def create
     @pc.archived!
 
-    Pcs::Broadcasts::BadgeStatus.call(@pc)
+    Pcs::StatusChangedAction.call(@pc)
 
     flash[:notice] = "Status set to #{ @pc.status.titleize }."
 
@@ -14,7 +14,7 @@ class Admin::Pcs::ArchivedController < Admin::BaseController
   def destroy
     @pc.unarchived!
 
-    Pcs::Broadcasts::BadgeStatus.call(@pc)
+    Pcs::StatusChangedAction.call(@pc)
 
     flash[:notice] = "Status set to #{ @pc.status.titleize }."
 

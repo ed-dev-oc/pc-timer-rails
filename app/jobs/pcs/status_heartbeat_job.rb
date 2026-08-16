@@ -8,7 +8,7 @@ module Pcs
         .find_in_batches(batch_size: 100) do |batch|
         batch.each do |pc|
           pc.offline!
-          Pcs::Broadcasts::BadgeStatus.call(pc)
+          Pcs::StatusChangedAction.call(pc)
         end
       end
     end
