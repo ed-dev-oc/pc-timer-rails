@@ -8,7 +8,7 @@ module CoinSlots
         .find_in_batches(batch_size: 100) do |batch|
         batch.each do |coin_slot|
           coin_slot.update(status: "offline")
-          CoinSlots::Broadcasts::BadgeStatus.call(coin_slot)
+          CoinSlots::StatusChangedAction.call(coin_slot)
         end
       end
     end

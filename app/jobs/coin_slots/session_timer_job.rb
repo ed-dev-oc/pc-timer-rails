@@ -13,8 +13,7 @@ module CoinSlots
         coin_slot = coin_slot_session.coin_slot
         coin_slot.stop_session! if coin_slot_session.active?
 
-        CoinSlots::Broadcasts::BadgeStatus.call(coin_slot)
-        CoinSlots::Broadcasts::Session.call(coin_slot)
+        CoinSlotSessions::ChangedAction.call(@coin_slot_session)
 
         if pc.present?
           pc.reload

@@ -6,19 +6,17 @@ class Winform::CoinSlotSessionsController < ApplicationController
   before_action :set_active_coin_slot, only: [ :cancel ]
 
   def create
-    @coin_slot.start_session!(@pc)
+    @coin_slot_session = @coin_slot.start_session!(@pc)
 
-    CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
-    CoinSlots::Broadcasts::Session.call(@coin_slot)
+    CoinSlotSessions::ChangedAction.call(@coin_slot_session)
 
     respond_with_notice(winform_pc_path(@pc.device_id), "Insert coin to #{ @coin_slot.name }!")
   end
 
   def cancel
-    @coin_slot.stop_session!
+    @coin_slot_session = @coin_slot.stop_session!
 
-    CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
-    CoinSlots::Broadcasts::Session.call(@coin_slot)
+    CoinSlotSessions::ChangedAction.call(@coin_slot_session)
 
     respond_with_notice(winform_pc_path(@pc.device_id), "Cancel success!")
   end

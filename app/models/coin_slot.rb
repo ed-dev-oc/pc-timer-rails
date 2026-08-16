@@ -47,18 +47,21 @@ class CoinSlot < ApplicationRecord
 
   def start_session!(pc)
     transaction do
-      CoinSlotSession.start!(self, pc)
+      coin_slot_session = CoinSlotSession.start!(self, pc)
       active!
       queue_esp_command!(command: :enable)
-    end
 
-    self.reload
+      self.reload
+      coin_slot_session
+    end
   end
 
   def stop_session!
-    active_session&.stop!
+    session = active_session
+    session&.stop!
 
     self.reload
+    session
   end
 
   def receive_heartbeat!(attributes)

@@ -51,7 +51,7 @@ class Admin::CoinSlotsController < Admin::BaseController
   def restart
     @coin_slot.restart!
 
-    CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
+    CoinSlots::StatusChangedAction.call(@coin_slot)
 
     flash[:notice] = "Restarting coin slot!"
 
@@ -65,7 +65,7 @@ class Admin::CoinSlotsController < Admin::BaseController
   def toggle_lock
     @coin_slot.toggle_lock!
 
-    CoinSlots::Broadcasts::BadgeStatus.call(@coin_slot)
+    CoinSlots::StatusChangedAction.call(@coin_slot)
 
     flash[:notice] = "Coin slot status changed to #{ status.to_s.titleize }"
 
