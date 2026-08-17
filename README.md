@@ -50,7 +50,7 @@
 ## Features
 
 - 🖥️ **PC Session Management** — Start, stop, and extend sessions. Coin-funded or manual sessions supported.
-- 🪙 **Coin-Slot Integration** — Real-time coin event tracking via ESP32 devices over HTTP. Sessions start automatically when enough credits are inserted.
+- 🪙 **Coin-Slot Integration** — Real-time coin event tracking via ESP32 devices over HTTP.
 - 🎛️ **Admin Dashboard** — Manage PCs, coin slots, active sessions, and system-wide settings from a browser.
 - 🔒 **PC Lock/Unlock Control** — The server commands the WinForms agent to lock or unlock each gaming PC based on session state.
 - ⏱️ **Session Expiration & Auto-Shutdown** — Sessions expire automatically. PCs are scheduled for shutdown after a configurable grace period.
