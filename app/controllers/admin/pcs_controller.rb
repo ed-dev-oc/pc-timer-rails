@@ -81,7 +81,7 @@ class Admin::PcsController < Admin::BaseController
 
       redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :moved_permanently
     else
-      flash[:alert] = pc_command_log.errors.full_messages
+      flash[:alert] = @pc.errors.full_messages
 
       redirect_back fallback_location: admin_pc_path(@pc.device_id), status: :unprocessable_entity
     end

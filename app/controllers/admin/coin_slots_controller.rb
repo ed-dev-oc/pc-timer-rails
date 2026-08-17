@@ -67,7 +67,7 @@ class Admin::CoinSlotsController < Admin::BaseController
 
     CoinSlots::StatusChangedAction.call(@coin_slot)
 
-    flash[:notice] = "Coin slot status changed to #{ status.to_s.titleize }"
+    flash[:notice] = "Coin slot status changed to #{ @coin_slot.status.to_s.titleize }"
 
     redirect_back fallback_location: admin_coin_slot_path(@coin_slot.device_id), status: :moved_permanently
   rescue ActiveRecord::RecordInvalid => e

@@ -1,4 +1,4 @@
-class Winform::CoinSlotSessionsController < ApplicationController
+class Winform::CoinSlotSessionsController < Winform::BaseController
   rescue_from ActiveRecord::RecordInvalid, with: :handle_record_invalid
 
   before_action :authenticate_device!, :set_pc!

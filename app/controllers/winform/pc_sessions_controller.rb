@@ -1,4 +1,4 @@
-class Winform::PcSessionsController < ApplicationController
+class Winform::PcSessionsController < Winform::BaseController
   rescue_from Pc::NoInsertedCoinsError, with: :handle_no_inserted_coins
   rescue_from ActiveRecord::RecordInvalid, with: :handle_record_invalid
 
