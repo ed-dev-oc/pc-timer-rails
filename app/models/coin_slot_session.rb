@@ -13,7 +13,7 @@ class CoinSlotSession < ApplicationRecord
   validates :status, inclusion: { in: [ "active" ] }, on: :create
   validate :coin_slot_has_only_one_session!, on: :create
 
-  before_validation :set_started_and_expires_at
+  before_validation :set_started_and_expires_at, on: :create
 
   scope :active, -> { where(status: :active) }
 
