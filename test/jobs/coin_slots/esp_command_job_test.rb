@@ -3,6 +3,7 @@ require "test_helper"
 class CoinSlots::EspCommandJobTest < ActiveJob::TestCase
   class FakeEspClient
     attr_reader :coin_slot, :calls
+    attr_accessor :error
 
     def initialize(coin_slot)
       @coin_slot = coin_slot
@@ -10,14 +11,17 @@ class CoinSlots::EspCommandJobTest < ActiveJob::TestCase
     end
 
     def enable(coin_slot_session)
+      raise error if error
       calls << [ :enable, coin_slot_session ]
     end
 
     def disable(coin_slot_session)
+      raise error if error
       calls << [ :disable, coin_slot_session ]
     end
 
     def restart
+      raise error if error
       calls << [ :restart ]
     end
   end
@@ -119,6 +123,24 @@ class CoinSlots::EspCommandJobTest < ActiveJob::TestCase
     end
 
     assert_equal [ [ :restart ] ], client.calls
+  end
+
+  test "connection failure retries and leaves command log pending" do
+    log = create_command_log(:restart)
+    client = FakeEspClient.new(@coin_slot)
+    client.error = Faraday::ConnectionFailed.new("ESP connection failed")
+
+    assert_enqueued_with(job: CoinSlots::EspCommandJob, args: [ log.id ]) do
+      CoinSlots::EspClient.stub(:new, client) do
+        CoinSlots::EspCommandJob.perform_now(log.id)
+      end
+    end
+
+    log.reload
+    assert log.status_pending?
+    assert_nil log.error_message
+    assert_nil log.executed_at
+    assert_empty client.calls
   end
 
   private

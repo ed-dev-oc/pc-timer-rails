@@ -242,6 +242,22 @@ class PcTest < ActiveSupport::TestCase
     assert @pc.reload.unarchived?
   end
 
+  test "disabled_kiosk status cannot change to ordinary status" do
+    @pc.update_columns(status: Pc.statuses[:disabled_kiosk])
+
+    @pc.update!(status: :online)
+
+    assert @pc.reload.disabled_kiosk?
+  end
+
+  test "disabled_kiosk can be restored via enabled_kiosk" do
+    @pc.update_columns(status: Pc.statuses[:disabled_kiosk])
+
+    @pc.update!(status: :enabled_kiosk)
+
+    assert @pc.reload.enabled_kiosk?
+  end
+
   test "shutdown! queues shutdown command and puts PC offline" do
     @pc.update!(status: :online)
 

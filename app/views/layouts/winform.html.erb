@@ -37,12 +37,14 @@
               <small class="text-muted fs-6"><%= Setting.string('app_name') %></small>
             </span>
           </div>
-          <div>
-            <%= link_to winform_pc_path(@pc), class: "btn btn-sm btn-primary" do %>
-              <i class="bi bi-arrow-clockwise"></i>
-              Reload
-            <% end %>
-          </div>
+          <% if @pc.present? %>
+            <div>
+              <%= link_to winform_pc_path(@pc), class: "btn btn-sm btn-primary" do %>
+                <i class="bi bi-arrow-clockwise"></i>
+                Reload
+              <% end %>
+            </div>
+          <% end %>
         </div>
       </div>
     </nav>
