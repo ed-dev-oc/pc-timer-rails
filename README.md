@@ -3,7 +3,7 @@
 > A self-hosted internet café management system with coin-slot billing, PC session control, and ESP32 hardware integration.
 
 ![Ruby](https://img.shields.io/badge/Ruby-3.4.5-CC342D?logo=ruby&logoColor=white)
-![Rails](https://img.shields.io/badge/Rails-8.1-CC0000?logo=rubyonrails&logoColor=white)
+![Rails](https://img.shields.io/badge/Rails-8.1.3-CC0000?logo=rubyonrails&logoColor=white)
 ![License](https://img.shields.io/badge/License-Internet%20Caf%C3%A9%20Community-blue)
 ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows-informational)
 ![WSL](https://img.shields.io/badge/Windows-Docker%20Desktop%20%2B%20WSL2-0078D4?logo=windows&logoColor=white)
@@ -31,7 +31,7 @@
 │                          ┌───────────────────┤           │
 │                          │                   │           │
 │                    ┌─────▼──────┐    ┌───────▼──────┐   │
-│                    │ WinForms   │    │  ESP32 Coin  │   │
+│                    │ WinForms   │    │  ESP8266 Coin│   │
 │                    │ PC Agent   │    │  Slot Device │   │
 │                    │ (each PC)  │    │  (each slot) │   │
 │                    └────────────┘    └──────────────┘   │
@@ -42,20 +42,25 @@
 | --------------------- | ---------------------------------------------------------------------------------- |
 | **Rails Server**      | Central API, admin dashboard, background jobs, session lifecycle                   |
 | **WinForms PC Agent** | Runs on each gaming PC; locks/unlocks the PC, sends heartbeats, polls for commands |
-| **ESP32 Coin Slot**   | Embedded device that accepts coins and reports coin events to the server           |
+| **ESP8266 Coin Slot** | Embedded device that accepts coins and reports coin events to the server           |
 | **Admin Dashboard**   | Web UI for operators to manage PCs, sessions, coin slots, and settings             |
 
 ---
 
 ## Features
 
-- 🖥️ **PC Session Management** — Start, stop, and extend sessions. Coin-funded or manual sessions supported.
-- 🪙 **Coin-Slot Integration** — Real-time coin event tracking via ESP32 devices over HTTP.
-- 🎛️ **Admin Dashboard** — Manage PCs, coin slots, active sessions, and system-wide settings from a browser.
-- 🔒 **PC Lock/Unlock Control** — The server commands the WinForms agent to lock or unlock each gaming PC based on session state.
-- ⏱️ **Session Expiration & Auto-Shutdown** — Sessions expire automatically. PCs are scheduled for shutdown after a configurable grace period.
-- ⚙️ **Configurable Settings** — Adjust rates, timeouts, thresholds, and more from the admin UI without changing code.
-- 🐳 **Docker Deployment** — One-command installation via a self-contained installer script.
+- 🖥️ **PC Session Management** — Coin-funded and manual sessions with full lifecycle: start, extend, and stop. Sessions track total time purchased, amount paid, and minutes used.
+- 🪙 **Coin-Slot Integration** — Real-time coin event ingestion from ESP8266 devices over HTTP. Each coin insertion creates a `CoinTransaction` with automatically calculated minutes based on the configured rate.
+- 🔒 **PC Lock/Unlock Control** — The server remotely commands the WinForms agent on each gaming PC to lock or unlock it. Supports restart and shutdown. Commands are queued and retried on connection failure.
+- ⏱️ **Session Expiration & Auto-Shutdown** — Sessions expire automatically via background jobs. After a session ends, PCs are scheduled for shutdown after a configurable grace period.
+- 📡 **Device Heartbeat Monitoring** — PC agents and coin-slot devices send periodic heartbeats. Background jobs mark devices offline when heartbeats go stale beyond a configurable threshold.
+- 🔐 **HMAC-Authenticated Device API** — All device-to-server communication (registration, heartbeats, coin events) is protected by per-device HMAC signatures with timestamp validation.
+- 📺 **Real-Time Admin UI** — The admin dashboard updates live via Turbo Streams (ActionCable). PC status, active sessions, and coin transactions push to the browser without page refreshes.
+- 🎛️ **Admin Dashboard** — Overview of online PCs, active sessions, revenue, and hardware status. Includes 7-day revenue charts, hourly session graphs, and recent transaction history.
+- 👥 **Role-Based Access** — Two roles: `owner` (full access, single account) and `staff` (restricted access). Destructive actions such as archiving PCs are owner-only.
+- 🗄️ **PC Kiosk & Archive Modes** — PCs can be put in `disabled_kiosk` or `archived` states, which are immutable and protected from accidental status changes by background jobs.
+- ⚙️ **Configurable Settings** — Adjust billing rates, timeouts, thresholds, and more from the admin UI without deploying code changes.
+- 🐳 **Docker Deployment** — One-command installation via a self-contained installer script for both Linux and Windows (Docker Desktop + WSL2).
 
 ---
 
@@ -138,7 +143,7 @@ Requires:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/pc-timer-rails.git
+git clone https://github.com/ed-dev-oc/pc-timer-rails.git
 cd pc-timer-rails
 
 # Install Ruby dependencies
@@ -164,8 +169,8 @@ The app will be available at `http://localhost:3000`.
 >
 > - `web` — Rails server
 > - `css` — CSS watcher
-> - `js` — JavaScript bundler (watch mode)
 > - `worker` — SolidQueue background job worker
+> - `js` — JavaScript bundler (watch mode)
 
 ### Running Tests
 
