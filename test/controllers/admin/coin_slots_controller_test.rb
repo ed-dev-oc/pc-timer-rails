@@ -48,7 +48,7 @@ class Admin::CoinSlotsControllerTest < ActionDispatch::IntegrationTest
 
   test "should toggle lock status when authenticated" do
     @coin_slot.update!(status: :online)
-    
+
     patch toggle_lock_admin_coin_slot_url(@coin_slot)
     assert_redirected_to admin_coin_slot_url(@coin_slot.device_id)
     assert @coin_slot.reload.locked?

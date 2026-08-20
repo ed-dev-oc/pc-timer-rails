@@ -57,7 +57,7 @@ class Admin::PcSessionsControllerTest < ActionDispatch::IntegrationTest
   private
 
   def suppress_broadcast_service
-    PcSessions::BroadcastService.stub(:call, ->(*) {}) do
+    PcSessions::BroadcastService.stub(:call, ->(*) { }) do
       yield
     end
   end

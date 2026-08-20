@@ -63,7 +63,7 @@ class Api::CoinSlotsControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     assert_equal "success", json_response["status"]
     assert_equal "online", json_response["coin_slot_status"]
-    
+
     @coin_slot.reload
     assert_equal "online", @coin_slot.status
     assert_equal "192.168.1.120", @coin_slot.ip_address
@@ -97,7 +97,7 @@ class Api::CoinSlotsControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     assert_equal "success", json_response["status"]
     assert_equal "active", json_response["coin_slot_status"]
-    
+
     @coin_slot.reload
     assert_equal "active", @coin_slot.status
   end

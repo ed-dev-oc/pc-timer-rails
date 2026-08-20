@@ -92,7 +92,7 @@ class Winform::CoinSlotSessionsControllerTest < ActionDispatch::IntegrationTest
   private
 
   def suppress_changed_action
-    CoinSlotSessions::ChangedAction.stub(:call, ->(*) {}) do
+    CoinSlotSessions::ChangedAction.stub(:call, ->(*) { }) do
       yield
     end
   end

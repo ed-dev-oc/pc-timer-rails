@@ -68,11 +68,11 @@ class Admin::PcsControllerTest < ActionDispatch::IntegrationTest
 
   test "should toggle kiosk status when authenticated" do
     @pc.update_columns(status: Pc.statuses[:enabled_kiosk])
-    
+
     suppress_broadcasts do
       post enable_or_disabled_kiosk_admin_pc_url(@pc)
     end
-    
+
     assert_redirected_to admin_pc_url(@pc)
     assert @pc.reload.disabled_kiosk?
 

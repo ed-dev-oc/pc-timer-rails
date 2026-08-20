@@ -112,8 +112,8 @@ class Api::CoinTransactionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def suppress_broadcast_services
-    CoinTransactions::BroadcastService.stub(:call, ->(*) {}) do
-      PcSessions::BroadcastService.stub(:call, ->(*) {}) do
+    CoinTransactions::BroadcastService.stub(:call, ->(*) { }) do
+      PcSessions::BroadcastService.stub(:call, ->(*) { }) do
         yield
       end
     end
