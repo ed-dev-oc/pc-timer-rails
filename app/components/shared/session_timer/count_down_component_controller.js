@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static values = {
     expiresAt: String,
-    sessionDurationMs: Number,
+    sessionDurationMs: Number
   };
 
   static targets = ["remaining"];
@@ -17,20 +17,13 @@ export default class extends Controller {
 
   update() {
     const now = new Date();
-    const total = this.sessionDurationMsValue;
-    const remaining = this.endTime - now;
+    const timeLeftMs = this.endTime - now;
 
-    if (this.hasRemainingTarget) {
-      if (remaining <= 0) {
-        this.remainingTarget.innerText = "Expired";
-      } else {
-        this.remainingTarget.innerText = this.formated_timer(remaining);
-      }
-    }
+    this.renderRemainingTime(timeLeftMs);
   }
 
-  formated_timer(remaining) {
-    const totalSeconds = Math.floor(remaining / 1000);
+  formated_timer(milliseconds) {
+    const totalSeconds = Math.floor(milliseconds / 1000);
 
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -42,5 +35,15 @@ export default class extends Controller {
       `${seconds.toString().padStart(2, "0")}`;
 
     return data;
+  }
+
+  renderRemainingTime(milliseconds) {
+    if (this.hasRemainingTarget) {
+      if (milliseconds <= 0) {
+        this.remainingTarget.innerText = "Expired";
+      } else {
+        this.remainingTarget.innerText = this.formated_timer(milliseconds);
+      }
+    }
   }
 }
