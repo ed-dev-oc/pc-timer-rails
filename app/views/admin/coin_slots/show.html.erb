@@ -181,9 +181,9 @@
         </div>
 
         <div class="card-body">
-          <%= turbo_stream_from "coin_slot_session" %>
+          <%= turbo_stream_from "admin_coin_slot_session" %>
 
-          <%= render Winform::CoinSlots::SessionComponent.new(coin_slot: @coin_slot) %>
+          <%= render Admin::CoinSlots::SessionComponent.new(coin_slot: @coin_slot) %>
         </div>
       </div>
     </div>

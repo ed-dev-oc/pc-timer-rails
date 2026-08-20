@@ -6,23 +6,28 @@ class ChangedActionTest < ActiveSupport::TestCase
     coin_slot_session = coin_slot_sessions(:one)
     coin_slot = coin_slot_session.coin_slot
 
-    # Capture the broadcast call
-    broadcast_args = nil
+    # Capture the broadcast calls (both user and admin streams)
+    broadcast_calls = []
     status_called = false
-    Turbo::StreamsChannel.stub(:broadcast_replace_later_to, ->(*args) { broadcast_args = args }) do
+    Turbo::StreamsChannel.stub(:broadcast_replace_later_to, ->(*args) { broadcast_calls << args }) do
       # Capture the call to the status‑changed service
       CoinSlots::StatusChangedAction.stub(:call, ->(_coin_slot) { status_called = true }) do
         CoinSlotSessions::ChangedAction.call(coin_slot_session)
       end
     end
 
-    # Verify the broadcast was performed
-    assert_not_nil broadcast_args, "Turbo broadcast should be invoked"
-    assert_equal "coin_slot_session", broadcast_args[0]
+    # Verify the broadcasts were performed for both streams
+    assert_not_empty broadcast_calls, "Turbo broadcasts should be invoked"
+    # Expect two broadcasts: one for the user stream and one for the admin stream
+    assert_equal 2, broadcast_calls.size, "Expected two broadcast calls"
 
-    # The second argument is a hash of options; check the target DOM id
+    # Validate each broadcast call's stream name and target DOM id
     expected_target = ActionView::RecordIdentifier.dom_id(coin_slot, :session)
-    assert_equal expected_target, broadcast_args[1][:target]
+    stream_names = broadcast_calls.map { |args| args[0] }
+    targets = broadcast_calls.map { |args| args[1][:target] }
+    assert_includes stream_names, "coin_slot_session"
+    assert_includes stream_names, "admin_coin_slot_session"
+    assert_equal [ expected_target, expected_target ], targets, "Both broadcasts should target the same DOM id"
 
     # Verify the status‑changed service was called
     assert status_called, "CoinSlots::StatusChangedAction.call should be invoked"

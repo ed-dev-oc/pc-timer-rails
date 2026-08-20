@@ -8,16 +8,21 @@
       </div>
 
       <%= render Shared::SessionTimer::ProgressBarComponent.new(
-                object: coin_slot_session&.coin_slot,
-                session_object: coin_slot_session,
-                session_duration_ms: Setting.duration('coin_slot_session_duration') * 1000,
-                expires_at: coin_slot_session&.expires_at) %>
+          object: coin_slot_session&.coin_slot,
+          session_object: coin_slot_session,
+          session_duration_ms: Setting.duration('coin_slot_session_duration') * 1000,
+          expires_at: coin_slot_session&.expires_at) %>
 
       <%= render Shared::SessionTimer::CountDownComponent.new(
-              object: coin_slot_session&.coin_slot,
-              session_object: coin_slot_session,
-              session_duration_ms: Setting.duration('coin_slot_session_duration') * 1000,
-              expires_at: coin_slot_session&.expires_at) %>
+          object: coin_slot_session&.coin_slot,
+          session_object: coin_slot_session,
+          session_duration_ms: Setting.duration('coin_slot_session_duration') * 1000,
+          expires_at: coin_slot_session&.expires_at) %>
+
+      <%= render Shared::SessionTimer::AlarmComponent.new(
+          object: coin_slot_session,
+          source: audio_path("coin_slot_default_beep.mp3"),
+          start_at: Setting.duration("coin_slot_session_duration").in_milliseconds) %>
     </div>
   <% else %>
     <div class="text-center py-3 bg-light rounded-3">

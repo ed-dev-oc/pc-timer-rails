@@ -26,7 +26,7 @@
     </div>
   <% else %>
     <div class="row g-4" id="coin_slots">
-      <%= turbo_stream_from "coin_slot_session" %>
+      <%= turbo_stream_from "admin_coin_slot_session" %>
 
       <% @coin_slots.each do |coin_slot| %>
         <%= render coin_slot %>

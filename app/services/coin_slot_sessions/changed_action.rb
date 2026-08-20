@@ -6,6 +6,7 @@ module CoinSlotSessions
       coin_slot = coin_slot_session.coin_slot
 
       broadcast_session(coin_slot)
+      admin_broadcast_session(coin_slot)
       CoinSlots::StatusChangedAction.call(coin_slot)
     end
 
@@ -17,6 +18,17 @@ module CoinSlotSessions
           target: dom_id(coin_slot, :session),
           html: ApplicationController.render(
             Winform::CoinSlots::SessionComponent.new(coin_slot: coin_slot),
+            layout: false
+          )
+        )
+      end
+
+      def self.admin_broadcast_session(coin_slot)
+        Turbo::StreamsChannel.broadcast_replace_later_to(
+          "admin_coin_slot_session",
+          target: dom_id(coin_slot, :session),
+          html: ApplicationController.render(
+            Admin::CoinSlots::SessionComponent.new(coin_slot: coin_slot),
             layout: false
           )
         )

@@ -52,13 +52,16 @@ class Pc < ApplicationRecord
     unused_credits = coin_transactions.unused
     raise NoInsertedCoinsError, "No inserted coin found." if unused_credits.empty?
 
+    session = nil
+
     transaction do
-      PcSession.start!(self, unused_credits)
+      session = PcSession.start!(self, unused_credits)
       mark_active_session_and_unlock_pc!
       active_coin_slot&.stop_session!
     end
 
     self.reload
+    session
   end
 
   def start_manual_session!(attributes)

@@ -59,19 +59,21 @@ class ApplicationController < ActionController::Base
     end
 
     def respond_with_notice(path, message)
-      flash.now[:notice] = message
-
       respond_to do |format|
-        format.turbo_stream
+        format.turbo_stream do
+          flash.now[:notice] = message
+        end
+
         format.html { redirect_back fallback_location: path, notice: message }
       end
     end
 
     def respond_with_alert(path, message)
-      flash.now[:alert] = message
-
       respond_to do |format|
-        format.turbo_stream
+        format.turbo_stream do
+          flash.now[:alert] = message
+        end
+
         format.html { redirect_back fallback_location: path, alert: message }
       end
     end
