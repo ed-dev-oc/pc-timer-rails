@@ -1,4 +1,6 @@
 class PcSession < ApplicationRecord
+  AlarmStartAt = 60000 # Milliseconds
+
   generate_public_uid
   include ActionView::RecordIdentifier
   include Lifecycle

@@ -13,6 +13,11 @@
         session_object: pc_session,
         session_duration_ms: pc_session.total_purchased_duration_ms,
         expires_at: pc_session&.expires_at) %>
+
+      <%= render Shared::SessionTimer::AlarmComponent.new(
+        object: pc_session,
+        source: audio_path("pc_default_beep.mp3"),
+        start_at: PcSession::AlarmStartAt) %>
       
       <div class="mt-1 d-none d-md-block text-end text-muted">
         <i class="bi bi-smartwatch"></i>

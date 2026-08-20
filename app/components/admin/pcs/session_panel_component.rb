@@ -10,6 +10,6 @@ class Admin::Pcs::SessionPanelComponent < ViewComponent::Base
   attr_reader :pc
 
   def pc_session
-    @pc.active_session
+    @pc.reload.active_session
   end
 end

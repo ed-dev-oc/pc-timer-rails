@@ -6,6 +6,7 @@ module PcSessions
       Pcs::StatusChangedAction.call(pc)
       Pcs::SessionControlsChanged.call(pc)
       broadcast_session_panel_component(pc)
+      broadcast_admin_session_panel_component(pc)
       broadcast_minimize_component(pc)
       broadcast_admin_session_controls(pc)
       broadcast_coin_slot_state(pc)
@@ -19,6 +20,17 @@ module PcSessions
           target: ActionView::RecordIdentifier.dom_id(pc, :pc_session),
           html: ApplicationController.render(
             Winform::Pcs::SessionPanelComponent.new(pc: pc),
+            layout: false
+          )
+        )
+      end
+
+      def self.broadcast_admin_session_panel_component(pc)
+        Turbo::StreamsChannel.broadcast_replace_later_to(
+          "admin_pc_session",
+          target: ActionView::RecordIdentifier.dom_id(pc, :pc_session),
+          html: ApplicationController.render(
+            Admin::Pcs::SessionPanelComponent.new(pc: pc),
             layout: false
           )
         )

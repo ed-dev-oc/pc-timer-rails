@@ -207,7 +207,7 @@
         </div>
 
         <div class="card-body">
-          <%= turbo_stream_from "pc_session" %>
+          <%= turbo_stream_from "admin_pc_session" %>
           <%= render Admin::Pcs::SessionPanelComponent.new(pc: @pc) %>
         </div>
       </div>

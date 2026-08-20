@@ -29,18 +29,23 @@ class PcSessionsBroadcastServiceTest < ActiveSupport::TestCase
       end
     end
 
-    # Expect three Turbo broadcasts: session panel, minimize component, admin controls
-    assert_equal 3, broadcast_calls.size, "Expected three Turbo broadcast calls"
+    # Expect four Turbo broadcasts: session panel, admin panel, minimize component, admin controls
+    assert_equal 4, broadcast_calls.size, "Expected four Turbo broadcast calls"
 
     broadcast_calls.each do |channel, opts|
       case channel
       when "pc_session"
-        # Two possible targets for the "pc_session" channel
+        # Two possible targets for the "pc_session" channel: the main panel or the minimize component
         valid_targets = [
           ActionView::RecordIdentifier.dom_id(pc, :pc_session),
           ActionView::RecordIdentifier.dom_id(pc, :pc_session_minimize)
         ]
         assert_includes valid_targets, opts[:target], "Unexpected target for pc_session broadcast"
+        assert_equal "<div>component</div>", opts[:html]
+      when "admin_pc_session"
+        # Admin session panel component uses the same target as the regular session panel
+        expected_target = ActionView::RecordIdentifier.dom_id(pc, :pc_session)
+        assert_equal expected_target, opts[:target]
         assert_equal "<div>component</div>", opts[:html]
       when "pc_session_controls"
         expected_target = ActionView::RecordIdentifier.dom_id(pc, :pc_session_controls)
