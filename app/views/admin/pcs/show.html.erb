@@ -208,7 +208,7 @@
 
         <div class="card-body">
           <%= turbo_stream_from "pc_session" %>
-          <%= render Winform::Pcs::SessionPanelComponent.new(pc: @pc) %>
+          <%= render Admin::Pcs::SessionPanelComponent.new(pc: @pc) %>
         </div>
       </div>
     </div>

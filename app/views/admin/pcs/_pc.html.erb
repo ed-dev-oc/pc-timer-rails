@@ -18,7 +18,7 @@
     <div class="card-body">
       <div class="d-flex flex-column justify-content-between h-100">
         <%= turbo_stream_from "pc_session" %>
-        <%= render Winform::Pcs::SessionPanelComponent.new(pc: pc) %>
+        <%= render Admin::Pcs::SessionPanelComponent.new(pc: pc) %>
 
         <div class="d-flex flex-nowrap gap-2 small text-muted mt-2">
           <div>
