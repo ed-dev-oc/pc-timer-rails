@@ -1,0 +1,6 @@
+<div class="d-none" 
+    data-controller="shared--session-timer--alarm"
+    data-shared--session-timer--alarm-expires-at-value="<%= @expires_at %>"
+    data-shared--session-timer--alarm-start-at-ms-value="<%= @start_at %>">
+    <%= audio_tag @source, loop: true, data: { shared__session_timer__alarm_target: "beepSound" } %>
+</div>
