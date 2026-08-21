@@ -23,13 +23,14 @@ module Pcs
       Rails.logger.info "🔥 Attempt ##{executions}"
 
       log = PcCommandLog.find(command_log_id)
-      client = Pcs::AgentClient.new(log.pc)
+      pc = log.pc
+      agent = pc.agent
 
       case log.command
-      when "restart"  then client.restart
-      when "shutdown" then client.shutdown
-      when "lock"     then client.lock
-      when "unlock"   then client.unlock
+      when "restart"  then agent.restart
+      when "shutdown" then agent.shutdown
+      when "lock"     then agent.lock
+      when "unlock"   then agent.unlock
       end
 
       log.update!(

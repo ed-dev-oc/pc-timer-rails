@@ -1,7 +1,5 @@
-# frozen_string_literal: true
-
-module Pcs
-  class AgentClient
+class Pc
+  class Agent
     def initialize(pc)
       @pc = pc
 
@@ -44,28 +42,31 @@ module Pcs
 
     private
 
-    def post(path, body = {})
-      timestamp = Time.current.to_i
-      signature = HmacSigner.sign(
-        @pc.secret,
-        "POST",
-        path,
-        timestamp,
-        body.to_json
-      )
+      attr_reader :pc, :connection
 
-      response = @connection.post(path, body.to_json) do |req|
-        req.headers["X-SIGNATURE"] = signature.to_s
-        req.headers["X-TIMESTAMP"] = timestamp.to_s
+      def post(path, body = {})
+        timestamp = Time.current.to_i
+
+        signature = HmacSigner.sign(
+          pc.secret,
+          "POST",
+          path,
+          timestamp,
+          body.to_json
+        )
+
+        response = connection.post(path, body.to_json) do |req|
+          req.headers["X-SIGNATURE"] = signature.to_s
+          req.headers["X-TIMESTAMP"] = timestamp.to_s
+        end
+
+        unless response.success?
+          raise Faraday::ConnectionFailed, "HTTP #{response.status}"
+        end
+
+        { status: "success" }
+      rescue Faraday::TimeoutError, Faraday::ConnectionFailed => e
+        raise e
       end
-
-      unless response.success?
-        raise Faraday::ConnectionFailed, "HTTP #{response.status}"
-      end
-
-      { status: "success" }
-    rescue Faraday::TimeoutError, Faraday::ConnectionFailed => e
-      raise e
-    end
   end
 end

@@ -63,7 +63,7 @@ class Pcs::CommandJobTest < ActiveJob::TestCase
     client.error = Faraday::ConnectionFailed.new("HTTP 500")
 
     assert_enqueued_with(job: Pcs::CommandJob, args: [ log.id ]) do
-      Pcs::AgentClient.stub(:new, client) do
+      stub_pc_agent(client) do
         Pcs::CommandJob.perform_now(log.id)
       end
     end
@@ -78,15 +78,12 @@ class Pcs::CommandJobTest < ActiveJob::TestCase
 
   private
 
-    def assert_command_dispatch(command)
-      log = create_command_log(command)
-      client = FakeAgentClient.new(@pc)
+  def assert_command_dispatch(command)
+    log = create_command_log(command)
+    client = FakeAgentClient.new(@pc)
 
-      freeze_time do
-        Pcs::AgentClient.stub(:new, ->(pc) {
-          assert_equal @pc, pc
-          client
-        }) do
+    freeze_time do
+        stub_pc_agent(client) do
           Pcs::CommandJob.perform_now(log.id)
         end
 
@@ -97,6 +94,14 @@ class Pcs::CommandJobTest < ActiveJob::TestCase
       end
 
       assert_equal [ command ], client.calls
+    end
+
+    def stub_pc_agent(client)
+      original = Pc.instance_method(:agent)
+      Pc.define_method(:agent) { client }
+      yield
+    ensure
+      Pc.define_method(:agent, original)
     end
 
     def create_command_log(command)

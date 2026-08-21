@@ -48,6 +48,10 @@ class Pc < ApplicationRecord
     AUTHORIZED_STATUSES.include?(status.to_sym)
   end
 
+  def agent
+    Agent.new(self)
+  end
+
   def start_session!
     unused_credits = coin_transactions.unused
     raise NoInsertedCoinsError, "No inserted coin found." if unused_credits.empty?
