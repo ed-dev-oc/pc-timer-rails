@@ -25,16 +25,16 @@ module CoinSlots
       log = EspCommandLog.find(command_log_id)
       coin_slot = log.coin_slot
       coin_slot_session = coin_slot_session_id.present? ? CoinSlotSession.find_by(id: coin_slot_session_id) : nil
-      client = CoinSlots::EspClient.new(coin_slot)
+      agent = coin_slot.agent
 
       case log.command
       when "enable"
-        client.enable(coin_slot.active_session)
+        agent.enable(coin_slot.active_session)
       when "disable"
         raise ArgumentError, "coin_slot_session_id is required for disable command" if coin_slot_session.nil?
-        client.disable(coin_slot_session)
+        agent.disable(coin_slot_session)
       when "restart"
-        client.restart
+        agent.restart
       end
 
       log.update!(

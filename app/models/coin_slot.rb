@@ -28,6 +28,10 @@ class CoinSlot < ApplicationRecord
     "http://#{ip_address}"
   end
 
+  def agent
+    Agent.new(self)
+  end
+
   def has_current_active_session?
     self.coin_slot_sessions.active.present?
   end

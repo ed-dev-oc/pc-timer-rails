@@ -47,10 +47,7 @@ class CoinSlots::EspCommandJobTest < ActiveJob::TestCase
     client = FakeEspClient.new(@coin_slot)
 
     freeze_time do
-      CoinSlots::EspClient.stub(:new, ->(coin_slot) {
-        assert_equal @coin_slot, coin_slot
-        client
-      }) do
+      stub_coin_slot_agent(client) do
         CoinSlots::EspCommandJob.perform_now(log.id)
       end
 
@@ -76,7 +73,7 @@ class CoinSlots::EspCommandJobTest < ActiveJob::TestCase
     client = FakeEspClient.new(@coin_slot)
 
     freeze_time do
-      CoinSlots::EspClient.stub(:new, client) do
+      stub_coin_slot_agent(client) do
         CoinSlots::EspCommandJob.perform_now(log.id, session.id)
       end
 
@@ -94,7 +91,7 @@ class CoinSlots::EspCommandJobTest < ActiveJob::TestCase
     client = FakeEspClient.new(@coin_slot)
 
     assert_raises(ArgumentError) do
-      CoinSlots::EspClient.stub(:new, client) do
+      stub_coin_slot_agent(client) do
         CoinSlots::EspCommandJob.perform_now(log.id)
       end
     end
@@ -112,7 +109,7 @@ class CoinSlots::EspCommandJobTest < ActiveJob::TestCase
     client = FakeEspClient.new(@coin_slot)
 
     freeze_time do
-      CoinSlots::EspClient.stub(:new, client) do
+      stub_coin_slot_agent(client) do
         CoinSlots::EspCommandJob.perform_now(log.id)
       end
 
@@ -131,7 +128,7 @@ class CoinSlots::EspCommandJobTest < ActiveJob::TestCase
     client.error = Faraday::ConnectionFailed.new("ESP connection failed")
 
     assert_enqueued_with(job: CoinSlots::EspCommandJob, args: [ log.id ]) do
-      CoinSlots::EspClient.stub(:new, client) do
+      stub_coin_slot_agent(client) do
         CoinSlots::EspCommandJob.perform_now(log.id)
       end
     end
@@ -144,6 +141,14 @@ class CoinSlots::EspCommandJobTest < ActiveJob::TestCase
   end
 
   private
+
+    def stub_coin_slot_agent(client)
+      original = CoinSlot.instance_method(:agent)
+      CoinSlot.define_method(:agent) { client }
+      yield
+    ensure
+      CoinSlot.define_method(:agent, original)
+    end
 
     def create_command_log(command)
       @coin_slot.esp_command_logs.create!(
