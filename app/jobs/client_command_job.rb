@@ -21,7 +21,7 @@ class ClientCommandJob < ApplicationJob
   def perform(command_id)
     @command = Command.find(command_id)
 
-    @command.commandable.execute!
+    @command.execute!
 
     @command.update!(
       status: "success",

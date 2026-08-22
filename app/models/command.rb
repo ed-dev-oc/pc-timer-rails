@@ -6,7 +6,7 @@ class Command < ApplicationRecord
     CoinSlotCommand
   ], dependent: :destroy
 
-  delegate :action, to: :commandable
+  delegate :action, :execute!, to: :commandable
 
   after_create_commit :schedule_job
 
