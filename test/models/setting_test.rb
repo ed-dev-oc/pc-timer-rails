@@ -77,14 +77,16 @@ class SettingTest < ActiveSupport::TestCase
   test "ensure_defaults! seeds missing defaults without overwriting existing settings" do
     # Pre-populate one default with custom value
     Setting.set("business_name", "My Custom Cafe", "string")
+    Setting.set("legacy_setting", "obsolete", "string")
 
-    assert_difference("Setting.count", Setting::DEFAULTS.keys.size - 1) do
+    assert_difference("Setting.count", Setting::DEFAULTS.keys.size - 2) do
       Setting.ensure_defaults!
     end
 
     assert_equal "My Custom Cafe", Setting.get("business_name")
     assert_equal "iCafe", Setting.get("app_name")
     assert_equal 60, Setting.duration("coin_slot_session_duration")
+    assert_nil Setting.find_by(key: "legacy_setting")
   end
 
   test "get handles ActiveRecord::StatementInvalid gracefully" do

@@ -9,16 +9,12 @@ class Setting < ApplicationRecord
     "pc_offline_threshold" => 2,
     "esp_connection_open_timeout" => 2,
     "esp_connection_timeout" => 5,
-    "esp_command_timeout_retry_wait" => 3,
-    "esp_command_timeout_max_attempts" => 3,
-    "esp_connection_failed_retry_wait" => 5,
-    "esp_command_max_attempts" => 3,
+    "client_command_timeout_retry_wait" => 3,
+    "client_command_timeout_max_attempts" => 3,
+    "client_command_connection_failed_retry_wait" => 5,
+    "client_command_max_attempts" => 3,
     "pc_connection_open_timeout" => 2,
     "pc_connection_timeout" => 5,
-    "pc_command_timeout_retry_wait" => 3,
-    "pc_command_timeout_max_attempts" => 3,
-    "pc_connection_failed_retry_wait" => 5,
-    "pc_command_max_attempts" => 3,
     "heartbeat_interval" => 2,
     "pc_shutdown_wait_time" => 300
   }.freeze
@@ -40,16 +36,12 @@ class Setting < ApplicationRecord
     "pc_offline_threshold" => "PC offline threshold in minutes",
     "esp_connection_open_timeout" => "ESP connection open timeout in seconds",
     "esp_connection_timeout" => "ESP request timeout in seconds",
-    "esp_command_timeout_retry_wait" => "ESP command timeout retry wait in seconds",
-    "esp_command_timeout_max_attempts" => "ESP command timeout max attempts",
-    "esp_connection_failed_retry_wait" => "ESP command connection failure retry wait in seconds",
-    "esp_command_max_attempts" => "ESP command connection failure max attempts",
+    "client_command_timeout_retry_wait" => "ESP/PC command timeout retry wait in seconds",
+    "client_command_timeout_max_attempts" => "ESP/PC command timeout max attempts",
+    "client_command_connection_failed_retry_wait" => "ESP/PC command connection failure retry wait in seconds",
+    "client_command_max_attempts" => "ESP/PC command connection failure max attempts",
     "pc_connection_open_timeout" => "PC agent connection open timeout in seconds",
     "pc_connection_timeout" => "PC agent request timeout in seconds",
-    "pc_command_timeout_retry_wait" => "PC command timeout retry wait in seconds",
-    "pc_command_timeout_max_attempts" => "PC command timeout max attempts",
-    "pc_connection_failed_retry_wait" => "PC command connection failure retry wait in seconds",
-    "pc_command_max_attempts" => "PC command connection failure max attempts",
     "heartbeat_interval" => "Heartbeat interval in minutes",
     "pc_shutdown_wait_time" => "Auto-shutdown timeout for inactive sessions (seconds)"
   }.freeze
@@ -58,22 +50,20 @@ class Setting < ApplicationRecord
   ADVANCED_KEYS = %w[
     esp_connection_open_timeout
     esp_connection_timeout
-    esp_command_timeout_retry_wait
-    esp_command_timeout_max_attempts
-    esp_connection_failed_retry_wait
-    esp_command_max_attempts
+    client_command_timeout_retry_wait
+    client_command_timeout_max_attempts
+    client_command_connection_failed_retry_wait
+    client_command_max_attempts
     pc_connection_open_timeout
     pc_connection_timeout
-    pc_command_timeout_retry_wait
-    pc_command_timeout_max_attempts
-    pc_connection_failed_retry_wait
-    pc_command_max_attempts
     heartbeat_interval
   ].freeze
 
   validates :key, presence: true, uniqueness: true
   validates :value, presence: true
   validates :value_type, presence: true, inclusion: { in: VALUE_TYPES }
+
+  scope :unknown_key, -> { where.not(key: DEFAULTS.keys) }
 
   # Retrieve and cast value based on stored type
   def self.get(key, default = nil)
@@ -104,6 +94,8 @@ class Setting < ApplicationRecord
   end
 
   def self.ensure_defaults!
+    unknown_key.delete_all
+
     DEFAULTS.each do |key, value|
       setting = find_or_initialize_by(key: key)
       setting.value = value.to_s if setting.new_record?
