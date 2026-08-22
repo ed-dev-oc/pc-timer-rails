@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_08_094506) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_21_151635) do
+  create_table "coin_slot_commands", force: :cascade do |t|
+    t.integer "action"
+    t.integer "coin_slot_id", null: false
+    t.integer "coin_slot_session_id"
+    t.index ["coin_slot_id"], name: "index_coin_slot_commands_on_coin_slot_id"
+    t.index ["coin_slot_session_id"], name: "index_coin_slot_commands_on_coin_slot_session_id"
+  end
+
   create_table "coin_slot_sessions", force: :cascade do |t|
     t.integer "coin_slot_id", null: false
     t.datetime "created_at", null: false
@@ -66,6 +74,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_08_094506) do
     t.index ["pc_id"], name: "index_command_logs_on_pc_id"
   end
 
+  create_table "commands", force: :cascade do |t|
+    t.integer "commandable_id", null: false
+    t.string "commandable_type", null: false
+    t.datetime "created_at", null: false
+    t.string "error_message"
+    t.datetime "executed_at"
+    t.datetime "sent_at"
+    t.integer "status", default: 0
+    t.datetime "updated_at", null: false
+    t.index ["commandable_type", "commandable_id"], name: "index_commands_on_commandable"
+  end
+
+  create_table "pc_commands", force: :cascade do |t|
+    t.integer "action"
+    t.integer "pc_id", null: false
+    t.index ["pc_id"], name: "index_pc_commands_on_pc_id"
+  end
+
   create_table "pc_sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "ended_at"
@@ -118,11 +144,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_08_094506) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "coin_slot_commands", "coin_slot_sessions"
+  add_foreign_key "coin_slot_commands", "coin_slots"
   add_foreign_key "coin_slot_sessions", "coin_slots"
   add_foreign_key "coin_slot_sessions", "pcs"
   add_foreign_key "coin_transactions", "coin_slots"
   add_foreign_key "coin_transactions", "pcs"
   add_foreign_key "command_logs", "coin_slots"
   add_foreign_key "command_logs", "pcs"
+  add_foreign_key "pc_commands", "pcs"
   add_foreign_key "pc_sessions", "pcs"
 end

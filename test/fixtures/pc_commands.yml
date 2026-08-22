@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  pc: one
+  action: 1
+
+two:
+  pc: two
+  action: 1

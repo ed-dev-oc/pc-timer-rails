@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  commandable: one
+  commandable_type: Commandable
+  error_message: MyString
+  sent_at: 2026-08-21 22:45:55
+  executed_at: 2026-08-21 22:45:55
+  status: 1
+
+two:
+  commandable: two
+  commandable_type: Commandable
+  error_message: MyString
+  sent_at: 2026-08-21 22:45:55
+  executed_at: 2026-08-21 22:45:55
+  status: 1
