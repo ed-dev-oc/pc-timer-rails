@@ -1,0 +1,19 @@
+<li class="list-group-item">
+  <div class="d-flex justify-content-between">
+    <strong>
+      <%= command.action.humanize %>
+    </strong>
+    <small class="text-muted">
+      <%= time_ago_in_words(command.created_at) %> ago
+    </small>
+  </div>
+  <div>
+    Status
+    <%= render Ui::StatusBadgeComponent.new(object: command) %>
+  </div>
+  <% if command.error_message.present? %>
+    <div class="alert alert-danger mt-2 mb-0">
+      <%= command.error_message %>
+    </div>
+  <% end %>
+</li>

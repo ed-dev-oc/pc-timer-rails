@@ -29,7 +29,7 @@ class Admin::PcsController < Admin::BaseController
       .order(created_at: :desc)
       .limit(20)
 
-    @command_logs = @pc.pc_command_logs
+    @commands = @pc.commands
       .order(created_at: :desc)
       .limit(20)
 

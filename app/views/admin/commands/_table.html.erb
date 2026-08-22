@@ -1,0 +1,12 @@
+<div class="card shadow-sm">
+  <div class="card-header">
+    <i class="bi bi-terminal"></i>
+    Recent Commands
+  </div>
+
+  <ul class="list-group list-group-flush overflow-auto" style="max-height: 40vh;">
+    <% commands.each do |command| %>
+			<%= render partial: "admin/commands/command", locals: { command: command } %>
+    <% end %>
+  </ul>
+</div>
