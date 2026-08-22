@@ -44,26 +44,26 @@ class Admin::PcsControllerTest < ActionDispatch::IntegrationTest
 
   test "should restart pc when authenticated" do
     @pc.update!(status: :online)
-    assert_difference("PcCommandLog.count", 1) do
-      assert_enqueued_with(job: Pcs::CommandJob) do
+    assert_difference("Command.count", 1) do
+      assert_enqueued_with(job: ClientCommandJob) do
         post restart_admin_pc_url(@pc)
       end
     end
     assert_redirected_to admin_pc_url(@pc)
     assert @pc.reload.offline?
-    assert_equal "restart", @pc.pc_command_logs.order(:id).last.command
+    assert_equal "restart", @pc.commands.order(:id).last.action
   end
 
   test "should shutdown pc when authenticated" do
     @pc.update!(status: :online)
-    assert_difference("PcCommandLog.count", 1) do
-      assert_enqueued_with(job: Pcs::CommandJob) do
+    assert_difference("Command.count", 1) do
+      assert_enqueued_with(job: ClientCommandJob) do
         post shutdown_admin_pc_url(@pc)
       end
     end
     assert_redirected_to admin_pc_url(@pc)
     assert @pc.reload.offline?
-    assert_equal "shutdown", @pc.pc_command_logs.order(:id).last.command
+    assert_equal "shutdown", @pc.commands.order(:id).last.action
   end
 
   test "should toggle kiosk status when authenticated" do

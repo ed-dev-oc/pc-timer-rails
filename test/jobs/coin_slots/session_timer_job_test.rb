@@ -24,7 +24,7 @@ class CoinSlots::SessionTimerJobTest < ActiveJob::TestCase
       expires_at: 1.minute.ago
     )
 
-    assert_no_difference("EspCommandLog.count") do
+    assert_no_difference("Command.count") do
       CoinSlotSessions::ChangedAction.stub(:call, ->(*) { flunk "changed action should not be called" }) do
         Pcs::SessionControlsChanged.stub(:call, ->(*) { flunk "session controls should not be called" }) do
           CoinSlots::SessionTimerJob.perform_now(session.id)
@@ -43,7 +43,7 @@ class CoinSlots::SessionTimerJobTest < ActiveJob::TestCase
       expires_at: 10.minutes.from_now
     )
 
-    assert_no_difference("EspCommandLog.count") do
+    assert_no_difference("Command.count") do
       CoinSlotSessions::ChangedAction.stub(:call, ->(*) { flunk "changed action should not be called" }) do
         Pcs::SessionControlsChanged.stub(:call, ->(*) { flunk "session controls should not be called" }) do
           CoinSlots::SessionTimerJob.perform_now(session.id)
@@ -69,8 +69,8 @@ class CoinSlots::SessionTimerJobTest < ActiveJob::TestCase
     changed_sessions = []
     changed_pcs = []
 
-    assert_difference("EspCommandLog.count", 1) do
-      assert_enqueued_with(job: CoinSlots::EspCommandJob) do
+    assert_difference("Command.count", 1) do
+      assert_enqueued_with(job: ClientCommandJob) do
         CoinSlotSessions::ChangedAction.stub(:call, ->(changed_session) { changed_sessions << changed_session }) do
           Pcs::SessionControlsChanged.stub(:call, ->(changed_pc) { changed_pcs << changed_pc }) do
             CoinSlots::SessionTimerJob.perform_now(session.id)
@@ -87,6 +87,6 @@ class CoinSlots::SessionTimerJobTest < ActiveJob::TestCase
     assert @coin_slot.online?
     assert_equal [ session ], changed_sessions
     assert_equal [ @pc ], changed_pcs
-    assert_equal "disable", @coin_slot.esp_command_logs.order(:id).last.command
+    assert_equal "disable", @coin_slot.commands.order(:id).last.action
   end
 end

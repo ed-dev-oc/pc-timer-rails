@@ -20,14 +20,14 @@ class Pcs::ShutdownScheduleJobTest < ActiveJob::TestCase
   test "online PC with no active session is shut down" do
     @pc.update!(status: :online)
 
-    assert_difference("PcCommandLog.count", 1) do
-      assert_enqueued_with(job: Pcs::CommandJob) do
+    assert_difference("Command.count", 1) do
+      assert_enqueued_with(job: ClientCommandJob) do
         Pcs::ShutdownScheduleJob.perform_now(@pc.id)
       end
     end
 
     assert @pc.reload.offline?
-    assert_equal "shutdown", @pc.pc_command_logs.order(:id).last.command
+    assert_equal "shutdown", @pc.commands.order(:id).last.action
   end
 
   test "PC with an active session is not shut down" do
@@ -39,7 +39,7 @@ class Pcs::ShutdownScheduleJobTest < ActiveJob::TestCase
     )
     @pc.update!(status: :active)
 
-    assert_no_difference("PcCommandLog.count") do
+    assert_no_difference("Command.count") do
       Pcs::ShutdownScheduleJob.perform_now(@pc.id)
     end
 
@@ -49,7 +49,7 @@ class Pcs::ShutdownScheduleJobTest < ActiveJob::TestCase
   test "disabled_kiosk PC is not shut down" do
     @pc.update_columns(status: Pc.statuses[:disabled_kiosk])
 
-    assert_no_difference("PcCommandLog.count") do
+    assert_no_difference("Command.count") do
       Pcs::ShutdownScheduleJob.perform_now(@pc.id)
     end
 
@@ -59,7 +59,7 @@ class Pcs::ShutdownScheduleJobTest < ActiveJob::TestCase
   test "archived PC is not shut down" do
     @pc.update_columns(status: Pc.statuses[:archived])
 
-    assert_no_difference("PcCommandLog.count") do
+    assert_no_difference("Command.count") do
       Pcs::ShutdownScheduleJob.perform_now(@pc.id)
     end
 

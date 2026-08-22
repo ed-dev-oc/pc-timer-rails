@@ -261,8 +261,8 @@ class PcTest < ActiveSupport::TestCase
   test "shutdown! queues shutdown command and puts PC offline" do
     @pc.update!(status: :online)
 
-    assert_difference("PcCommandLog.count", 1) do
-      assert_enqueued_with(job: Pcs::CommandJob) do
+    assert_difference("Command.count", 1) do
+      assert_enqueued_with(job: ClientCommandJob) do
         @pc.shutdown!
       end
     end
@@ -270,14 +270,14 @@ class PcTest < ActiveSupport::TestCase
     @pc.reload
 
     assert @pc.offline?
-    assert_equal "shutdown", @pc.pc_command_logs.order(:id).last.command
+    assert_equal "shutdown", @pc.commands.order(:id).last.commandable.action
   end
 
   test "restart! queues restart command and puts PC offline" do
     @pc.update!(status: :online)
 
-    assert_difference("PcCommandLog.count", 1) do
-      assert_enqueued_with(job: Pcs::CommandJob) do
+    assert_difference("Command.count", 1) do
+      assert_enqueued_with(job: ClientCommandJob) do
         @pc.restart!
       end
     end
@@ -285,7 +285,7 @@ class PcTest < ActiveSupport::TestCase
     @pc.reload
 
     assert @pc.offline?
-    assert_equal "restart", @pc.pc_command_logs.order(:id).last.command
+    assert_equal "restart", @pc.commands.order(:id).last.commandable.action
   end
 
   test "register! creates a PC" do

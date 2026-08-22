@@ -112,9 +112,9 @@ class CoinSlotTest < ActiveSupport::TestCase
     pc = pcs(:one)
 
     assert_difference("CoinSlotSession.count", 1) do
-      assert_difference("EspCommandLog.count", 1) do
+      assert_difference("Command.count", 1) do
         assert_enqueued_with(job: CoinSlots::SessionTimerJob) do
-          assert_enqueued_with(job: CoinSlots::EspCommandJob) do
+          assert_enqueued_with(job: ClientCommandJob) do
             session = @slot.start_session!(pc)
 
             assert_equal @slot, session.coin_slot
@@ -129,15 +129,15 @@ class CoinSlotTest < ActiveSupport::TestCase
 
     assert @slot.active?
     assert @slot.has_current_active_session?
-    assert_equal "enable", @slot.esp_command_logs.order(:id).last.command
+    assert_equal "enable", @slot.commands.order(:id).last.action
   end
 
   test "stop_session! stops active session and queues disable command" do
     session = @slot.start_session!(pcs(:one))
     clear_enqueued_jobs
 
-    assert_difference("EspCommandLog.count", 1) do
-      assert_enqueued_with(job: CoinSlots::EspCommandJob) do
+    assert_difference("Command.count", 1) do
+      assert_enqueued_with(job: ClientCommandJob) do
         stopped_session = @slot.stop_session!
 
         assert_equal session, stopped_session
@@ -151,13 +151,13 @@ class CoinSlotTest < ActiveSupport::TestCase
     assert session.ended?
     assert @slot.online?
     assert_not @slot.has_current_active_session?
-    assert_equal "disable", @slot.esp_command_logs.order(:id).last.command
+    assert_equal "disable", @slot.commands.order(:id).last.action
   end
 
   test "stop_session! returns nil when there is no active session" do
     @slot.coin_slot_sessions.update_all(status: CoinSlotSession.statuses[:stopped])
 
-    assert_no_difference("EspCommandLog.count") do
+    assert_no_difference("Command.count") do
       assert_nil @slot.reload.stop_session!
     end
   end
@@ -180,28 +180,11 @@ class CoinSlotTest < ActiveSupport::TestCase
     assert_equal seen_at, @slot.last_seen_at
   end
 
-  test "queue_esp_command! creates pending command and enqueues job" do
-    freeze_time do
-      command_log = nil
-
-      assert_difference("EspCommandLog.count", 1) do
-        assert_enqueued_with(job: CoinSlots::EspCommandJob) do
-          command_log = @slot.queue_esp_command!(command: :enable)
-        end
-      end
-
-      assert_equal @slot, command_log.coin_slot
-      assert_equal "enable", command_log.command
-      assert command_log.status_pending?
-      assert_equal Time.current, command_log.sent_at
-    end
-  end
-
   test "restart! queues restart command and marks slot offline" do
     @slot.update!(status: :online)
 
-    assert_difference("EspCommandLog.count", 1) do
-      assert_enqueued_with(job: CoinSlots::EspCommandJob) do
+    assert_difference("Command.count", 1) do
+      assert_enqueued_with(job: ClientCommandJob) do
         @slot.restart!
       end
     end
@@ -209,7 +192,7 @@ class CoinSlotTest < ActiveSupport::TestCase
     @slot.reload
 
     assert @slot.offline?
-    assert_equal "restart", @slot.esp_command_logs.order(:id).last.command
+    assert_equal "restart", @slot.commands.order(:id).last.action
   end
 
   test "toggle_lock! locks authorized statuses" do

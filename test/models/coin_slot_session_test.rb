@@ -84,8 +84,8 @@ class CoinSlotSessionTest < ActiveSupport::TestCase
 
     freeze_time do
       current = Time.current
-      assert_difference("EspCommandLog.count", 1) do
-        assert_enqueued_with(job: CoinSlots::EspCommandJob) do
+      assert_difference("Command.count", 1) do
+        assert_enqueued_with(job: ClientCommandJob) do
           session.stop!
         end
       end
@@ -97,7 +97,7 @@ class CoinSlotSessionTest < ActiveSupport::TestCase
       assert_equal started_at.to_i, session.started_at.to_i
       assert_equal expires_at.to_i, session.expires_at.to_i
       assert @coin_slot.reload.online?
-      assert_equal "disable", @coin_slot.esp_command_logs.order(:id).last.command
+      assert_equal "disable", @coin_slot.commands.order(:id).last.commandable.action
     end
   end
 

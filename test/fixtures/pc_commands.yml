@@ -7,3 +7,7 @@ one:
 two:
   pc: two
   action: 1
+
+pc_unlock:
+  pc: one
+  action: 1

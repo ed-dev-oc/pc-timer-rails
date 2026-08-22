@@ -7,3 +7,8 @@ one:
 two:
   coin_slot: two
   action: 1
+
+coin_slot_disable:
+  coin_slot: one
+  coin_slot_session: one
+  action: 1

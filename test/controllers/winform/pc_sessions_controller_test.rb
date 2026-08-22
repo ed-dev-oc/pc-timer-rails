@@ -23,7 +23,7 @@ class Winform::PcSessionsControllerTest < ActionDispatch::IntegrationTest
 
     suppress_broadcast_service do
       assert_difference("PcSession.count", 1) do
-        assert_difference("PcCommandLog.count", 1) do
+        assert_difference("Command.count", 1) do
           post path, headers: headers
         end
       end
@@ -38,7 +38,7 @@ class Winform::PcSessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 5, pc_session.total_amount
     assert @coin_transaction.reload.used?
     assert @pc.reload.active?
-    assert_equal "unlock", @pc.pc_command_logs.order(:id).last.command
+    assert_equal "unlock", @pc.commands.order(:id).last.commandable.action
   end
 
   test "signed pc extends active session from unused coin transactions" do
@@ -57,7 +57,7 @@ class Winform::PcSessionsControllerTest < ActionDispatch::IntegrationTest
 
     suppress_broadcast_service do
       assert_no_difference("PcSession.count") do
-        assert_difference("PcCommandLog.count", 1) do
+        assert_difference("Command.count", 1) do
           patch path, headers: headers
         end
       end
@@ -70,7 +70,7 @@ class Winform::PcSessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal original_expires_at + 12.minutes, pc_session.expires_at
     assert @coin_transaction.reload.used?
     assert @pc.reload.active?
-    assert_equal "unlock", @pc.pc_command_logs.order(:id).last.command
+    assert_equal "unlock", @pc.commands.order(:id).last.commandable.action
   end
 
   test "signed pc is redirected when starting without inserted coins" do
@@ -95,7 +95,7 @@ class Winform::PcSessionsControllerTest < ActionDispatch::IntegrationTest
     path = winform_pc_pc_session_path(@pc, pc_sessions(:one))
     headers = signed_headers(@pc, method: "PATCH", path: path)
 
-    assert_no_difference("PcCommandLog.count") do
+    assert_no_difference("Command.count") do
       patch path, headers: headers
     end
 

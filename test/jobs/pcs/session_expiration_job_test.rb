@@ -22,7 +22,7 @@ class Pcs::SessionExpirationJobTest < ActiveJob::TestCase
       expires_at: 1.minute.ago
     )
 
-    assert_no_difference("PcCommandLog.count") do
+    assert_no_difference("Command.count") do
       PcSessions::BroadcastService.stub(:call, ->(*) { flunk "broadcast service should not be called" }) do
         Pcs::SessionExpirationJob.perform_now(session.id)
       end
@@ -38,7 +38,7 @@ class Pcs::SessionExpirationJobTest < ActiveJob::TestCase
       expires_at: 10.minutes.from_now
     )
 
-    assert_no_difference("PcCommandLog.count") do
+    assert_no_difference("Command.count") do
       PcSessions::BroadcastService.stub(:call, ->(*) { flunk "broadcast service should not be called" }) do
         Pcs::SessionExpirationJob.perform_now(session.id)
       end
@@ -60,8 +60,8 @@ class Pcs::SessionExpirationJobTest < ActiveJob::TestCase
 
     broadcasted_pcs = []
 
-    assert_difference("PcCommandLog.count", 1) do
-      assert_enqueued_with(job: Pcs::CommandJob) do
+    assert_difference("Command.count", 1) do
+      assert_enqueued_with(job: ClientCommandJob) do
         assert_enqueued_with(job: Pcs::ShutdownScheduleJob) do
           PcSessions::BroadcastService.stub(:call, ->(pc) { broadcasted_pcs << pc }) do
             Pcs::SessionExpirationJob.perform_now(session.id)
@@ -78,6 +78,6 @@ class Pcs::SessionExpirationJobTest < ActiveJob::TestCase
     assert_equal 30, session.total_minutes_used
     assert @pc.online?
     assert_equal [ @pc ], broadcasted_pcs
-    assert_equal "lock", @pc.pc_command_logs.order(:id).last.command
+    assert_equal "lock", @pc.commands.order(:id).last.commandable.action
   end
 end

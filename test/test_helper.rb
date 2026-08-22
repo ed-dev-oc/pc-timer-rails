@@ -46,8 +46,9 @@ end
 
 module ActiveSupport
   class TestCase
-    # Run tests in parallel with specified workers
-    parallelize(workers: :number_of_processors) unless ENV["DISABLE_TEST_PARALLEL"].present?
+    # Default to a single worker so the suite avoids DRb/socket setup in
+    # restricted environments. Set PARALLEL_WORKERS>1 to opt back in.
+    parallelize(workers: ENV.fetch("PARALLEL_WORKERS", 1).to_i) unless ENV["DISABLE_TEST_PARALLEL"].present?
 
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all

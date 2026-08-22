@@ -36,14 +36,14 @@ class Admin::CoinSlotsControllerTest < ActionDispatch::IntegrationTest
 
   test "should restart coin slot when authenticated" do
     @coin_slot.update!(status: :online)
-    assert_difference("EspCommandLog.count", 1) do
-      assert_enqueued_with(job: CoinSlots::EspCommandJob) do
+    assert_difference("Command.count", 1) do
+      assert_enqueued_with(job: ClientCommandJob) do
         post restart_admin_coin_slot_url(@coin_slot)
       end
     end
     assert_redirected_to admin_coin_slot_url(@coin_slot.device_id)
     assert @coin_slot.reload.offline?
-    assert_equal "restart", @coin_slot.esp_command_logs.order(:id).last.command
+    assert_equal "restart", @coin_slot.commands.order(:id).last.action
   end
 
   test "should toggle lock status when authenticated" do

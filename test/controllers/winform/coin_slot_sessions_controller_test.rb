@@ -19,7 +19,7 @@ class Winform::CoinSlotSessionsControllerTest < ActionDispatch::IntegrationTest
 
     suppress_changed_action do
       assert_difference("CoinSlotSession.count", 1) do
-        assert_difference("EspCommandLog.count", 1) do
+        assert_difference("Command.count", 1) do
           post path, headers: headers
         end
       end
@@ -32,7 +32,7 @@ class Winform::CoinSlotSessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal @coin_slot, coin_slot_session.coin_slot
     assert coin_slot_session.active?
     assert @coin_slot.reload.active?
-    assert_equal "enable", @coin_slot.esp_command_logs.order(:id).last.command
+    assert_equal "enable", @coin_slot.commands.order(:id).last.commandable.action
   end
 
   test "signed pc is redirected when no online coin slot is available" do
@@ -63,7 +63,7 @@ class Winform::CoinSlotSessionsControllerTest < ActionDispatch::IntegrationTest
     headers = signed_headers(@pc, method: "PATCH", path: path)
 
     suppress_changed_action do
-      assert_difference("EspCommandLog.count", 1) do
+      assert_difference("Command.count", 1) do
         patch path, headers: headers
       end
     end
@@ -72,7 +72,7 @@ class Winform::CoinSlotSessionsControllerTest < ActionDispatch::IntegrationTest
     assert coin_slot_session.reload.stopped?
     assert coin_slot_session.ended?
     assert @coin_slot.reload.online?
-    assert_equal "disable", @coin_slot.esp_command_logs.order(:id).last.command
+    assert_equal "disable", @coin_slot.commands.order(:id).last.commandable.action
   end
 
   test "signed pc is redirected when cancelling without active coin slot session" do
@@ -81,7 +81,7 @@ class Winform::CoinSlotSessionsControllerTest < ActionDispatch::IntegrationTest
     path = cancel_winform_pc_coin_slot_sessions_path(@pc)
     headers = signed_headers(@pc, method: "PATCH", path: path)
 
-    assert_no_difference("EspCommandLog.count") do
+    assert_no_difference("Command.count") do
       patch path, headers: headers
     end
 
