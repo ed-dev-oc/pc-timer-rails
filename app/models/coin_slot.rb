@@ -13,6 +13,10 @@ class CoinSlot < ApplicationRecord
   has_one :active_session, -> { active }, class_name: "CoinSlotSession"
   has_many :coin_transactions, dependent: :destroy
   has_many :esp_command_logs, class_name: "EspCommandLog", dependent: :destroy
+  has_many :coin_slot_commands, dependent: :destroy
+  has_many :commands,
+          through: :coin_slot_commands,
+          source: :command
 
   validates :name, :mac_address, :ip_address, presence: true
   validates :name, :mac_address, :ip_address, uniqueness: true
@@ -53,7 +57,7 @@ class CoinSlot < ApplicationRecord
     transaction do
       coin_slot_session = CoinSlotSession.start!(self, pc)
       active!
-      queue_esp_command!(command: :enable)
+      queue_command!(action: :enable, coin_slot_session: coin_slot_session)
 
       self.reload
       coin_slot_session
@@ -72,18 +76,16 @@ class CoinSlot < ApplicationRecord
     update!(attributes)
   end
 
-  def queue_esp_command!(command:, coin_slot_session: nil)
-    esp_command_logs.create!(
-      command: command,
-      status: :pending,
-      sent_at: Time.current,
-      coin_slot_session: coin_slot_session
+  def queue_command!(action:, coin_slot_session: nil)
+    Command.create!(
+      commandable: self.coin_slot_commands.new(action: action, coin_slot_session: coin_slot_session),
+      sent_at: Time.current
     )
   end
 
   def restart!
     transaction do
-      queue_esp_command!(command: :restart)
+      queue_command!(command: :restart)
       offline!
     end
   end

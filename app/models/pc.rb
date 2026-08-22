@@ -15,6 +15,11 @@ class Pc < ApplicationRecord
   has_many :pc_sessions, dependent: :destroy
   has_many :pc_command_logs, class_name: "PcCommandLog", dependent: :destroy
 
+  has_many :pc_commands, dependent: :destroy
+  has_many :commands,
+          through: :pc_commands,
+          source: :command
+
   has_one :active_coin_slot_session,
           -> { active },
           class_name: "CoinSlotSession"
@@ -60,7 +65,7 @@ class Pc < ApplicationRecord
 
     transaction do
       session = PcSession.start!(self, unused_credits)
-      mark_active_session_and_unlock_pc!
+      mark_active_and_unlock_pc
       active_coin_slot&.stop_session!
     end
 
@@ -71,7 +76,7 @@ class Pc < ApplicationRecord
   def start_manual_session!(attributes)
     transaction do
       PcSession.start_manual!(attributes)
-      mark_active_session_and_unlock_pc!
+      mark_active_and_unlock_pc
     end
   end
 
@@ -81,7 +86,7 @@ class Pc < ApplicationRecord
 
     transaction do
       session.extend!(unused_credits)
-      mark_active_session_and_unlock_pc!
+      mark_active_and_unlock_pc
       active_coin_slot&.stop_session!
     end
   end
@@ -124,14 +129,14 @@ class Pc < ApplicationRecord
 
   def shutdown!
     transaction do
-      queue_pc_command!(:shutdown)
+      queue_command!(:shutdown)
       offline!
     end
   end
 
   def restart!
     transaction do
-      queue_pc_command!(:restart)
+      queue_command!(:restart)
       offline!
     end
   end
@@ -164,20 +169,18 @@ class Pc < ApplicationRecord
         .perform_later(id)
     end
 
-    def queue_pc_command!(command)
-      pc_command_logs.create!(
-        command: command,
-        status: :pending,
+    def queue_command!(action)
+      Command.create!(
+        commandable: self.pc_commands.new(action: action),
         sent_at: Time.current
       )
     end
 
-    def mark_active_session_and_unlock_pc!
+    def mark_active_and_unlock_pc
       transaction do
-        # Update status to :active (previously :active_session)
         active!
 
-        queue_pc_command!(:unlock)
+        queue_command!(:unlock)
       end
     end
 
@@ -185,7 +188,7 @@ class Pc < ApplicationRecord
       transaction do
         online! if active?
 
-        queue_pc_command!(:lock)
+        queue_command!(:lock)
       end
     end
 

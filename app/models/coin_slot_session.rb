@@ -30,7 +30,7 @@ class CoinSlotSession < ApplicationRecord
       stopped!
       update!(ended_at: Time.current)
       coin_slot.online!
-      coin_slot.queue_esp_command!(command: :disable, coin_slot_session: self)
+      coin_slot.queue_command!(action: :disable, coin_slot_session: self)
     end
   end
 
