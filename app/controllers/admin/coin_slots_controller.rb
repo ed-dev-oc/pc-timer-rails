@@ -29,7 +29,7 @@ class Admin::CoinSlotsController < Admin::BaseController
       .order(created_at: :desc)
       .limit(20)
 
-    @command_logs = @coin_slot.esp_command_logs
+    @commands = @coin_slot.commands
       .order(created_at: :desc)
       .limit(20)
 
