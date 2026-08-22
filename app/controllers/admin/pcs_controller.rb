@@ -22,7 +22,7 @@ class Admin::PcsController < Admin::BaseController
       total_minutes: @pc.coin_transactions.sum(:minutes_granted),
       total_income: @pc.coin_transactions.sum(:peso_amount),
       today_income: @today_transactions.sum(:peso_amount),
-      total_commands: @pc.pc_command_logs.count
+      total_commands: @pc.commands.count
     }
 
     @coin_transactions = @pc.coin_transactions
@@ -117,7 +117,7 @@ class Admin::PcsController < Admin::BaseController
       @pc = Pc.includes(
         :pc_sessions,
         :coin_transactions,
-        :pc_command_logs
+        :commands
       ).find_by(device_id: params.expect(:id))
 
       redirect_back fallback_location: admin_pcs_path, alert: "PC not found!", status: :see_other if @pc.nil?

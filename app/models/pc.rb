@@ -13,7 +13,6 @@ class Pc < ApplicationRecord
   has_many :coin_slot_sessions, dependent: :destroy
   has_many :coin_transactions, dependent: :destroy
   has_many :pc_sessions, dependent: :destroy
-  has_many :pc_command_logs, class_name: "PcCommandLog", dependent: :destroy
 
   has_many :pc_commands, dependent: :destroy
   has_many :commands,

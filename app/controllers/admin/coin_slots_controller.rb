@@ -22,7 +22,7 @@ class Admin::CoinSlotsController < Admin::BaseController
       total_minutes: @coin_slot.coin_transactions.sum(:minutes_granted),
       total_income: @coin_slot.coin_transactions.sum(:peso_amount),
       today_income: @today_transactions.sum(:peso_amount),
-      total_commands: @coin_slot.esp_command_logs.count
+      total_commands: @coin_slot.commands.count
     }
 
     @coin_transactions = @coin_slot.coin_transactions

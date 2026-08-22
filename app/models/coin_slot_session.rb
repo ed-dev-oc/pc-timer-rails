@@ -8,6 +8,7 @@ class CoinSlotSession < ApplicationRecord
 
   belongs_to :coin_slot
   belongs_to :pc
+  has_many :coin_slot_commands, dependent: :destroy
 
   validates :started_at, :expires_at, presence: true
   validates :status, inclusion: { in: [ "active" ] }, on: :create

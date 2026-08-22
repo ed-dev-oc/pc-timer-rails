@@ -12,7 +12,6 @@ class CoinSlot < ApplicationRecord
   has_many :coin_slot_sessions, dependent: :destroy
   has_one :active_session, -> { active }, class_name: "CoinSlotSession"
   has_many :coin_transactions, dependent: :destroy
-  has_many :esp_command_logs, class_name: "EspCommandLog", dependent: :destroy
   has_many :coin_slot_commands, dependent: :destroy
   has_many :commands,
           through: :coin_slot_commands,
@@ -85,7 +84,7 @@ class CoinSlot < ApplicationRecord
 
   def restart!
     transaction do
-      queue_command!(command: :restart)
+      queue_command!(action: :restart)
       offline!
     end
   end
